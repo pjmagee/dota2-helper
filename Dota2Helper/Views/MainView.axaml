@@ -1,0 +1,57 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Dota2Helper.ViewModels"
+             xmlns:core="clr-namespace:Dota2Helper.Core"
+             Background="Transparent" Padding="2.5"
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="500"
+             x:Class="Dota2Helper.Views.MainView"
+             x:DataType="vm:MainViewModel">
+  <Design.DataContext>
+      <vm:MainViewModel />
+  </Design.DataContext>
+   <StackPanel Orientation="Vertical">
+       <DockPanel>
+           <Button Background="Transparent" HorizontalContentAlignment="Left" DockPanel.Dock="Left" x:Name="Move">
+               <Panel>
+                   <PathIcon Data="{StaticResource arrow_move_regular}" />
+               </Panel>
+            </Button>
+           <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" DockPanel.Dock="Right">
+               <Slider x:Name="Slider" Width="50" HorizontalAlignment="Center" Value="{Binding Volume}" />
+               <TextBlock Text="{Binding #Slider.Value, StringFormat={}{0:0}}" HorizontalAlignment="Center" Margin="15" />
+               <Button Click="Button_OnClickExit" Foreground="Red" Background="Transparent" HorizontalContentAlignment="Left" DockPanel.Dock="Right">
+                  <TextBlock Text="❌"></TextBlock>
+               </Button>
+           </StackPanel>
+       </DockPanel>
+       <ItemsControl ItemsSource="{Binding Path=Timers}">
+           <ItemsControl.DataTemplates>
+               <DataTemplate DataType="core:DotaTimer">
+                  <Grid ColumnDefinitions="0.5*,0.2*,0.2*" RowDefinitions="Auto">
+                      <TextBlock Grid.Column="0" Margin="5, 10" Padding="0" Text="{Binding Path=Label}" TextAlignment="Right" />
+                      <TextBlock Grid.Column="1" Margin="5, 10" Padding="0" Text="{Binding Path=TimeRemaining, StringFormat=mm\\:ss}" Foreground="{Binding TimerColor}" />
+                      
+                      <StackPanel Grid.Column="2" Orientation="Horizontal">
+                          <ToggleButton Opacity="0.5" IsChecked="{Binding Mode=TwoWay, Path=IsSoundEnabled}">
+                              <Panel>
+                                  <PathIcon Classes="audio-on" Data="{StaticResource speaker_regular}" />
+                                  <PathIcon Classes="audio-mute" Data="{StaticResource speaker_off_regular}" />
+                              </Panel>
+                          </ToggleButton>
+                          <Button Opacity="0.5" IsVisible="{Binding Mode=OneWay, Path=IsManualReset}" Command="{Binding Reset}">
+                              <Panel>
+                                  <PathIcon Data="{StaticResource timer_10_regular}" />
+                              </Panel>
+                          </Button>
+                          <!-- TODO: Reminder seconds configuration -->
+                      </StackPanel>
+                      
+                  </Grid>
+               </DataTemplate>
+           </ItemsControl.DataTemplates>
+       </ItemsControl>
+   </StackPanel>
+  
+</UserControl>
