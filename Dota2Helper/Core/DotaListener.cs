@@ -24,8 +24,7 @@ public class DotaListener : IDotaListener
         try
         {
             HttpListenerContext context = await _listener.GetContextAsync();
-            
-            var state = await JsonSerializer.DeserializeAsync<GameState>(context.Request.InputStream);
+            GameState? state = await JsonSerializer.DeserializeAsync<GameState>(context.Request.InputStream);
             
             context.Response.StatusCode = 200;
             context.Response.Close();
@@ -42,7 +41,7 @@ public class DotaListener : IDotaListener
     {
         try
         {
-            _listener.Stop();
+            _listener.Close();
         }
         catch (Exception)
         {

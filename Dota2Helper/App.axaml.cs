@@ -10,6 +10,8 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Cryptography;
+using Avalonia.Controls;
 using Dota2Helper.Core;
 using ViewLocator = Dota2Helper.Core.ViewLocator;
 
@@ -38,7 +40,7 @@ public partial class App : Application
             desktop.Exit += async (sender, args) =>
             {
                 var listener = Host.Services.GetRequiredService<IDotaListener>();
-                listener.Dispose();;
+                listener.Dispose();
                 
                 await Host.StopAsync(TimeSpan.FromSeconds(5));
                 Host.Dispose();
@@ -58,7 +60,12 @@ public partial class App : Application
 
         builder.Services.AddHostedService<GameStateUpdateService>();
 
-        if (Process.GetProcessesByName("dota2").Any())
+
+        if (Design.IsDesignMode)
+        {
+            builder.Services.AddSingleton<IDotaListener, FakeDotaListener>();
+        }
+        else if (Process.GetProcessesByName("dota2").Any())
         {
             builder.Services.AddSingleton<IDotaListener, DotaListener>();
         }
