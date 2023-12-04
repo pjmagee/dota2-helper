@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text.Json;
+using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Logging;
+using Avalonia.Media;
+using Avalonia.Styling;
 using Avalonia.Threading;
 
 using Dota2Helper.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using ReactiveUI;
 
 namespace Dota2Helper.ViewModels;
 
@@ -20,6 +26,10 @@ public class MainViewModel : ViewModelBase
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         WriteIndented = true
     };
+
+    public bool IsSpeakerMuted => Volume <= 0;
+    
+    public bool IsSpeakerOn => Volume > 0;
     
     public DotaTimers Timers { get; set; }
     
@@ -31,6 +41,9 @@ public class MainViewModel : ViewModelBase
             {
                 timer.Volume = value;
             }
+            
+            this.RaisePropertyChanged(nameof(IsSpeakerMuted));
+            this.RaisePropertyChanged(nameof(IsSpeakerOn));
         }
         get => Timers[0].Volume;
     }
