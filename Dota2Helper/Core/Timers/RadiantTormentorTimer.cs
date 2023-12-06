@@ -4,9 +4,8 @@ namespace Dota2Helper.Core;
 
 public class RadiantTormentorTimer : DotaTimer
 {
-    public RadiantTormentorTimer(TimeSpan fromGameStart, TimeSpan interval, TimeSpan reminderTime) : base("Tormentor (R)", fromGameStart, interval, reminderTime)
+    public RadiantTormentorTimer(TimeSpan first, TimeSpan interval, TimeSpan reminder) : base("Tormentor (R)", first, interval, reminder, "audio/Tormentor.mp3")
     {
-        this.SoundToPlay = "audio/Roshan.mp3";
-        base.IsManualReset = true;
+        IsManualReset = true;
     }
 }

@@ -4,9 +4,8 @@ namespace Dota2Helper.Core;
 
 public class DireTormentorTimer : DotaTimer
 {
-    public DireTormentorTimer(TimeSpan fromGameStart, TimeSpan interval, TimeSpan reminderTime) : base("Tormentor (D)", fromGameStart, interval, reminderTime)
+    public DireTormentorTimer(TimeSpan first, TimeSpan interval, TimeSpan reminder) : base("Tormentor (D)", first, interval, reminder, "audio/Tormentor.mp3")
     {
-        this.SoundToPlay = "audio/Tormentor.mp3";
-        this.IsManualReset = true;
+        IsManualReset = true;
     }
 }

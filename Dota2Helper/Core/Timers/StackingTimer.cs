@@ -4,8 +4,8 @@ namespace Dota2Helper.Core;
 
 public class StackingTimer : DotaTimer
 {
-    public StackingTimer(TimeSpan fromGameStart, TimeSpan interval, TimeSpan reminderTime) : base("Stack", fromGameStart, interval, reminderTime)
+    public StackingTimer(TimeSpan first, TimeSpan interval, TimeSpan reminder) : base("Stack", first, interval, reminder, "audio/Stack.mp3")
     {
-        this.SoundToPlay = "audio/Stack.mp3";
+        
     }
 }

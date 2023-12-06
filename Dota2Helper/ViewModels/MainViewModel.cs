@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Text.Json;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Logging;
-using Avalonia.Media;
-using Avalonia.Styling;
 using Avalonia.Threading;
 
 using Dota2Helper.Core;
@@ -21,7 +14,7 @@ public class MainViewModel : ViewModelBase
     private readonly ILogger<MainViewModel> _logger;
     private readonly GameStateHolder _stateHolder;
 
-    private static readonly JsonSerializerOptions _options = new JsonSerializerOptions()
+    private static readonly JsonSerializerOptions Options = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         WriteIndented = true
@@ -65,9 +58,9 @@ public class MainViewModel : ViewModelBase
     {
         if (_stateHolder?.State is not null)
         {
-            _logger.LogInformation(JsonSerializer.Serialize(_stateHolder.State.Map, _options));
+            _logger.LogInformation(JsonSerializer.Serialize(_stateHolder.State.Map, Options));
             
-            TimeSpan time = TimeSpan.FromSeconds(_stateHolder.State.Map.ClockTime);
+            TimeSpan time = TimeSpan.FromSeconds(_stateHolder.State.Map.GameTime);
 
             var updateState = _stateHolder.State.Map.GameState switch
             {

@@ -4,8 +4,8 @@ namespace Dota2Helper.Core;
 
 public class WisdomTimer : DotaTimer
 {
-    public WisdomTimer(TimeSpan fromGameStart, TimeSpan interval, TimeSpan reminderTime) : base("Wisdom", fromGameStart, interval, reminderTime)
+    public WisdomTimer(TimeSpan first, TimeSpan interval, TimeSpan reminder) : base("Wisdom", first, interval, reminder, "audio/Wisdom.mp3")
     {
-        SoundToPlay = "audio/Wisdom.mp3";
+        
     }
 }

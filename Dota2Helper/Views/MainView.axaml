@@ -52,7 +52,7 @@
                                      Watermark="⚠️"
                                      VerticalContentAlignment="Center" 
                                      HorizontalContentAlignment="Center"
-                                     Value="{Binding ReminderTime.TotalSeconds}" 
+                                     Value="{Binding Reminder.TotalSeconds}" 
                                      Increment="1" 
                                      Minimum="5"
                                      Maximum="60"

@@ -1,22 +1,23 @@
 ﻿using System;
-using System.IO;
 using LibVLCSharp.Shared;
 
 namespace Dota2Helper.Core;
 
-public class DotaTimer : IDisposable
+public abstract class DotaTimer : IDisposable
 {
     private static readonly LibVLC LibVlc = new();
     private readonly MediaPlayer _player = new(LibVlc);
     
-    public bool IsManualReset { get; protected set; }
+    public bool IsManualReset { get; protected init; }
 
-    protected DotaTimer(string label, TimeSpan fromGameStart, TimeSpan interval, TimeSpan reminderTime)
+    protected DotaTimer(string label, TimeSpan first, TimeSpan interval, TimeSpan reminder, string soundToPlay)
     {
         Label = label;
-        FromGameStart = fromGameStart;
+        First = first;
         Interval = interval;
-        ReminderTime = reminderTime;
+        Reminder = reminder;
+        SoundToPlay = soundToPlay;
+        IsActive = true;
     }
 
     public double Volume
@@ -25,15 +26,15 @@ public class DotaTimer : IDisposable
         get => _player.Volume;
     }
     
-    public TimeSpan ReminderTime { get; }
-    public bool IsReminderActive => TimeRemaining - ReminderTime <= TimeSpan.Zero;
-
+    public TimeSpan Reminder { get; }
+    private bool IsReminderActive => TimeRemaining - Reminder <= TimeSpan.Zero;
     protected string SoundToPlay { get; init; }
-
     public string Label { get; }
-    public TimeSpan FromGameStart { get; }
+    public TimeSpan First { get; }
     public TimeSpan Interval { get; }
     public TimeSpan TimeRemaining { get; private set; }
+    
+    public bool IsActive { get; set; }
 
     public Avalonia.Media.IBrush TimerColor
     {
@@ -45,11 +46,6 @@ public class DotaTimer : IDisposable
             return IsReminderActive ? Avalonia.Media.Brushes.OrangeRed : Avalonia.Media.Brushes.AntiqueWhite;
         }
     }
-
-    /// <summary>
-    /// The last time this timer was updated.
-    /// </summary>
-    private TimeSpan LastUpdateTime { get; set; }
     
     /// <summary>
     /// If this is set to true and TimeRemaining reaches 0, play a sound to indicate that the timer has reached 0.
@@ -59,61 +55,63 @@ public class DotaTimer : IDisposable
     /// </summary>
     public bool IsSoundEnabled { get; set; }
 
-    public bool IsTriggered => TimeRemaining <= TimeSpan.Zero && LastUpdateTime != default;
+    public bool IsTriggered => TimeRemaining <= TimeSpan.Zero;
 
+    private TimeSpan _manualResetTime;
 
     public void Reset()
     {
-        LastUpdateTime = default;
+        IsActive = true;
+        _manualResetTime = default;
     }
 
-    public bool IsPendingManualReset => LastUpdateTime != default && TimeRemaining <= TimeSpan.Zero && IsManualReset;
+    public bool IsPendingManualReset => !IsActive && TimeRemaining <= TimeSpan.Zero && IsManualReset;
     
     public void Update(TimeSpan gameTime)
     {
-        if (IsTriggered)
+        if (!IsActive)
         {
             TimeRemaining = TimeSpan.Zero;
-            if (IsManualReset) return;
-            LastUpdateTime = default;
+            return;
+        }
+        
+        if (!IsManualReset)
+        {
+            TimeSpan interval = gameTime > First ? Interval : First;
+            TimeSpan timeInCurrentInterval = TimeSpan.FromTicks(gameTime.Ticks % interval.Ticks);
+            TimeRemaining = interval - timeInCurrentInterval;    
         }
 
-        if (TimeRemaining <= TimeSpan.Zero && LastUpdateTime == default)
+        if (IsManualReset)
         {
-            if (FromGameStart > gameTime)
+            if (_manualResetTime == default)
             {
-                TimeRemaining = FromGameStart;
-            }
-            else if (FromGameStart <= gameTime)
-            {
-                TimeRemaining = Interval;
+                _manualResetTime = gameTime;
             }
             
-            IsSoundPlayed = false;
-
-            if (LastUpdateTime == default)
-            {
-                LastUpdateTime = gameTime;
-            }
-        }
-        else
-        {
-            TimeRemaining -= gameTime - LastUpdateTime;
-            LastUpdateTime = gameTime;
+            TimeSpan interval = gameTime > First ? Interval : First;
+            TimeSpan timeInCurrentInterval = TimeSpan.FromTicks((gameTime.Ticks - _manualResetTime.Ticks) % interval.Ticks);
+            TimeRemaining = interval - timeInCurrentInterval;
         }
         
         if (IsSoundEnabled && IsReminderActive && !IsSoundPlayed)
         {
-            using (var reminderAudio = new Media(LibVlc, SoundToPlay, FromType.FromPath))
+            using (var reminderAudio = new Media(LibVlc, SoundToPlay))
             {
                 _player.Play(reminderAudio);
             }
 
             IsSoundPlayed = true;
         }
+        
+        if (IsTriggered)
+            IsSoundPlayed = false;
+
+        if (IsTriggered && IsActive && IsManualReset)
+            IsActive = false;
     }
 
-    public bool IsSoundPlayed { get; set; }
+    private bool IsSoundPlayed { get; set; }
 
     public void Dispose()
     {

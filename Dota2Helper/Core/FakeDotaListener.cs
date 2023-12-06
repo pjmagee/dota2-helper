@@ -6,9 +6,7 @@ namespace Dota2Helper.Core;
 
 public class FakeDotaListener : IDotaListener, IAsyncDisposable
 {
-    private readonly TimeProvider _provider;
-    private TimeProvider provider;
-    private ITimer? timer;
+    private readonly ITimer? _timer;
     
     private TimeSpan _gameTime = new(hours: 0, minutes: 0, seconds: 0);
 
@@ -19,8 +17,7 @@ public class FakeDotaListener : IDotaListener, IAsyncDisposable
 
     public FakeDotaListener(TimeProvider provider)
     {
-        _provider = provider;
-        timer = _provider.CreateTimer(Update, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
+        _timer = provider.CreateTimer(Update, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
     }
 
     private void Update(object? state)
@@ -39,17 +36,16 @@ public class FakeDotaListener : IDotaListener, IAsyncDisposable
             }
         };
 
-
         return Task.FromResult<GameState?>(fakeState);
     }
 
     public void Dispose()
     {
-        timer?.Dispose();
+        _timer?.Dispose();
     }
 
     public async ValueTask DisposeAsync()
     {
-        if (timer != null) await timer.DisposeAsync();
+        if (_timer != null) await _timer.DisposeAsync();
     }
 }

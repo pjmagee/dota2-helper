@@ -12,47 +12,47 @@ public class DotaTimers : ObservableCollection<DotaTimer>
     public DotaTimers() : base(new List<DotaTimer>()
     {
         new WisdomTimer(
-            fromGameStart: TimeSpan.FromMinutes(0),
+            first: TimeSpan.FromMinutes(7),
             interval: TimeSpan.FromMinutes(7), 
-            reminderTime: TimeSpan.FromSeconds(45)),
+            reminder: TimeSpan.FromSeconds(45)),
         
         new BountyTimer(
-            fromGameStart: TimeSpan.FromMinutes(0),
+            first: TimeSpan.FromMinutes(0),
             interval: TimeSpan.FromMinutes(3),
-            reminderTime: TimeSpan.FromSeconds(20)),
+            reminder: TimeSpan.FromSeconds(20)),
 
         new PowerTimer(
-            fromGameStart: TimeSpan.FromMinutes(0),
+            first: TimeSpan.FromMinutes(6),
             interval: TimeSpan.FromMinutes(6),
             reminderTime: TimeSpan.FromSeconds(20)),
         
         new LotusTimer(
-            fromGameStart: TimeSpan.FromMinutes(0),
+            first: TimeSpan.FromMinutes(3),
             interval: TimeSpan.FromMinutes(3),
             reminderTime: TimeSpan.FromSeconds(15)),
         
         new DireTormentorTimer(
-            fromGameStart: TimeSpan.FromMinutes(20), 
+            first: TimeSpan.FromMinutes(20), 
             interval: TimeSpan.FromMinutes(10),
-            reminderTime: TimeSpan.FromSeconds(45)),
+            reminder: TimeSpan.FromSeconds(45)),
         
         new RadiantTormentorTimer(
-            fromGameStart: TimeSpan.FromMinutes(20),
+            first: TimeSpan.FromMinutes(20),
             interval: TimeSpan.FromMinutes(10),
-            reminderTime: TimeSpan.FromSeconds(45)),
+            reminder: TimeSpan.FromSeconds(45)),
         
         new StackingTimer(
-            fromGameStart: TimeSpan.FromMinutes(2),
+            first: TimeSpan.FromMinutes(2),
             interval: TimeSpan.FromMinutes(1),
-            reminderTime: TimeSpan.FromSeconds(15)),
+            reminder: TimeSpan.FromSeconds(15)),
         
         new RoshanTimer(
-            fromGameStart: TimeSpan.FromMinutes(11),
+            first: TimeSpan.FromMinutes(11),
             interval: TimeSpan.FromMinutes(11),
-            reminderTime: TimeSpan.FromMinutes(3)),
+            reminder: TimeSpan.FromMinutes(3)),
         
         new CatapultTimer(
-            fromGameStart: TimeSpan.FromMinutes(0),
+            fromGameStart: TimeSpan.FromMinutes(5),
             interval: TimeSpan.FromMinutes(5),
             reminderTime: TimeSpan.FromSeconds(30)),
 
