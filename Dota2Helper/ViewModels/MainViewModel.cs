@@ -60,7 +60,7 @@ public class MainViewModel : ViewModelBase
         {
             _logger.LogInformation(JsonSerializer.Serialize(_stateHolder.State.Map, Options));
             
-            TimeSpan time = TimeSpan.FromSeconds(_stateHolder.State.Map.GameTime);
+            TimeSpan time = TimeSpan.FromSeconds(_stateHolder.State.Map.ClockTime);
 
             var updateState = _stateHolder.State.Map.GameState switch
             {

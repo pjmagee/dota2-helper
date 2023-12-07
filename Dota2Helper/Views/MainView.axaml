@@ -47,12 +47,12 @@
                               <PathIcon Data="{StaticResource timer_10_regular}" />
                           </Panel>
                       </Button>
-                      <NumericUpDown Opacity="0.5" Margin="1, 1" MaxWidth="10"
-                                     ShowButtonSpinner="False"
+                      <NumericUpDown Opacity="0.5" Margin="1, 1"
+                                     ShowButtonSpinner="True" ButtonSpinnerLocation="Right"
                                      Watermark="⚠️"
                                      VerticalContentAlignment="Center" 
                                      HorizontalContentAlignment="Center"
-                                     Value="{Binding Reminder.TotalSeconds}" 
+                                     Value="{Binding ReminderInSeconds, Mode=TwoWay}" 
                                      Increment="1" 
                                      Minimum="5"
                                      Maximum="60"

@@ -45,13 +45,13 @@ public partial class MainView : UserControl
             return;
         }
         
-        var currentPosition = e.GetPosition(this);
-        var deltaX = currentPosition.X - _startPoint.X;
-        var deltaY = currentPosition.Y - _startPoint.Y;
-
         var lifeTime = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
         if (lifeTime == null) return;
         if (lifeTime.MainWindow == null) return;
+        
+        var currentPosition = e.GetPosition(this);
+        var deltaX = currentPosition.X - _startPoint.X;
+        var deltaY = currentPosition.Y - _startPoint.Y;
         
         lifeTime.MainWindow.Position = new PixelPoint((int)(lifeTime.MainWindow.Position.X + deltaX), (int)(lifeTime.MainWindow.Position.Y + deltaY));
     }

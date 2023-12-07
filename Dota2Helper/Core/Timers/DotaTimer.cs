@@ -5,8 +5,8 @@ namespace Dota2Helper.Core;
 
 public abstract class DotaTimer : IDisposable
 {
-    private static readonly LibVLC LibVlc = new();
-    private readonly MediaPlayer _player = new(LibVlc);
+    private readonly LibVLC _libVlc = new();
+    private readonly MediaPlayer _player;
     
     public bool IsManualReset { get; protected init; }
 
@@ -18,6 +18,7 @@ public abstract class DotaTimer : IDisposable
         Reminder = reminder;
         SoundToPlay = soundToPlay;
         IsActive = true;
+        _player = new(_libVlc);
     }
 
     public double Volume
@@ -26,7 +27,20 @@ public abstract class DotaTimer : IDisposable
         get => _player.Volume;
     }
     
-    public TimeSpan Reminder { get; }
+    public TimeSpan Reminder { get; set; }
+
+    public int ReminderInSeconds
+    {
+        get
+        {
+            return (int) Reminder.TotalSeconds;
+        }
+        set
+        {
+            Reminder = TimeSpan.FromSeconds(value);
+        }
+    }
+    
     private bool IsReminderActive => TimeRemaining - Reminder <= TimeSpan.Zero;
     protected string SoundToPlay { get; init; }
     public string Label { get; }
@@ -65,10 +79,17 @@ public abstract class DotaTimer : IDisposable
         _manualResetTime = default;
     }
 
+    public TimeSpan GetObjectiveTime(TimeSpan gameTime)
+    {
+        return (gameTime > First ? Interval : First + (gameTime < TimeSpan.Zero ? gameTime.Negate() : TimeSpan.Zero));
+    }
+
     public bool IsPendingManualReset => !IsActive && TimeRemaining <= TimeSpan.Zero && IsManualReset;
     
     public void Update(TimeSpan gameTime)
     {
+        TimeSpan interval = GetObjectiveTime(gameTime);
+        
         if (!IsActive)
         {
             TimeRemaining = TimeSpan.Zero;
@@ -77,7 +98,6 @@ public abstract class DotaTimer : IDisposable
         
         if (!IsManualReset)
         {
-            TimeSpan interval = gameTime > First ? Interval : First;
             TimeSpan timeInCurrentInterval = TimeSpan.FromTicks(gameTime.Ticks % interval.Ticks);
             TimeRemaining = interval - timeInCurrentInterval;    
         }
@@ -89,14 +109,13 @@ public abstract class DotaTimer : IDisposable
                 _manualResetTime = gameTime;
             }
             
-            TimeSpan interval = gameTime > First ? Interval : First;
             TimeSpan timeInCurrentInterval = TimeSpan.FromTicks((gameTime.Ticks - _manualResetTime.Ticks) % interval.Ticks);
             TimeRemaining = interval - timeInCurrentInterval;
         }
         
         if (IsSoundEnabled && IsReminderActive && !IsSoundPlayed)
         {
-            using (var reminderAudio = new Media(LibVlc, SoundToPlay))
+            using (var reminderAudio = new Media(_libVlc, SoundToPlay))
             {
                 _player.Play(reminderAudio);
             }
