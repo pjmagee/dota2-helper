@@ -13,6 +13,7 @@ public class MainViewModel : ViewModelBase
 {
     private readonly ILogger<MainViewModel> _logger;
     private readonly GameStateHolder _stateHolder;
+    private readonly AudioPlayer _audioPlayer;
 
     private static readonly JsonSerializerOptions Options = new()
     {
@@ -30,28 +31,46 @@ public class MainViewModel : ViewModelBase
     {
         set
         {
-            foreach (var timer in Timers)
-            {
-                timer.Volume = value;
-            }
-            
+            _audioPlayer.Volume = (int) value;
             this.RaisePropertyChanged(nameof(IsSpeakerMuted));
             this.RaisePropertyChanged(nameof(IsSpeakerOn));
         }
-        get => Timers[0].Volume;
+        get => _audioPlayer.Volume;
     }
 
 
-    public MainViewModel(ILogger<MainViewModel> logger, GameStateHolder stateHolder)
+    public MainViewModel(ILogger<MainViewModel> logger, DotaTimers dotaTimers, GameStateHolder stateHolder, AudioPlayer audioPlayer)
     {
         _logger = logger;
         _stateHolder = stateHolder;
-        Timers = new DotaTimers();
+        _audioPlayer = audioPlayer;
+        Timers = dotaTimers;
+        
+        WireEvents();
+    }
+    
+    ~MainViewModel() => UnWireEvents();
+
+    private void WireEvents()
+    {
+        foreach (var timer in Timers)
+        {
+            timer.OnReminder += QueueReminder;
+        }
+    }
+    
+    private void QueueReminder(object? sender, EventArgs args)
+    {
+        var timer = (DotaTimer) sender!;
+        _audioPlayer.QueueReminder(timer!.SoundToPlay);
     }
 
-    public MainViewModel() : this(new NullLogger<MainViewModel>(), new GameStateHolder())
+    private void UnWireEvents()
     {
-       
+        foreach (var timer in Timers)
+        {
+            timer.OnReminder -= QueueReminder;
+        }
     }
 
     public void Update()
@@ -59,7 +78,7 @@ public class MainViewModel : ViewModelBase
         if (_stateHolder?.State is not null)
         {
             _logger.LogInformation(JsonSerializer.Serialize(_stateHolder.State.Map, Options));
-            
+
             TimeSpan time = TimeSpan.FromSeconds(_stateHolder.State.Map.ClockTime);
 
             var updateState = _stateHolder.State.Map.GameState switch
@@ -75,7 +94,6 @@ public class MainViewModel : ViewModelBase
                 {
                     for (int i = 0; i < Timers.Count; i++)
                     {
-
                         Timers[i].Update(time);
                         Timers.Update(i, Timers[i]);
                     }

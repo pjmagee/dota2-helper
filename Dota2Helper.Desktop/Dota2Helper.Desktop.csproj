@@ -16,9 +16,16 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia.Desktop" Version="11.0.5" />
+    <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.20" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Dota2Helper\Dota2Helper.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

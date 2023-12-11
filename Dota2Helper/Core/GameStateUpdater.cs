@@ -6,27 +6,16 @@ using Microsoft.Extensions.Hosting;
 
 namespace Dota2Helper.Core;
 
-public class GameStateUpdateService : BackgroundService
+public class GameStateUpdater(GameStateHolder container, MainViewModel mainViewModel, IDotaListener listener) : BackgroundService
 {
-    private readonly GameStateHolder _container;
-    private readonly MainViewModel _mainViewModel;
-    private readonly IDotaListener _listener;
-    
-    public GameStateUpdateService(GameStateHolder container, MainViewModel mainViewModel, IDotaListener listener)
-    {
-        _container = container;
-        _mainViewModel = mainViewModel;
-        _listener = listener;
-    }
-
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
-                _container.State = await _listener.GetStateAsync();
-                _mainViewModel.Update();
+                container.State = await listener.GetStateAsync();
+                mainViewModel.Update();
             }
             catch (Exception ex)
             {

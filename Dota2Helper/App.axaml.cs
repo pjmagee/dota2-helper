@@ -58,28 +58,30 @@ public partial class App : Application
     {
         HostApplicationBuilder builder = Microsoft.Extensions.Hosting.Host.CreateApplicationBuilder(Environment.GetCommandLineArgs());
 
-        builder.Services.AddHostedService<GameStateUpdateService>();
-
-
         if (Design.IsDesignMode)
         {
             builder.Services.AddSingleton<IDotaListener, FakeDotaListener>();
         }
         else if (Process.GetProcessesByName("dota2").Any())
-        {
+        { 
             builder.Services.AddSingleton<IDotaListener, DotaListener>();
         }
         else
         {
             builder.Services.AddSingleton<IDotaListener, FakeDotaListener>();
         }
-        
 
+        
+        builder.Services.AddSingleton<DotaTimers, ConfiguredDotaTimers>();
+        builder.Services.AddSingleton<AudioPlayer>();
         builder.Services.AddTransient<ViewLocator>();
         builder.Services.AddSingleton<MainViewModel>();
         builder.Services.AddView<MainViewModel, MainView>();
         builder.Services.AddSingleton<GameStateHolder>();
-
+        
+        builder.Services.AddHostedService<GameStateUpdater>();
+        builder.Services.AddHostedService<AudioPlayerService>();
+        
         return builder.Build();
     }
 }

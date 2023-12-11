@@ -4,14 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:Dota2Helper.ViewModels"
              xmlns:core="clr-namespace:Dota2Helper.Core"
-             Background="Transparent" Padding="2.5"
-             mc:Ignorable="d"
+             Background="Transparent" Padding="2.5" Opacity="1"
+             mc:Ignorable="d" d:DataContext="{x:Static core:DesignData.MainViewModel}"
              x:Class="Dota2Helper.Views.MainView"
              x:DataType="vm:MainViewModel">
-  <Design.DataContext>
-      <vm:MainViewModel />
-  </Design.DataContext>
-   <StackPanel Orientation="Vertical">
+    <StackPanel Orientation="Vertical">
        <DockPanel>
            <Button Background="Transparent" HorizontalContentAlignment="Left" DockPanel.Dock="Left" x:Name="Move">
                <Panel>
