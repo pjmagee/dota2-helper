@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.Json;
+using Avalonia.Media;
 using Avalonia.Threading;
 
 using Dota2Helper.Core;
@@ -20,6 +21,18 @@ public class MainViewModel : ViewModelBase
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         WriteIndented = true
     };
+
+    private double _opacity = 0.5d;
+
+    public double Opacity
+    {
+        get => _opacity;
+        set
+        {
+            _opacity = Math.Round(value, 1);
+            this.RaisePropertyChanged();
+        }
+    }
 
     public bool IsSpeakerMuted => Volume <= 0;
     

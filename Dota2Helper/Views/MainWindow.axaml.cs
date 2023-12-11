@@ -1,7 +1,6 @@
 ﻿using System;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Input;
+using Dota2Helper.Core;
 
 namespace Dota2Helper.Views;
 
