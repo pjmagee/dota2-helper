@@ -4,92 +4,69 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:Dota2Helper.ViewModels"
              xmlns:core="clr-namespace:Dota2Helper.Core"
+             xmlns:views="clr-namespace:Dota2Helper.Views"
              mc:Ignorable="d"
-             Background="Black" 
-             Opacity="{Binding Opacity}"
              d:DataContext="{x:Static core:DesignData.MainViewModel}"
-             x:Class="Dota2Helper.Views.MainView"
+             x:Class="Dota2Helper.Views.MainView" 
              x:DataType="vm:MainViewModel">
-    <StackPanel Orientation="Vertical">
+    <StackPanel Orientation="Vertical" Spacing="5">
        <DockPanel>
-           <Button Click="Button_OnClickExit" Foreground="Red" HorizontalContentAlignment="Left" DockPanel.Dock="Right">
-               <TextBlock Text="❌" />
-           </Button>
-           <Button HorizontalContentAlignment="Left" DockPanel.Dock="Left" x:Name="Move">
-               <Panel>
-                   <PathIcon Data="{StaticResource arrow_move_regular}" />
-               </Panel>
-            </Button>
-           <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" DockPanel.Dock="Right">
-               <Slider x:Name="OpacitySlider" Width="50" HorizontalAlignment="Center" Value="{Binding Opacity}" Minimum="0.25" Maximum="1.0" />
-               <TextBlock Text="{Binding Path=Opacity, StringFormat=0.#}" HorizontalAlignment="Center" Margin="15" />
-           </StackPanel>
-           <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" DockPanel.Dock="Right">
+           <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" DockPanel.Dock="Right" Spacing="5">
                <Panel Margin="5,0">
                    <PathIcon IsVisible="{Binding IsSpeakerMuted}" Data="{DynamicResource speaker_off_regular}" />
                    <PathIcon IsVisible="{Binding IsSpeakerOn}" Data="{DynamicResource speaker_regular}" />
                </Panel>
-               <Slider x:Name="Slider" Width="50" HorizontalAlignment="Center" Value="{Binding Volume}" />
+               <Slider Width="100" x:Name="Slider" HorizontalAlignment="Center" Value="{Binding Volume}" TickPlacement="BottomRight" />
                <TextBlock Text="{Binding #Slider.Value, StringFormat={}{0:0}}" HorizontalAlignment="Center" Margin="15" />
            </StackPanel>
        </DockPanel>
-       <ItemsControl ItemsSource="{Binding Path=Timers}" >
+       <ItemsControl ItemsSource="{Binding Path=Timers}">
            <ItemsControl.DataTemplates>
                <DataTemplate DataType="core:DotaTimer">
-                  <StackPanel Orientation="Horizontal">
+                  <StackPanel Orientation="Horizontal" Spacing="5" Margin="0,1" >
                       
-                      <TextBlock 
-                          Foreground="White" 
-                          Width="100" 
-                          Margin="4, 2" 
-                          Padding="0" 
-                          Text="{Binding Path=Label}" 
-                          TextAlignment="Right" 
-                          Opacity="1"
-                          FontWeight="Bold" />
+                      <TextBlock Width="100" Text="{Binding Path=Label}" TextAlignment="Right" VerticalAlignment="Center" />
+                     
+                      <TextBlock Width="45"
+                                 VerticalAlignment="Center"
+                                 Text="{Binding Path=TimeRemaining, StringFormat=mm\\:ss}"
+                                 IsVisible="{Binding !IsReminderActive}" />
                       
-                      <TextBlock
-                          Width="45" 
-                          Margin="2, 2" 
-                          Padding="0"
-                          Text="{Binding Path=TimeRemaining, StringFormat=mm\\:ss}" 
-                          FontWeight="Bold" 
-                          Opacity="1"
-                          Foreground="{Binding TimerColor}" />
+                      <TextBlock Width="45"
+                                 VerticalAlignment="Center"
+                                 Text="{Binding Path=TimeRemaining, StringFormat=mm\\:ss}"
+                                 Foreground="{DynamicResource SystemErrorTextColor}"
+                                 FontWeight="Bold"
+                                 IsVisible="{Binding IsReminderActive}" />
                       
-                      <ToggleButton 
-                          Width="40"
-                          Margin="2, 2" 
-                          Padding="2" IsChecked="{Binding Mode=TwoWay, Path=IsSoundEnabled}">
+                      <ToggleButton IsChecked="{Binding Mode=TwoWay, Path=IsSoundEnabled}">
                           <Panel>
                               <PathIcon Classes="audio-on" Data="{StaticResource speaker_regular}" />
                               <PathIcon Classes="audio-mute" Data="{StaticResource speaker_off_regular}" />
                           </Panel>
                       </ToggleButton>
-                      
-                      <Button 
-                          Width="40" 
-                          Padding="2"
-                          IsVisible="{Binding Mode=OneWay, Path=IsManualReset}" Command="{Binding Reset}">
+                      <Button IsVisible="{Binding Mode=OneWay, Path=IsManualReset}" Command="{Binding Reset}">
                           <Panel>
                               <PathIcon Data="{StaticResource timer_10_regular}" />
                           </Panel>
                       </Button>
-                      <NumericUpDown Margin="1, 1"
-                                     Width="20"
-                                     ShowButtonSpinner="False"
+                      <NumericUpDown ShowButtonSpinner="False"
                                      VerticalContentAlignment="Center" 
                                      HorizontalContentAlignment="Center"
                                      Value="{Binding ReminderInSeconds, Mode=TwoWay}" 
-                                     Increment="1" 
-                                     Minimum="5" AllowSpin="True"
-                                     Maximum="60"
-                                     ParsingNumberStyle="Integer">
+                                     Increment="1" Minimum="5" 
+                                     AllowSpin="True" Maximum="60" ParsingNumberStyle="Integer">
                       </NumericUpDown>
                   </StackPanel>
                </DataTemplate>
            </ItemsControl.DataTemplates>
        </ItemsControl>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" DockPanel.Dock="Right">
+            <!-- this button switches to light theme -->
+            <Button x:Name="Button" 
+                    Content="{Binding ThemeName, Mode=OneWay}" 
+                    Margin="0,0,10,10" 
+                    Command="{Binding Theme}" />
+        </StackPanel>
    </StackPanel>
-    
 </UserControl>

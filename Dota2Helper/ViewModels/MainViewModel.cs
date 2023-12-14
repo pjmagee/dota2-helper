@@ -1,11 +1,10 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Text.Json;
-using Avalonia.Media;
+using Avalonia.Styling;
 using Avalonia.Threading;
-
 using Dota2Helper.Core;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using ReactiveUI;
 
 namespace Dota2Helper.ViewModels;
@@ -21,6 +20,44 @@ public class MainViewModel : ViewModelBase
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         WriteIndented = true
     };
+    
+    public void Theme()
+    {
+        var toggle = App.Current.RequestedThemeVariant switch
+        {
+            { Key: nameof(ThemeVariant.Light) }  => ThemeVariant.Dark,
+            { Key: nameof(ThemeVariant.Dark) } => ThemeVariant.Light,
+            _ => null,
+        };
+        
+        App.Current.RequestedThemeVariant = toggle;
+
+        ThemeName = (toggle == ThemeVariant.Dark ? ThemeVariant.Light : ThemeVariant.Dark).Key.ToString();
+    }
+
+    private string? _themeName;
+
+    public string ThemeName
+    {
+        get
+        {
+            if (_themeName is null)
+            {
+                _themeName = App.Current.ActualThemeVariant switch
+                {
+                    { Key: nameof(ThemeVariant.Light) } => ThemeVariant.Dark.Key.ToString(),
+                    { Key: nameof(ThemeVariant.Dark) } => ThemeVariant.Light.Key.ToString(),
+                    _ => "Unknown",
+                };
+            }
+
+            return _themeName!;
+        }
+        private set
+        {
+            this.RaiseAndSetIfChanged(ref _themeName, value);
+        }
+    }
 
     private double _opacity = 0.5d;
 
@@ -38,7 +75,17 @@ public class MainViewModel : ViewModelBase
     
     public bool IsSpeakerOn => Volume > 0;
     
-    public DotaTimers Timers { get; set; }
+    private ObservableCollection<DotaTimer> _timers;
+
+    public ObservableCollection<DotaTimer> Timers
+    {
+        get => _timers;
+        set
+        {
+            _timers = value;
+            this.RaisePropertyChanged(nameof(Timers));
+        }
+    }
     
     public double Volume
     {
@@ -52,12 +99,12 @@ public class MainViewModel : ViewModelBase
     }
 
 
-    public MainViewModel(ILogger<MainViewModel> logger, DotaTimers dotaTimers, GameStateHolder stateHolder, AudioPlayer audioPlayer)
+    public MainViewModel(ILogger<MainViewModel> logger, ObservableCollection<DotaTimer> timers, GameStateHolder stateHolder, AudioPlayer audioPlayer)
     {
         _logger = logger;
         _stateHolder = stateHolder;
         _audioPlayer = audioPlayer;
-        Timers = dotaTimers;
+        Timers = timers;
         
         WireEvents();
     }
@@ -104,11 +151,12 @@ public class MainViewModel : ViewModelBase
             if (updateState)
             {
                 Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    for (int i = 0; i < Timers.Count; i++)
+                {   
+                    for(int i = 0; i < Timers.Count; i++)
                     {
-                        Timers[i].Update(time);
-                        Timers.Update(i, Timers[i]);
+                        var timer = Timers[i];
+                        timer.Update(time);
+                        Timers.Move(i, i);
                     }
                 });
             }

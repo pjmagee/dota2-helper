@@ -8,9 +8,11 @@ using Dota2Helper.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
+using Avalonia.Collections;
 using Avalonia.Controls;
 using Dota2Helper.Core;
 using ViewLocator = Dota2Helper.Core.ViewLocator;
@@ -62,17 +64,20 @@ public partial class App : Application
         {
             builder.Services.AddSingleton<IDotaListener, FakeDotaListener>();
         }
-        else if (Process.GetProcessesByName("dota2").Any())
-        { 
-            builder.Services.AddSingleton<IDotaListener, DotaListener>();
-        }
         else
         {
-            builder.Services.AddSingleton<IDotaListener, FakeDotaListener>();
+            if (Process.GetProcessesByName("dota2").Any())
+            { 
+                builder.Services.AddSingleton<IDotaListener, DotaListener>();
+            }
+            else
+            {
+                builder.Services.AddSingleton<IDotaListener, FakeDotaListener>();
+            }
         }
 
         
-        builder.Services.AddSingleton<DotaTimers, ConfiguredDotaTimers>();
+        builder.Services.AddSingleton<ObservableCollection<DotaTimer>, ConfiguredDotaTimers>();
         builder.Services.AddSingleton<AudioPlayer>();
         builder.Services.AddTransient<ViewLocator>();
         builder.Services.AddSingleton<MainViewModel>();

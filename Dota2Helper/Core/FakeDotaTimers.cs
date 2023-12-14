@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Avalonia.Collections;
 
 namespace Dota2Helper.Core;
 
-public class FakeDotaTimers : DotaTimers
+public class FakeDotaTimers : AvaloniaDictionary<string, DotaTimer>
 {
     private static List<DotaTimer> Default =>
     [
@@ -16,8 +17,11 @@ public class FakeDotaTimers : DotaTimers
         new DotaTimer("Power", TimeSpan.FromSeconds(0), TimeSpan.FromMinutes(2), TimeSpan.FromSeconds(30), "audio/Power.mp3")
     ];
     
-    public FakeDotaTimers() : base(Default)
+    public FakeDotaTimers()
     {
-        
+        foreach (var item in Default)
+        {
+            Add(item.Label, item);
+        }
     }
 }

@@ -7,22 +7,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace Dota2Helper.Core;
 
-public abstract class DotaTimers : ObservableCollection<DotaTimer>
+public class ConfiguredDotaTimers : ObservableCollection<DotaTimer>
 {
-    protected DotaTimers(List<DotaTimer> @default) : base(@default)
-    {
-        
-    }
-
-    public void Update(int index, DotaTimer timer)
-    {
-        SetItem(index, timer);
-    }
-}
-
-public class ConfiguredDotaTimers : DotaTimers
-{
-    public ConfiguredDotaTimers(IConfiguration configuration) : base([])
+    public ConfiguredDotaTimers(IConfiguration configuration)
     {
         List<DotaTimer> timers = new List<DotaTimer>();
 

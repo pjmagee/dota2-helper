@@ -1,9 +1,9 @@
 ﻿using System;
-using Avalonia.Media;
+using ReactiveUI;
 
 namespace Dota2Helper.Core;
 
-public class DotaTimer
+public class DotaTimer : ReactiveObject
 {
     private TimeSpan _manualResetTime;
 
@@ -19,7 +19,6 @@ public class DotaTimer
     }
 
     public bool IsManualReset { get; protected init; }
-
     public TimeSpan Reminder { get; set; }
 
     public int ReminderInSeconds
@@ -28,7 +27,7 @@ public class DotaTimer
         set => Reminder = TimeSpan.FromSeconds(value);
     }
 
-    private bool IsReminderActive => TimeRemaining - Reminder <= TimeSpan.Zero;
+    public bool IsReminderActive => TimeRemaining - Reminder <= TimeSpan.Zero;
     public string SoundToPlay { get; }
     public string Label { get; }
     public TimeSpan First { get; }
@@ -36,23 +35,9 @@ public class DotaTimer
     public TimeSpan TimeRemaining { get; private set; }
 
     public bool IsActive { get; set; }
-
-    public IBrush TimerColor
-    {
-        get
-        {
-            if (IsPendingManualReset)
-                return Brushes.DarkOrange;
-
-            return IsReminderActive ? Brushes.OrangeRed : Brushes.AntiqueWhite;
-        }
-    }
-
     public bool IsSoundEnabled { get; set; }
     public bool IsTriggered => TimeRemaining <= TimeSpan.Zero;
-
-    public bool IsPendingManualReset => !IsActive && TimeRemaining <= TimeSpan.Zero && IsManualReset;
-
+    public bool IsPendingManualReset => !IsActive && IsManualReset;
     private bool IsSoundPlayed { get; set; }
 
     public event EventHandler<EventArgs>? OnReminder;
