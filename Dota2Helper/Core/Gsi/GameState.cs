@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Dota2Helper.Core;
+namespace Dota2Helper.Core.Gsi;
 
 public class GameState
 {

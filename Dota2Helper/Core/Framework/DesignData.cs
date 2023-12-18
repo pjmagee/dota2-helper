@@ -2,7 +2,7 @@
 using Dota2Helper.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Dota2Helper.Core;
+namespace Dota2Helper.Core.Framework;
 
 public static class DesignData
 {

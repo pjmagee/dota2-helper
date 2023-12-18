@@ -3,10 +3,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:Dota2Helper.ViewModels"
-             xmlns:core="clr-namespace:Dota2Helper.Core"
-             xmlns:views="clr-namespace:Dota2Helper.Views"
+             xmlns:framework="clr-namespace:Dota2Helper.Core.Framework"
+             xmlns:timers="clr-namespace:Dota2Helper.Core.Timers"
              mc:Ignorable="d"
-             d:DataContext="{x:Static core:DesignData.MainViewModel}"
+             d:DataContext="{x:Static framework:DesignData.MainViewModel}"
              x:Class="Dota2Helper.Views.MainView" 
              x:DataType="vm:MainViewModel">
     <StackPanel Orientation="Vertical" Spacing="5">
@@ -22,7 +22,7 @@
        </DockPanel>
        <ItemsControl ItemsSource="{Binding Path=Timers}">
            <ItemsControl.DataTemplates>
-               <DataTemplate DataType="core:DotaTimer">
+               <DataTemplate DataType="timers:DotaTimer">
                   <StackPanel Orientation="Horizontal" Spacing="5" Margin="0,1" >
                       
                       <TextBlock Width="100" Text="{Binding Path=Label}" TextAlignment="Right" VerticalAlignment="Center" />

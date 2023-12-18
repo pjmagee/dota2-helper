@@ -12,7 +12,6 @@
         ExtendClientAreaChromeHints="SystemChrome" 
         CanResize="False"
         Title="D2 Helper" SizeToContent="WidthAndHeight">
-    
     <Window.Styles>
             <Style Selector="ToggleButton PathIcon.audio-on">
                 <Setter Property="IsVisible" Value="False"/>

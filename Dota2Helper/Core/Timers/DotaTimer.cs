@@ -1,13 +1,21 @@
 ﻿using System;
 using ReactiveUI;
 
-namespace Dota2Helper.Core;
+namespace Dota2Helper.Core.Timers;
 
 public class DotaTimer : ReactiveObject
 {
     private TimeSpan _manualResetTime;
 
-    protected internal DotaTimer(string label, TimeSpan first, TimeSpan interval, TimeSpan reminder, string soundToPlay, bool isManualReset = false)
+    protected internal DotaTimer(
+        string label, 
+        TimeSpan first, 
+        TimeSpan interval, 
+        TimeSpan reminder,
+        string soundToPlay, 
+        bool isManualReset,
+        string speech,
+        bool isTts)
     {
         Label = label;
         First = first;
@@ -16,9 +24,13 @@ public class DotaTimer : ReactiveObject
         SoundToPlay = soundToPlay;
         IsActive = true;
         IsManualReset = isManualReset;
+        Speech = speech;
+        IsTts = isTts;
     }
 
     public bool IsManualReset { get; protected init; }
+    public string Speech { get; }
+    public bool IsTts { get; set; }
     public TimeSpan Reminder { get; set; }
 
     public int ReminderInSeconds

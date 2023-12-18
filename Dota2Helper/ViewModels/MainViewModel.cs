@@ -3,7 +3,9 @@ using System.Collections.ObjectModel;
 using System.Text.Json;
 using Avalonia.Styling;
 using Avalonia.Threading;
-using Dota2Helper.Core;
+using Dota2Helper.Core.Audio;
+using Dota2Helper.Core.Gsi;
+using Dota2Helper.Core.Timers;
 using Microsoft.Extensions.Logging;
 using ReactiveUI;
 
@@ -122,7 +124,7 @@ public class MainViewModel : ViewModelBase
     private void QueueReminder(object? sender, EventArgs args)
     {
         var timer = (DotaTimer) sender!;
-        _audioPlayer.QueueReminder(timer!.SoundToPlay);
+        _audioPlayer.QueueReminder(timer);
     }
 
     private void UnWireEvents()

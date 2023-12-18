@@ -4,7 +4,7 @@ using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 
-namespace Dota2Helper.Core;
+namespace Dota2Helper.Core.Framework;
 
 public class ViewLocator : IDataTemplate
 {

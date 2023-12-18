@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Dota2Helper.ViewModels;
 using Microsoft.Extensions.Hosting;
 
-namespace Dota2Helper.Core;
+namespace Dota2Helper.Core.Gsi;
 
 public class GameStateUpdater(GameStateHolder container, MainViewModel mainViewModel, IDotaListener listener) : BackgroundService
 {

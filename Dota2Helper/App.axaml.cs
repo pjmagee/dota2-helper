@@ -15,7 +15,13 @@ using System.Security.Cryptography;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using Dota2Helper.Core;
-using ViewLocator = Dota2Helper.Core.ViewLocator;
+using Dota2Helper.Core.Audio;
+using Dota2Helper.Core.Configuration;
+using Dota2Helper.Core.Framework;
+using Dota2Helper.Core.Gsi;
+using Dota2Helper.Core.Timers;
+using Microsoft.Extensions.Configuration;
+using ViewLocator = Dota2Helper.Core.Framework.ViewLocator;
 
 namespace Dota2Helper;
 
@@ -31,7 +37,7 @@ public partial class App : Application
     public override async void OnFrameworkInitializationCompleted()
     {
         Host = CreateHost();
-       
+        
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             desktop.MainWindow = new MainWindow
@@ -76,8 +82,8 @@ public partial class App : Application
             }
         }
 
-        
-        builder.Services.AddSingleton<ObservableCollection<DotaTimer>, ConfiguredDotaTimers>();
+        builder.Services.Configure<Settings>(options => builder.Configuration.GetSection("Settings").Bind(options));
+        builder.Services.AddSingleton<ObservableCollection<DotaTimer>, DotaTimers>();
         builder.Services.AddSingleton<AudioPlayer>();
         builder.Services.AddTransient<ViewLocator>();
         builder.Services.AddSingleton<MainViewModel>();

@@ -1,9 +1,8 @@
 ﻿using Avalonia.Controls;
-using Dota2Helper.Core;
 using Dota2Helper.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Dota2Helper;
+namespace Dota2Helper.Core.Framework;
 
 public static class ViewLocatorHelpers
 {

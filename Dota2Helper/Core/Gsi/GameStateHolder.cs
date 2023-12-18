@@ -1,4 +1,4 @@
-﻿namespace Dota2Helper.Core;
+﻿namespace Dota2Helper.Core.Gsi;
 
 public class GameStateHolder
 {

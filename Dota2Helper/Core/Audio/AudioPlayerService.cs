@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 
-namespace Dota2Helper.Core;
+namespace Dota2Helper.Core.Audio;
 
 public class AudioPlayerService(AudioPlayer audioPlayer) : BackgroundService
 {
@@ -11,7 +11,7 @@ public class AudioPlayerService(AudioPlayer audioPlayer) : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            if (audioPlayer.HasAudioToPlay)
+            if (audioPlayer.HasReminderQueued)
             {
                 try
                 {
@@ -23,7 +23,7 @@ public class AudioPlayerService(AudioPlayer audioPlayer) : BackgroundService
                 }
             }
             
-            await Task.Delay(1000, stoppingToken);
+            await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
         }
     }
 }
