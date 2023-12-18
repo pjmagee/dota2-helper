@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Compression;
 using System.Speech.Synthesis;
+using System.Threading.Tasks;
 using Dota2Helper.Core.Timers;
 using LibVLCSharp.Shared;
 
 namespace Dota2Helper.Core.Audio;
-
-public class AudioQueueItem
-{
-    public string Value { get; set; }
-    public bool IsFile { get; set; }
-}
 
 public class AudioPlayer : IDisposable
 {
@@ -22,8 +18,8 @@ public class AudioPlayer : IDisposable
     public void QueueReminder(DotaTimer timer)
     {
         _queue.Enqueue(timer.IsTts
-            ? new AudioQueueItem { Value = timer.Speech, IsFile = false }
-            : new AudioQueueItem { Value = timer.SoundToPlay, IsFile = true });
+            ? new AudioQueueItem { Value = timer.Speech, IsTts = false }
+            : new AudioQueueItem { Value = timer.SoundToPlay, IsTts = true });
     }
     
     public int Volume 
@@ -46,23 +42,29 @@ public class AudioPlayer : IDisposable
     {
         if (!_queue.TryDequeue(out var item)) return;
 
-        if (item.IsFile)
+        if (item.IsTts)
         {
-            using var reminderAudio = new Media(LibVlc, item.Value);
-            _player.Play(reminderAudio);    
+            using (var reminderAudio = new Media(LibVlc, item.Value))
+            {
+                _player.Play(reminderAudio);
+            }    
         }
         else
         {
             if (OperatingSystem.IsWindows())
             {
-                _synthesizer.Volume = _player.Volume;
-                _synthesizer.Speak(item.Value);
+                _synthesizer.SpeakAsync(item.Value);
             }
         }
     }
 
     public void Dispose()
     {
+        if (OperatingSystem.IsWindows())
+        {
+            _synthesizer.Dispose();
+        }    
+        
         _player.Dispose();
     }
 }

@@ -8,7 +8,7 @@
              mc:Ignorable="d"
              d:DataContext="{x:Static framework:DesignData.MainViewModel}"
              x:Class="Dota2Helper.Views.MainView" 
-             x:DataType="vm:MainViewModel">
+             x:DataType="vm:MainViewModel" Margin="10">
     <StackPanel Orientation="Vertical" Spacing="5">
        <DockPanel>
            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" DockPanel.Dock="Right" Spacing="5">
@@ -23,7 +23,7 @@
        <ItemsControl ItemsSource="{Binding Path=Timers}">
            <ItemsControl.DataTemplates>
                <DataTemplate DataType="timers:DotaTimer">
-                  <StackPanel Orientation="Horizontal" Spacing="5" Margin="0,1" >
+                  <StackPanel Orientation="Horizontal" Spacing="5" Margin="0,1">
                       
                       <TextBlock Width="100" Text="{Binding Path=Label}" TextAlignment="Right" VerticalAlignment="Center" />
                      
