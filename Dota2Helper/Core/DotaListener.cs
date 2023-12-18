@@ -10,7 +10,7 @@ namespace Dota2Helper.Core;
 
 public class DotaListener : IDotaListener
 {
-    private readonly HttpListener _listener = new(){  };
+    private readonly HttpListener _listener = new();
 
     public DotaListener(IOptions<Settings> settings)
     {
@@ -34,7 +34,7 @@ public class DotaListener : IDotaListener
 
             return state;
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return null;
         }

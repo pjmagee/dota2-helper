@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO.Compression;
 using System.Speech.Synthesis;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using LibVLCSharp.Shared;
 
 namespace Dota2Helper.Core.Audio;
 
+[SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
 public class AudioPlayer : IDisposable
 {
     private static readonly LibVLC LibVlc = new();
@@ -27,11 +29,7 @@ public class AudioPlayer : IDisposable
         set
         {
             _player.Volume = value;
-
-            if (OperatingSystem.IsWindows())
-            {
-                _synthesizer.Volume = value;    
-            }
+            _synthesizer.Volume = value;   
         }
         get => _player.Volume;
     }
@@ -51,20 +49,13 @@ public class AudioPlayer : IDisposable
         }
         else
         {
-            if (OperatingSystem.IsWindows())
-            {
-                _synthesizer.SpeakAsync(item.Value);
-            }
+            _synthesizer.SpeakAsync(item.Value);
         }
     }
 
     public void Dispose()
     {
-        if (OperatingSystem.IsWindows())
-        {
-            _synthesizer.Dispose();
-        }    
-        
+        _synthesizer.Dispose();
         _player.Dispose();
     }
 }

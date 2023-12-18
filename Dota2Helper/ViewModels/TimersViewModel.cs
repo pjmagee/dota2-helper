@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text.Json;
-using Avalonia.Styling;
 using Avalonia.Threading;
 using Dota2Helper.Core.Audio;
 using Dota2Helper.Core.Gsi;
@@ -11,9 +11,14 @@ using ReactiveUI;
 
 namespace Dota2Helper.ViewModels;
 
-public class MainViewModel : ViewModelBase
+public class SettingsViewModel : ViewModelBase
 {
-    private readonly ILogger<MainViewModel> _logger;
+    
+}
+
+public class TimersViewModel : ViewModelBase
+{
+    private readonly ILogger<TimersViewModel> _logger;
     private readonly GameStateHolder _stateHolder;
     private readonly AudioPlayer _audioPlayer;
 
@@ -23,63 +28,13 @@ public class MainViewModel : ViewModelBase
         WriteIndented = true
     };
     
-    public void Theme()
-    {
-        var toggle = App.Current.RequestedThemeVariant switch
-        {
-            { Key: nameof(ThemeVariant.Light) }  => ThemeVariant.Dark,
-            { Key: nameof(ThemeVariant.Dark) } => ThemeVariant.Light,
-            _ => null,
-        };
-        
-        App.Current.RequestedThemeVariant = toggle;
-
-        ThemeName = (toggle == ThemeVariant.Dark ? ThemeVariant.Light : ThemeVariant.Dark).Key.ToString();
-    }
-
-    private string? _themeName;
-
-    public string ThemeName
-    {
-        get
-        {
-            if (_themeName is null)
-            {
-                _themeName = App.Current.ActualThemeVariant switch
-                {
-                    { Key: nameof(ThemeVariant.Light) } => ThemeVariant.Dark.Key.ToString(),
-                    { Key: nameof(ThemeVariant.Dark) } => ThemeVariant.Light.Key.ToString(),
-                    _ => "Unknown",
-                };
-            }
-
-            return _themeName!;
-        }
-        private set
-        {
-            this.RaiseAndSetIfChanged(ref _themeName, value);
-        }
-    }
-
-    private double _opacity = 0.5d;
-
-    public double Opacity
-    {
-        get => _opacity;
-        set
-        {
-            _opacity = Math.Round(value, 1);
-            this.RaisePropertyChanged();
-        }
-    }
-
     public bool IsSpeakerMuted => Volume <= 0;
     
     public bool IsSpeakerOn => Volume > 0;
     
-    private ObservableCollection<DotaTimer> _timers;
+    private ObservableCollection<DotaTimer>? _timers;
 
-    public ObservableCollection<DotaTimer> Timers
+    public ObservableCollection<DotaTimer>? Timers
     {
         get => _timers;
         set
@@ -101,7 +56,7 @@ public class MainViewModel : ViewModelBase
     }
 
 
-    public MainViewModel(ILogger<MainViewModel> logger, ObservableCollection<DotaTimer> timers, GameStateHolder stateHolder, AudioPlayer audioPlayer)
+    public TimersViewModel(ILogger<TimersViewModel> logger, ObservableCollection<DotaTimer> timers, GameStateHolder stateHolder, AudioPlayer audioPlayer)
     {
         _logger = logger;
         _stateHolder = stateHolder;
@@ -111,11 +66,11 @@ public class MainViewModel : ViewModelBase
         WireEvents();
     }
     
-    ~MainViewModel() => UnWireEvents();
+    ~TimersViewModel() => UnWireEvents();
 
     private void WireEvents()
     {
-        foreach (var timer in Timers)
+        foreach (var timer in Timers!)
         {
             timer.OnReminder += QueueReminder;
         }
@@ -129,7 +84,7 @@ public class MainViewModel : ViewModelBase
 
     private void UnWireEvents()
     {
-        foreach (var timer in Timers)
+        foreach (var timer in Timers!)
         {
             timer.OnReminder -= QueueReminder;
         }
@@ -137,9 +92,9 @@ public class MainViewModel : ViewModelBase
 
     public void Update()
     {
-        if (_stateHolder?.State is not null)
+        if (_stateHolder.State is not null)
         {
-            _logger.LogInformation(JsonSerializer.Serialize(_stateHolder.State.Map, Options));
+            _logger.LogInformation("{Json}", JsonSerializer.Serialize(_stateHolder.State.Map, Options));
 
             TimeSpan time = TimeSpan.FromSeconds(_stateHolder.State.Map.ClockTime);
 

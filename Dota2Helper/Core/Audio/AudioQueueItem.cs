@@ -2,6 +2,6 @@
 
 public class AudioQueueItem
 {
-    public string Value { get; set; }
-    public bool IsTts { get; set; }
+    public required string Value { get; init; }
+    public bool IsTts { get; init; }
 }

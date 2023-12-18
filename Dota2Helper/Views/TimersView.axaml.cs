@@ -2,9 +2,9 @@
 
 namespace Dota2Helper.Views;
 
-public partial class MainWindow : Window
+public partial class TimersView : UserControl
 {
-    public MainWindow()
+    public TimersView()
     {
         InitializeComponent();
     }

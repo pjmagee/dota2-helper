@@ -6,9 +6,9 @@
              xmlns:framework="clr-namespace:Dota2Helper.Core.Framework"
              xmlns:timers="clr-namespace:Dota2Helper.Core.Timers"
              mc:Ignorable="d"
-             d:DataContext="{x:Static framework:DesignData.MainViewModel}"
-             x:Class="Dota2Helper.Views.MainView" 
-             x:DataType="vm:MainViewModel" Margin="10">
+             d:DataContext="{x:Static framework:DesignData.TimersViewModel}"
+             x:Class="Dota2Helper.Views.TimersView" 
+             x:DataType="vm:TimersViewModel" Margin="10">
     <StackPanel Orientation="Vertical" Spacing="5">
        <DockPanel>
            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" DockPanel.Dock="Right" Spacing="5">
@@ -61,12 +61,5 @@
                </DataTemplate>
            </ItemsControl.DataTemplates>
        </ItemsControl>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" DockPanel.Dock="Right">
-            <!-- this button switches to light theme -->
-            <Button x:Name="Button" 
-                    Content="{Binding ThemeName, Mode=OneWay}" 
-                    Margin="0,0,10,10" 
-                    Command="{Binding Theme}" />
-        </StackPanel>
    </StackPanel>
 </UserControl>

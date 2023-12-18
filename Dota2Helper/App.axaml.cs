@@ -42,7 +42,7 @@ public partial class App : Application
         {
             desktop.MainWindow = new MainWindow
             {
-                DataContext = Host.Services.GetRequiredService<MainViewModel>()
+                DataContext = Host.Services.GetRequiredService<MainWindowViewModel>()
             };
             
             desktop.Exit += async (sender, args) =>
@@ -82,13 +82,21 @@ public partial class App : Application
             }
         }
 
-        builder.Services.Configure<Settings>(options => builder.Configuration.GetSection("Settings").Bind(options));
+        builder.Services
+            .Configure<Settings>(options => builder.Configuration.GetSection("Settings").Bind(options));
+        
         builder.Services.AddSingleton<ObservableCollection<DotaTimer>, DotaTimers>();
         builder.Services.AddSingleton<AudioPlayer>();
-        builder.Services.AddTransient<ViewLocator>();
-        builder.Services.AddSingleton<MainViewModel>();
-        builder.Services.AddView<MainViewModel, MainView>();
         builder.Services.AddSingleton<GameStateHolder>();
+
+        builder.Services.AddTransient<ViewLocator>();
+        builder.Services.AddSingleton<SettingsViewModel>();
+        builder.Services.AddSingleton<MainWindowViewModel>();
+        builder.Services.AddSingleton<TimersViewModel>();
+
+        builder.Services.AddView<MainWindowViewModel, MainWindow>();
+        builder.Services.AddView<TimersViewModel, TimersView>();
+        builder.Services.AddView<SettingsViewModel, SettingsView>();
         
         builder.Services.AddHostedService<GameStateUpdater>();
         builder.Services.AddHostedService<AudioPlayerService>();

@@ -2,13 +2,13 @@
 
 public class TimerOptions
 {
-    public string Speech { get; set; }
-    public string Label { get; set; }
-    public string First { get; set; }
-    public string Interval { get; set; }
-    public string Reminder { get; set; }
-    public string AudioFile { get; set; }
-    public bool IsManualReset { get; set; }
-    public bool IsEnabled { get; set; }
-    public bool IsTts { get; set; }
+    public required string Speech { get; set; }
+    public required string Label { get; set; }
+    public required string First { get; set; }
+    public required string Interval { get; set; }
+    public required string Reminder { get; set; }
+    public required string AudioFile { get; set; }
+    public required bool IsManualReset { get; set; }
+    public required bool IsEnabled { get; set; }
+    public required bool IsTts { get; set; }
 }

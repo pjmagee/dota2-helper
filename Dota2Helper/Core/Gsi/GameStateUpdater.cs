@@ -6,7 +6,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace Dota2Helper.Core.Gsi;
 
-public class GameStateUpdater(GameStateHolder container, MainViewModel mainViewModel, IDotaListener listener) : BackgroundService
+public class GameStateUpdater(GameStateHolder container, TimersViewModel timersViewModel, IDotaListener listener) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -15,7 +15,7 @@ public class GameStateUpdater(GameStateHolder container, MainViewModel mainViewM
             try
             {
                 container.State = await listener.GetStateAsync();
-                mainViewModel.Update();
+                timersViewModel.Update();
             }
             catch (Exception ex)
             {

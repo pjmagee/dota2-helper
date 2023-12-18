@@ -1,31 +1,28 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Dota2Helper.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:views="clr-namespace:Dota2Helper.Views"
+        xmlns:framework="clr-namespace:Dota2Helper.Core.Framework"
         mc:Ignorable="d"
-        x:Class="Dota2Helper.Views.MainWindow" x:Name="Main" 
+        x:Class="Dota2Helper.Views.MainWindow" x:Name="Main"
+        x:DataType="vm:MainWindowViewModel" d:DataContext="{x:Static framework:DesignData.MainWindowViewModel}"
         Topmost="True" Icon="/Assets/dota2_helper.ico"
-        ShowInTaskbar="True"
-        WindowStartupLocation="Manual" 
-        TransparencyLevelHint="AcrylicBlur"
-        ExtendClientAreaChromeHints="SystemChrome" 
-        CanResize="False"
+        CanResize="False" ShowInTaskbar="True" WindowStartupLocation="Manual" 
+        TransparencyLevelHint="AcrylicBlur" ExtendClientAreaChromeHints="SystemChrome"
         Title="D2 Helper" SizeToContent="WidthAndHeight">
-    <Window.Styles>
-            <Style Selector="ToggleButton PathIcon.audio-on">
-                <Setter Property="IsVisible" Value="False"/>
-            </Style>
-            <Style Selector="ToggleButton:checked PathIcon.audio-on">
-                <Setter Property="IsVisible" Value="True"/>
-            </Style>
-            <Style Selector="ToggleButton PathIcon.audio-mute">
-                <Setter Property="IsVisible" Value="True"/>
-            </Style>
-            <Style Selector="ToggleButton:checked PathIcon.audio-mute">
-                <Setter Property="IsVisible" Value="False"/>
-            </Style>
-        </Window.Styles>
-    <views:MainView Exit="MainView_OnExit" />
+        <StackPanel>
+                <ContentControl Content="{Binding ContentViewModel}"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button x:Name="Theme" 
+                                Content="{Binding ThemeName, Mode=OneWay}" 
+                                Margin="0,0,10,10" 
+                                Command="{Binding ToggleTheme}" />
+                        <Button x:Name="Settings" 
+                                Content="{Binding ViewName, Mode=OneWay}" 
+                                Margin="0,0,10,10" 
+                                Command="{Binding ToggleView}" />
+                </StackPanel>
+        </StackPanel>
 </Window>
  
