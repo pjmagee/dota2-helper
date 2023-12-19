@@ -3,8 +3,51 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:framework="clr-namespace:Dota2Helper.Core.Framework"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:timers="clr-namespace:Dota2Helper.Core.Timers"
+             xmlns:viewModels="clr-namespace:Dota2Helper.ViewModels"
+             mc:Ignorable="d"
              d:DataContext="{x:Static framework:DesignData.SettingsViewModel}"
-             x:Class="Dota2Helper.Views.SettingsView">
-    Settings Page
+             x:Class="Dota2Helper.Views.SettingsView"
+             x:DataType="viewModels:SettingsViewModel">
+     <ItemsControl ItemsSource="{Binding Path=Timers}">
+           <ItemsControl.DataTemplates>
+               <DataTemplate DataType="timers:DotaTimer">
+                  <StackPanel Orientation="Horizontal" Spacing="5" Margin="0,1">
+                      
+                      <TextBlock Width="100" Text="{Binding Path=Label}" TextAlignment="Right" VerticalAlignment="Center" />
+                     
+                      <TextBlock Width="45"
+                                 VerticalAlignment="Center"
+                                 Text="{Binding Path=TimeRemaining, StringFormat=mm\\:ss}"
+                                 IsVisible="{Binding !IsReminderActive}" />
+                      
+                      <TextBlock Width="45"
+                                 VerticalAlignment="Center"
+                                 Text="{Binding Path=TimeRemaining, StringFormat=mm\\:ss}"
+                                 Foreground="{DynamicResource SystemErrorTextColor}"
+                                 FontWeight="Bold"
+                                 IsVisible="{Binding IsReminderActive}" />
+                      
+                      <ToggleButton IsChecked="{Binding Mode=TwoWay, Path=IsSoundEnabled}">
+                          <Panel>
+                              <PathIcon Classes="audio-on" Data="{StaticResource speaker_regular}" />
+                              <PathIcon Classes="audio-mute" Data="{StaticResource speaker_off_regular}" />
+                          </Panel>
+                      </ToggleButton>
+                      <Button IsVisible="{Binding Mode=OneWay, Path=IsManualReset}" Command="{Binding Reset}">
+                          <Panel>
+                              <PathIcon Data="{StaticResource timer_10_regular}" />
+                          </Panel>
+                      </Button>
+                      <NumericUpDown ShowButtonSpinner="False"
+                                     VerticalContentAlignment="Center" 
+                                     HorizontalContentAlignment="Center"
+                                     Value="{Binding ReminderInSeconds, Mode=TwoWay}" 
+                                     Increment="1" Minimum="5" 
+                                     AllowSpin="True" Maximum="60" ParsingNumberStyle="Integer">
+                      </NumericUpDown>
+                  </StackPanel>
+               </DataTemplate>
+           </ItemsControl.DataTemplates>
+       </ItemsControl>
 </UserControl>

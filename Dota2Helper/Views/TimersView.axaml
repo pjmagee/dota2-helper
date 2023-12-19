@@ -9,12 +9,26 @@
              d:DataContext="{x:Static framework:DesignData.TimersViewModel}"
              x:Class="Dota2Helper.Views.TimersView" 
              x:DataType="vm:TimersViewModel" Margin="10">
+    <UserControl.Styles>
+        <Style Selector="ToggleButton PathIcon.audio-on">
+               <Setter Property="IsVisible" Value="False"/>
+        </Style>
+        <Style Selector="ToggleButton:checked PathIcon.audio-on">
+                <Setter Property="IsVisible" Value="True"/>
+        </Style>
+        <Style Selector="ToggleButton PathIcon.audio-mute">
+                <Setter Property="IsVisible" Value="True"/>
+        </Style>
+        <Style Selector="ToggleButton:checked PathIcon.audio-mute">
+                <Setter Property="IsVisible" Value="False"/>
+        </Style>
+   </UserControl.Styles>
     <StackPanel Orientation="Vertical" Spacing="5">
        <DockPanel>
            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" DockPanel.Dock="Right" Spacing="5">
                <Panel Margin="5,0">
-                   <PathIcon IsVisible="{Binding IsSpeakerMuted}" Data="{DynamicResource speaker_off_regular}" />
-                   <PathIcon IsVisible="{Binding IsSpeakerOn}" Data="{DynamicResource speaker_regular}" />
+                   <PathIcon Classes="audio-mute" IsVisible="{Binding IsSpeakerMuted}" Data="{DynamicResource speaker_off_regular}" />
+                   <PathIcon Classes="audio-on" IsVisible="{Binding IsSpeakerOn}" Data="{DynamicResource speaker_regular}" />
                </Panel>
                <Slider Width="100" x:Name="Slider" HorizontalAlignment="Center" Value="{Binding Volume}" TickPlacement="BottomRight" />
                <TextBlock Text="{Binding #Slider.Value, StringFormat={}{0:0}}" HorizontalAlignment="Center" Margin="15" />

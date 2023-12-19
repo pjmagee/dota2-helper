@@ -11,11 +11,6 @@ using ReactiveUI;
 
 namespace Dota2Helper.ViewModels;
 
-public class SettingsViewModel : ViewModelBase
-{
-    
-}
-
 public class TimersViewModel : ViewModelBase
 {
     private readonly ILogger<TimersViewModel> _logger;
@@ -56,7 +51,7 @@ public class TimersViewModel : ViewModelBase
     }
 
 
-    public TimersViewModel(ILogger<TimersViewModel> logger, ObservableCollection<DotaTimer> timers, GameStateHolder stateHolder, AudioPlayer audioPlayer)
+    public TimersViewModel(ILogger<TimersViewModel> logger, DotaTimers timers, GameStateHolder stateHolder, AudioPlayer audioPlayer)
     {
         _logger = logger;
         _stateHolder = stateHolder;

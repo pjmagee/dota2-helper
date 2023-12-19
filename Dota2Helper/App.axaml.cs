@@ -84,8 +84,8 @@ public partial class App : Application
 
         builder.Services
             .Configure<Settings>(options => builder.Configuration.GetSection("Settings").Bind(options));
-        
-        builder.Services.AddSingleton<ObservableCollection<DotaTimer>, DotaTimers>();
+
+        builder.Services.AddSingleton<DotaTimers>();
         builder.Services.AddSingleton<AudioPlayer>();
         builder.Services.AddSingleton<GameStateHolder>();
 
