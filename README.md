@@ -40,7 +40,7 @@ Run the `Dota2Helper.Desktop.exe`
 
 # Advanced settings
 
-Labels, removal of UI elements, sliding expirations, and audio has additional customisation for advanced users
+Labels, removal of UI elements, intervals, starting times, and audio has additional customisation for advanced users
 
 <details>
 <summary>appsettings.json</summary>
