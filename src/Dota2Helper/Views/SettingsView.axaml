@@ -25,23 +25,26 @@
 
     </UserControl.Styles>
     <StackPanel Orientation="Vertical" Spacing="5">
-        <DockPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" DockPanel.Dock="Right" Spacing="5">
-                <Panel Margin="5,0">
-                    <PathIcon Classes="audio-mute" IsVisible="{Binding IsSpeakerMuted}" Data="{DynamicResource speaker_off_regular}" />
-                    <PathIcon Classes="audio-on" IsVisible="{Binding IsSpeakerOn}" Data="{DynamicResource speaker_regular}" />
-                </Panel>
-                <Slider Width="100" x:Name="Slider" HorizontalAlignment="Center" Value="{Binding Volume}" TickPlacement="BottomRight" />
-                <TextBlock Text="{Binding #Slider.Value, StringFormat={}{0:0}}" HorizontalAlignment="Center" Margin="15" />
-            </StackPanel>
-        </DockPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" DockPanel.Dock="Right" Spacing="5">
+            <Panel Margin="5,0">
+                <PathIcon Classes="audio-mute" IsVisible="{Binding IsSpeakerMuted}" Data="{DynamicResource speaker_off_regular}" />
+                <PathIcon Classes="audio-on" IsVisible="{Binding IsSpeakerOn}" Data="{DynamicResource speaker_regular}" />
+            </Panel>
+            <Slider Width="100" x:Name="Slider" HorizontalAlignment="Center" Value="{Binding Volume}" TickPlacement="BottomRight" />
+            <TextBlock Text="{Binding #Slider.Value, StringFormat={}{0:0}}" HorizontalAlignment="Center" Margin="15" />
+        </StackPanel>
         <ItemsControl ItemsSource="{Binding Path=Timers}">
             <ItemsControl.DataTemplates>
                 <DataTemplate DataType="timers:DotaTimer">
-                    <StackPanel Orientation="Horizontal" Spacing="5" Margin="2,2">
+                    <StackPanel 
+                        Orientation="Horizontal" 
+                        Spacing="5" 
+                        HorizontalAlignment="Stretch"
+                        Margin="2,2">
+                        
                         <ToggleSwitch Margin="5,0,0,0"
-                            IsEnabled="True"
-                            IsChecked="{Binding Mode=TwoWay, Path=IsEnabled}" />
+                                      IsEnabled="True"
+                                      IsChecked="{Binding Mode=TwoWay, Path=IsEnabled}" />
                         
                         <TextBlock Width="100"
                                    Text="{Binding Path=Label}"
@@ -68,15 +71,18 @@
                             </Panel>
                         </ToggleButton>
                         
-                        <Button IsVisible="{Binding Mode=OneWay, Path=IsManualReset}" Command="{Binding Reset}">
-                            <Panel>
-                                <PathIcon Data="{StaticResource timer_10_regular}" />
-                            </Panel>
-                        </Button>
+                        <!-- <Button IsVisible="{Binding Mode=OneWay, Path=IsManualReset}" Command="{Binding Reset}"> -->
+                        <!--     <Panel> -->
+                        <!--         <PathIcon Data="{StaticResource timer_10_regular}" /> -->
+                        <!--     </Panel> -->
+                        <!-- </Button> -->
                         
                         <NumericUpDown ShowButtonSpinner="True"
                                        VerticalContentAlignment="Center"
+                                       HorizontalContentAlignment="Center"
                                        Value="{Binding ReminderInSeconds, Mode=TwoWay}"
+                                       Width="110"
+                                       DockPanel.Dock="Right"
                                        Increment="1" Minimum="5"
                                        AllowSpin="True" Maximum="60" ParsingNumberStyle="Integer">
                         </NumericUpDown>

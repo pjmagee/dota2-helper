@@ -14,8 +14,10 @@ Only Windows is supported at this time.
 - Customisable timers with intervals and reminders
 - Audio notifications for each timer
 - Dark & light modes available
-- Manual reset for random spawns (e.g. Tormentor)
-- Advanced settings to modify audio files and intervals
+- Manual reset for dynamic objectives (e.g. Tormentors, Roshan)
+- Advanced settings to modify audio files and intervals with `appsettings.json`
+- Fake timers are used when the game is not running for easy configuration
+- When the game is running, the timers will automatically start based on the game time
 
 ## Game State Integration
 
@@ -43,19 +45,11 @@ Go to `..\steamapps\common\dota 2 beta\game\dota\cfg\gamestate_integration` and 
 }
 ```
 
-## Run
+## How to?
 
-Run the `Dota2Helper.Desktop.exe`
-
-## Settings
-
-- Customise notifications with mute feature
-- Customise the timer configuration
-- Customise the overall volume of the helper app
-- Manually reset timers for those with random spawns
-- Features dark and light mode
-- UI is fixed as 'On top' meaning you can place this over your game when running in Windows full screen mode
-- Additional advanced configuration is possible with the `appsettings.json`
+1. Download the latest release from the [releases page](https://github.com/pjmagee/dota2-helper/releases).
+2. Extract the zip file to a folder.
+3. Run the `Dota2Helper.Desktop.exe`
 
 ## Advanced settings
 
@@ -155,7 +149,14 @@ Labels, removal of UI elements, intervals, starting times, and audio has additio
 
 </details>
 
-## UI Screenshots
+## UI Preview
+
+
+<details>
+<summary>Preview</summary>
+
+![preview](./screenshots/preview.gif)
+</details>
 
 <details>
 <summary>Screenshots</summary>
@@ -166,3 +167,4 @@ Labels, removal of UI elements, intervals, starting times, and audio has additio
 ![timers2](./screenshots/Timers2.png)
 
 </details>
+

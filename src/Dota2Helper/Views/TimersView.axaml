@@ -24,7 +24,6 @@
         <!-- </Style> -->
    </UserControl.Styles>
     <StackPanel Orientation="Vertical" Spacing="5">
-
        <ItemsControl ItemsSource="{Binding Path=Timers}">
            <ItemsControl.DataTemplates>
                <DataTemplate DataType="timers:DotaTimer">

@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia.Desktop" Version="11.0.10" />
-    <PackageReference Condition="'$(RuntimeIdentifier)' == 'win-x64'" Include="VideoLAN.LibVLC.Windows" Version="3.0.20" />
+    <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.20" />
   </ItemGroup>
 
   <ItemGroup>
