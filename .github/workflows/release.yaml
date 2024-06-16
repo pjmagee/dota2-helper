@@ -1,4 +1,4 @@
-name: Dota2 Helper Release
+name: Release
 
 on:
   push:

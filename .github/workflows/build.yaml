@@ -1,4 +1,4 @@
-name: Dota2 Helper Build
+name: Build
 on:
   push:
     branches:
