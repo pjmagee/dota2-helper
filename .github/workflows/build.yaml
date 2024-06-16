@@ -16,6 +16,6 @@ jobs:
       with:
         version: "latest"
         verb: call
-        args: build --directory=./src 
+        args: build --src=./src
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

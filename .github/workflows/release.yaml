@@ -5,20 +5,23 @@ on:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
 
+permissions:
+  contents: write
+  packages: write  
+
 jobs:
   release:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
-    - name: Build .NET Example
+    - name: Release
       uses: dagger/dagger-for-github@v5.6.0
       with:
         version: "latest"
         verb: call
-        args: release --directory=./src --tag=env:TAG --token=env:GITHUB_TOKEN
+        args: release --git=. --tag=${{ github.ref_name }} --token=env:GITHUB_TOKEN
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        TAG: ${{ github.ref_name }}

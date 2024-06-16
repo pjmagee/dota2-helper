@@ -3,12 +3,12 @@
   "sdk": "go",
   "dependencies": [
     {
-      "name": "arc",
-      "source": "github.com/sagikazarmark/daggerverse/arc@b45dbd7448bb967aca4a538af9ce7f042abf0316"
-    },
-    {
       "name": "gh",
       "source": "github.com/sagikazarmark/daggerverse/gh@b45dbd7448bb967aca4a538af9ce7f042abf0316"
+    },
+    {
+      "name": "arc",
+      "source": "github.com/sagikazarmark/daggerverse/arc@b45dbd7448bb967aca4a538af9ce7f042abf0316"
     }
   ],
   "source": "dagger",
