@@ -23,6 +23,8 @@
     <PackageReference Include="LibVLCSharp.Avalonia" Version="3.8.5" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
     <PackageReference Include="System.Speech" Version="8.0.0" />
+    <PackageReference Condition="'$(RuntimeIdentifier)' == 'win-x64'" Include="VideoLAN.LibVLC.Windows" Version="3.0.20" />
+    <!-- <PackageReference Condition="'$(RuntimeIdentifier)' == 'osx-x64'" Include="VideoLAN.LibVLC.Mac" Version="3.0.20" /> -->
   </ItemGroup>
 
   <ItemGroup>

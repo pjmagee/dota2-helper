@@ -1,8 +1,6 @@
-[![Dota2 Helper Build](https://github.com/pjmagee/dota2-helper/actions/workflows/build.yaml/badge.svg)](https://github.com/pjmagee/dota2-helper/actions/workflows/build.yaml)
- 
-![Latest Release](https://img.shields.io/badge/dynamic/json?label=Latest%20release&query=$.tag_name&url=https%3A%2F%2Fapi.github.com%2Frepos%2Fpjmagee%2Fdota2-helper%2Freleases%2Flatest&style=flat&color=blue)
-
 # Dota 2 Helper
+
+[![Dota2 Helper Build](https://github.com/pjmagee/dota2-helper/actions/workflows/build.yaml/badge.svg)](https://github.com/pjmagee/dota2-helper/actions/workflows/build.yaml) ![Latest Release](https://img.shields.io/badge/dynamic/json?label=Latest%20release&query=$.tag_name&url=https%3A%2F%2Fapi.github.com%2Frepos%2Fpjmagee%2Fdota2-helper%2Freleases%2Flatest&style=flat&color=blue)
 
 An objective timer tracker with audio notifications for Dota 2. This application is designed to help players keep track of important in-game events such as stacking, power runes, bounty runes, and more. The application is designed to be used in conjunction with the Game State Integration feature of Dota 2.
 
@@ -12,12 +10,12 @@ Only Windows is supported at this time.
 
 ## Features
 
-- Customisable timers
-- Audio notifications
-- Dark and light mode
-- On top UI
-- Manual reset for random spawns
-- Advanced settings
+- Timers view optimised to place over Dota 2 Game in full screen mode
+- Customisable timers with intervals and reminders
+- Audio notifications for each timer
+- Dark & light modes available
+- Manual reset for random spawns (e.g. Tormentor)
+- Advanced settings to modify audio files and intervals
 
 ## Game State Integration
 
@@ -157,7 +155,9 @@ Labels, removal of UI elements, intervals, starting times, and audio has additio
 
 </details>
 
-## UI Demo
+## UI Screenshots
 
-![image](https://github.com/pjmagee/dota2-helper/assets/292720/f62d6d28-0f5a-4162-9035-28d86c620eb5)
-![image](https://github.com/pjmagee/dota2-helper/assets/292720/01e036ee-f454-49d1-83d9-fb2fd6b6799d)
+![settings](./screenshots/Settings.png)
+![theme](./screenshots/Theme.png)
+![timers](./screenshots/Timers.png)
+![timers2](./screenshots/Timers2.png)

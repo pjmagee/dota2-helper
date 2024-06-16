@@ -14,27 +14,23 @@ public class DotaTimers : ObservableCollection<DotaTimer>
     {
         var timers = new List<DotaTimer>();
 
-        foreach (var item in settings.Value.Timers.Where(x => x.IsEnabled))
+        foreach (var item in settings.Value.Timers)
         {
             timers.Add(new DotaTimer(
                 item.Label, 
-                ParseTimeSpan(item.First), 
-                ParseTimeSpan(item.Interval), 
-                ParseTimeSpan(item.Reminder), 
+                item.First, 
+                item.Interval, 
+                item.Reminder, 
                 item.AudioFile,  
                 item.IsManualReset, 
                 item.Speech, 
-                item.IsTts));
+                item.IsTts,
+                item.IsEnabled));
         }
         
         foreach (var timer in timers.OrderBy(x => x.Interval))
         {
             Add(timer);
         }
-    }
-
-    private TimeSpan ParseTimeSpan(string x)
-    {
-        return TimeSpan.ParseExact(x, @"mm\:ss", CultureInfo.InvariantCulture, TimeSpanStyles.None);
     }
 }

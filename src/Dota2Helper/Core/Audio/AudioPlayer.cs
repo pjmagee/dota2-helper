@@ -21,7 +21,7 @@ public class AudioPlayer : IDisposable
     {
         _queue.Enqueue(timer.IsTts
             ? new AudioQueueItem { Value = timer.Speech, IsTts = false }
-            : new AudioQueueItem { Value = timer.SoundToPlay, IsTts = true });
+            : new AudioQueueItem { Value = timer.AudioFile, IsTts = true });
     }
     
     public int Volume 

@@ -9,45 +9,82 @@
              d:DataContext="{x:Static framework:DesignData.SettingsViewModel}"
              x:Class="Dota2Helper.Views.SettingsView"
              x:DataType="viewModels:SettingsViewModel">
-     <ItemsControl ItemsSource="{Binding Path=Timers}">
-           <ItemsControl.DataTemplates>
-               <DataTemplate DataType="timers:DotaTimer">
-                  <StackPanel Orientation="Horizontal" Spacing="5" Margin="0,1">
-                      
-                      <TextBlock Width="100" Text="{Binding Path=Label}" TextAlignment="Right" VerticalAlignment="Center" />
-                     
-                      <TextBlock Width="45"
-                                 VerticalAlignment="Center"
-                                 Text="{Binding Path=TimeRemaining, StringFormat=mm\\:ss}"
-                                 IsVisible="{Binding !IsReminderActive}" />
-                      
-                      <TextBlock Width="45"
-                                 VerticalAlignment="Center"
-                                 Text="{Binding Path=TimeRemaining, StringFormat=mm\\:ss}"
-                                 Foreground="{DynamicResource SystemErrorTextColor}"
-                                 FontWeight="Bold"
-                                 IsVisible="{Binding IsReminderActive}" />
-                      
-                      <ToggleButton IsChecked="{Binding Mode=TwoWay, Path=IsSoundEnabled}">
-                          <Panel>
-                              <PathIcon Classes="audio-on" Data="{StaticResource speaker_regular}" />
-                              <PathIcon Classes="audio-mute" Data="{StaticResource speaker_off_regular}" />
-                          </Panel>
-                      </ToggleButton>
-                      <Button IsVisible="{Binding Mode=OneWay, Path=IsManualReset}" Command="{Binding Reset}">
-                          <Panel>
-                              <PathIcon Data="{StaticResource timer_10_regular}" />
-                          </Panel>
-                      </Button>
-                      <NumericUpDown ShowButtonSpinner="False"
-                                     VerticalContentAlignment="Center" 
-                                     HorizontalContentAlignment="Center"
-                                     Value="{Binding ReminderInSeconds, Mode=TwoWay}" 
-                                     Increment="1" Minimum="5" 
-                                     AllowSpin="True" Maximum="60" ParsingNumberStyle="Integer">
-                      </NumericUpDown>
-                  </StackPanel>
-               </DataTemplate>
-           </ItemsControl.DataTemplates>
-       </ItemsControl>
+    <UserControl.Styles>
+        <Style Selector="ToggleButton PathIcon.audio-on">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="ToggleButton:checked PathIcon.audio-on">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="ToggleButton PathIcon.audio-mute">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="ToggleButton:checked PathIcon.audio-mute">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+
+    </UserControl.Styles>
+    <StackPanel Orientation="Vertical" Spacing="5">
+        <DockPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" DockPanel.Dock="Right" Spacing="5">
+                <Panel Margin="5,0">
+                    <PathIcon Classes="audio-mute" IsVisible="{Binding IsSpeakerMuted}" Data="{DynamicResource speaker_off_regular}" />
+                    <PathIcon Classes="audio-on" IsVisible="{Binding IsSpeakerOn}" Data="{DynamicResource speaker_regular}" />
+                </Panel>
+                <Slider Width="100" x:Name="Slider" HorizontalAlignment="Center" Value="{Binding Volume}" TickPlacement="BottomRight" />
+                <TextBlock Text="{Binding #Slider.Value, StringFormat={}{0:0}}" HorizontalAlignment="Center" Margin="15" />
+            </StackPanel>
+        </DockPanel>
+        <ItemsControl ItemsSource="{Binding Path=Timers}">
+            <ItemsControl.DataTemplates>
+                <DataTemplate DataType="timers:DotaTimer">
+                    <StackPanel Orientation="Horizontal" Spacing="5" Margin="2,2">
+                        <ToggleSwitch Margin="5,0,0,0"
+                            IsEnabled="True"
+                            IsChecked="{Binding Mode=TwoWay, Path=IsEnabled}" />
+                        
+                        <TextBlock Width="100"
+                                   Text="{Binding Path=Label}"
+                                   TextAlignment="Right"
+                                   VerticalAlignment="Center" />
+
+                        <TextBlock Width="45"
+                                   VerticalAlignment="Center"
+                                   Text="{Binding Path=TimeRemaining, StringFormat=mm\\:ss}"
+                                   IsVisible="{Binding !IsReminderActive}" />
+
+                        <TextBlock Width="45"
+                                   VerticalAlignment="Center"
+                                   Text="{Binding Path=TimeRemaining, StringFormat=mm\\:ss}"
+                                   Foreground="{DynamicResource SystemErrorTextColor}"
+                                   FontWeight="Bold"
+                                   IsVisible="{Binding IsReminderActive}" />
+
+                        <ToggleButton
+                            IsChecked="{Binding Mode=TwoWay, Path=IsSoundEnabled}">
+                            <Panel>
+                                <PathIcon Classes="audio-on" Data="{StaticResource speaker_regular}" />
+                                <PathIcon Classes="audio-mute" Data="{StaticResource speaker_off_regular}" />
+                            </Panel>
+                        </ToggleButton>
+                        
+                        <Button IsVisible="{Binding Mode=OneWay, Path=IsManualReset}" Command="{Binding Reset}">
+                            <Panel>
+                                <PathIcon Data="{StaticResource timer_10_regular}" />
+                            </Panel>
+                        </Button>
+                        
+                        <NumericUpDown ShowButtonSpinner="True"
+                                       VerticalContentAlignment="Center"
+                                       Value="{Binding ReminderInSeconds, Mode=TwoWay}"
+                                       Increment="1" Minimum="5"
+                                       AllowSpin="True" Maximum="60" ParsingNumberStyle="Integer">
+                        </NumericUpDown>
+                        
+                    </StackPanel>
+                </DataTemplate>
+            </ItemsControl.DataTemplates>
+        </ItemsControl>
+    </StackPanel>
+
 </UserControl>

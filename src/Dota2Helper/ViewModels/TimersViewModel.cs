@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Text.Json;
 using Avalonia.Threading;
 using Dota2Helper.Core.Audio;
@@ -23,10 +24,6 @@ public class TimersViewModel : ViewModelBase
         WriteIndented = true
     };
     
-    public bool IsSpeakerMuted => Volume <= 0;
-    
-    public bool IsSpeakerOn => Volume > 0;
-    
     private ObservableCollection<DotaTimer>? _timers;
 
     public ObservableCollection<DotaTimer>? Timers
@@ -39,17 +36,6 @@ public class TimersViewModel : ViewModelBase
         }
     }
     
-    public double Volume
-    {
-        set
-        {
-            _audioPlayer.Volume = (int) value;
-            this.RaisePropertyChanged(nameof(IsSpeakerMuted));
-            this.RaisePropertyChanged(nameof(IsSpeakerOn));
-        }
-        get => _audioPlayer.Volume;
-    }
-
 
     public TimersViewModel(ILogger<TimersViewModel> logger, DotaTimers timers, GameStateHolder stateHolder, AudioPlayer audioPlayer)
     {

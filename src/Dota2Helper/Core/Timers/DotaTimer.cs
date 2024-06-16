@@ -12,25 +12,35 @@ public class DotaTimer : ReactiveObject
         TimeSpan first, 
         TimeSpan interval, 
         TimeSpan reminder,
-        string soundToPlay, 
+        string audioFile, 
         bool isManualReset,
         string speech,
-        bool isTts)
+        bool isTts,
+        bool isEnabled)
     {
         Label = label;
         First = first;
         Interval = interval;
         Reminder = reminder;
-        SoundToPlay = soundToPlay;
-        IsActive = true;
+        AudioFile = audioFile;
         IsManualReset = isManualReset;
         Speech = speech;
         IsTts = isTts;
+        IsEnabled = isEnabled;
+        
+        IsActive = true;
     }
 
     public bool IsManualReset { get; protected init; }
     public string Speech { get; }
-    public bool IsTts { get; set; }
+    
+    private bool _isTts;
+    public bool IsTts 
+    {
+        get => _isTts;
+        set => this.RaiseAndSetIfChanged(ref _isTts, value);
+    }
+    
     public TimeSpan Reminder { get; set; }
 
     public int ReminderInSeconds
@@ -39,8 +49,15 @@ public class DotaTimer : ReactiveObject
         set => Reminder = TimeSpan.FromSeconds(value);
     }
 
+    private bool _isEnabled;
+    public bool IsEnabled 
+    {
+        get => _isEnabled;
+        set => this.RaiseAndSetIfChanged(ref _isEnabled, value);
+    }
+    
     public bool IsReminderActive => TimeRemaining - Reminder <= TimeSpan.Zero;
-    public string SoundToPlay { get; }
+    public string AudioFile { get; }
     public string Label { get; }
     public TimeSpan First { get; }
     public TimeSpan Interval { get; }

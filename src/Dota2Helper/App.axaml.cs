@@ -11,8 +11,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
+using System.Text.Json;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using Dota2Helper.Core;
@@ -23,6 +26,7 @@ using Dota2Helper.Core.Gsi;
 using Dota2Helper.Core.Listeners;
 using Dota2Helper.Core.Timers;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using ViewLocator = Dota2Helper.Core.Framework.ViewLocator;
 
 namespace Dota2Helper;
@@ -68,17 +72,35 @@ public partial class App : Application
 
     private static IHost CreateHost()
     {
-        HostApplicationBuilder builder = Microsoft.Extensions.Hosting.Host.CreateApplicationBuilder(Environment.GetCommandLineArgs());
-
+        HostApplicationBuilder builder = Microsoft.Extensions.Hosting.Host
+            .CreateApplicationBuilder(Environment.GetCommandLineArgs());
+        
         builder.Services.AddSingleton<FakeDotaListener>();
         builder.Services.AddSingleton<DotaListener>();
         
-        builder.Services.AddSingleton<List<IDotaListener>>(sp => [
+        builder.Services.AddSingleton<List<IDotaListener>>(sp => 
+        [
             sp.GetRequiredService<FakeDotaListener>(), sp.GetRequiredService<DotaListener>()
         ]);
         
         builder.Services.AddSingleton<IListenerStrategy, DynamicListenerStrategy>();
-        builder.Services.Configure<Settings>(options => builder.Configuration.GetSection("Settings").Bind(options));
+       
+        builder.Services.Configure<Settings>(options =>
+        {
+            using (var stream = File.OpenRead("appsettings.json"))
+            {
+                using (var document = JsonDocument.Parse(stream))
+                {
+                    var parsed = document.RootElement.Deserialize<AppSettings>(JsonContext.Default.Options);
+                    
+                    if (parsed != null)
+                    {
+                        options.Timers = parsed.Settings.Timers;
+                        options.Address = parsed.Settings.Address;
+                    }
+                }
+            }
+        });
 
         builder.Services.AddSingleton<DotaTimers>();
         builder.Services.AddSingleton<AudioPlayer>();

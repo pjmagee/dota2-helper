@@ -21,7 +21,6 @@
   <ItemGroup>
     <PackageReference Include="Avalonia.Desktop" Version="11.0.10" />
     <PackageReference Condition="'$(RuntimeIdentifier)' == 'win-x64'" Include="VideoLAN.LibVLC.Windows" Version="3.0.20" />
-    <!-- <PackageReference Condition="'$(RuntimeIdentifier)' == 'osx-x64'" Include="VideoLAN.LibVLC.Mac" Version="3.0.20" /> -->
   </ItemGroup>
 
   <ItemGroup>

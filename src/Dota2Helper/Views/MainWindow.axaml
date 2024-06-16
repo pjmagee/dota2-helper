@@ -10,17 +10,17 @@
         Topmost="True" Icon="/Assets/dota2_helper.ico"
         CanResize="False" ShowInTaskbar="True" WindowStartupLocation="Manual" 
         TransparencyLevelHint="AcrylicBlur" ExtendClientAreaChromeHints="SystemChrome"
-        Title="D2 Helper" SizeToContent="WidthAndHeight">
+        Title="Dota2 Helper" SizeToContent="WidthAndHeight">
         <StackPanel>
                 <ContentControl Content="{Binding ContentViewModel}"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <Button x:Name="Theme" 
                                 Content="{Binding ThemeName, Mode=OneWay}" 
-                                Margin="0,0,10,10" 
+                                Margin="0,0,5,5" 
                                 Command="{Binding ToggleTheme}" />
                         <Button x:Name="Settings" 
                                 Content="{Binding ViewName, Mode=OneWay}" 
-                                Margin="0,0,10,10" 
+                                Margin="0,0,5,5" 
                                 Command="{Binding ToggleView}" />
                 </StackPanel>
         </StackPanel>

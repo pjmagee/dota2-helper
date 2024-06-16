@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Dota2Helper.Core.Configuration;
 
 public class Settings
 {
-    public List<TimerOptions> Timers { get; set; } = new();
-    public Uri Address { get; set; } = new("http://localhost:4001/");
+    [JsonPropertyName("Timers")]
+    public List<TimerOptions> Timers { get; set; }
+    
+    [JsonPropertyName("Address")]
+    public required Uri Address { get; set; } = new("http://localhost:4001/");
 }
