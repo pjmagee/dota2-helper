@@ -9,25 +9,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Net;
-using System.Security.Cryptography;
 using System.Text.Json;
-using Avalonia.Collections;
-using Avalonia.Controls;
-using Dota2Helper.Core;
 using Dota2Helper.Core.Audio;
 using Dota2Helper.Core.Configuration;
 using Dota2Helper.Core.Framework;
 using Dota2Helper.Core.Gsi;
 using Dota2Helper.Core.Listeners;
 using Dota2Helper.Core.Timers;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 using ViewLocator = Dota2Helper.Core.Framework.ViewLocator;
+using Hosting = Microsoft.Extensions.Hosting;
 
 namespace Dota2Helper;
 
@@ -72,8 +63,7 @@ public partial class App : Application
 
     private static IHost CreateHost()
     {
-        HostApplicationBuilder builder = Microsoft.Extensions.Hosting.Host
-            .CreateApplicationBuilder(Environment.GetCommandLineArgs());
+        HostApplicationBuilder builder = Hosting.Host.CreateApplicationBuilder(Environment.GetCommandLineArgs());
         
         builder.Services.AddSingleton<FakeDotaListener>();
         builder.Services.AddSingleton<DotaListener>();
