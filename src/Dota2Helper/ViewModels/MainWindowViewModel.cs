@@ -14,7 +14,7 @@ public class MainWindowViewModel : ViewModelBase
         private set
         {
             this.RaiseAndSetIfChanged(ref _contentViewModel, value);
-            ViewName = ContentViewModel is TimersViewModel ? "Settings" : "Timers";
+            ViewName = _contentViewModel is TimersViewModel ? "Settings" : "Timers";
         }
     }
 

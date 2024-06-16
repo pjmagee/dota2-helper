@@ -8,6 +8,7 @@ using Dota2Helper.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -19,6 +20,7 @@ using Dota2Helper.Core.Audio;
 using Dota2Helper.Core.Configuration;
 using Dota2Helper.Core.Framework;
 using Dota2Helper.Core.Gsi;
+using Dota2Helper.Core.Listeners;
 using Dota2Helper.Core.Timers;
 using Microsoft.Extensions.Configuration;
 using ViewLocator = Dota2Helper.Core.Framework.ViewLocator;
@@ -47,8 +49,10 @@ public partial class App : Application
             
             desktop.Exit += async (sender, args) =>
             {
-                var listener = Host.Services.GetRequiredService<IDotaListener>();
-                listener.Dispose();
+                foreach (var listener in Host.Services.GetRequiredService<List<IDotaListener>>())
+                {
+                    listener.Dispose();
+                }
                 
                 await Host.StopAsync(TimeSpan.FromSeconds(5));
                 Host.Dispose();
@@ -66,24 +70,15 @@ public partial class App : Application
     {
         HostApplicationBuilder builder = Microsoft.Extensions.Hosting.Host.CreateApplicationBuilder(Environment.GetCommandLineArgs());
 
-        if (Design.IsDesignMode)
-        {
-            builder.Services.AddSingleton<IDotaListener, FakeDotaListener>();
-        }
-        else
-        {
-            if (Process.GetProcessesByName("dota2").Any())
-            { 
-                builder.Services.AddSingleton<IDotaListener, DotaListener>();
-            }
-            else
-            {
-                builder.Services.AddSingleton<IDotaListener, FakeDotaListener>();
-            }
-        }
-
-        builder.Services
-            .Configure<Settings>(options => builder.Configuration.GetSection("Settings").Bind(options));
+        builder.Services.AddSingleton<FakeDotaListener>();
+        builder.Services.AddSingleton<DotaListener>();
+        
+        builder.Services.AddSingleton<List<IDotaListener>>(sp => [
+            sp.GetRequiredService<FakeDotaListener>(), sp.GetRequiredService<DotaListener>()
+        ]);
+        
+        builder.Services.AddSingleton<IListenerStrategy, DynamicListenerStrategy>();
+        builder.Services.Configure<Settings>(options => builder.Configuration.GetSection("Settings").Bind(options));
 
         builder.Services.AddSingleton<DotaTimers>();
         builder.Services.AddSingleton<AudioPlayer>();

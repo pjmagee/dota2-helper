@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Dota2Helper.Core.Gsi;
 
-namespace Dota2Helper.Core.Gsi;
+namespace Dota2Helper.Core.Listeners;
 
 public class FakeDotaListener : IDotaListener, IAsyncDisposable
 {

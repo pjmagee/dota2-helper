@@ -6,7 +6,7 @@ using Dota2Helper.Core.Configuration;
 using Dota2Helper.Core.Gsi;
 using Microsoft.Extensions.Options;
 
-namespace Dota2Helper.Core;
+namespace Dota2Helper.Core.Listeners;
 
 public class DotaListener : IDotaListener
 {

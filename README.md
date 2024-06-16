@@ -1,10 +1,27 @@
-﻿# Game State Integration
+﻿# Dota 2 Helper
 
-Go to `..\steamapps\common\dota 2 beta\game\dota\cfg\gamestate_integration` and add the following file: 
+An objective timer tracker with audio notifications for Dota 2. This application is designed to help players keep track of important in-game events such as stacking, power runes, bounty runes, and more. The application is designed to be used in conjunction with the Game State Integration feature of Dota 2.
+
+## Platform
+
+Only Windows is supported at this time.
+
+## Features
+
+- Customisable timers
+- Audio notifications
+- Dark and light mode
+- On top UI
+- Manual reset for random spawns
+- Advanced settings
+
+## Game State Integration
+
+Go to `..\steamapps\common\dota 2 beta\game\dota\cfg\gamestate_integration` and add the following file:
 
 `gamestate_integration_timers.cfg`
 
-```
+```plaintext
 "Dota 2 Integration Configuration"
 {
     "uri"           "http://localhost:4001/"
@@ -24,11 +41,11 @@ Go to `..\steamapps\common\dota 2 beta\game\dota\cfg\gamestate_integration` and 
 }
 ```
 
-# Run
+## Run
 
 Run the `Dota2Helper.Desktop.exe`
 
-# Settings
+## Settings
 
 - Customise notifications with mute feature
 - Customise the timer configuration
@@ -38,13 +55,14 @@ Run the `Dota2Helper.Desktop.exe`
 - UI is fixed as 'On top' meaning you can place this over your game when running in Windows full screen mode
 - Additional advanced configuration is possible with the `appsettings.json`
 
-# Advanced settings
+## Advanced settings
 
 Labels, removal of UI elements, intervals, starting times, and audio has additional customisation for advanced users
 
+<!-- markdownlint-disable MD033 -->
 <details>
 <summary>appsettings.json</summary>
-    
+
 ```json
 {
   "DotaTimers": [
@@ -135,7 +153,7 @@ Labels, removal of UI elements, intervals, starting times, and audio has additio
 
 </details>
 
-# UI Demo
+## UI Demo
 
-<img width="139" alt="image" src="https://github.com/pjmagee/dota2-helper/assets/292720/f62d6d28-0f5a-4162-9035-28d86c620eb5">
-<img width="139" alt="image" src="https://github.com/pjmagee/dota2-helper/assets/292720/01e036ee-f454-49d1-83d9-fb2fd6b6799d">
+![image](https://github.com/pjmagee/dota2-helper/assets/292720/f62d6d28-0f5a-4162-9035-28d86c620eb5)
+![image](https://github.com/pjmagee/dota2-helper/assets/292720/01e036ee-f454-49d1-83d9-fb2fd6b6799d)
