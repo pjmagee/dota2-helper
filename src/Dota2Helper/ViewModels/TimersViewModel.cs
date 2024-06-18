@@ -94,7 +94,7 @@ public class TimersViewModel : ViewModelBase
                     {
                         var timer = Timers[i];
                         timer.Update(time);
-                        Timers.Move(i, i);
+                        // Timers.Move(i, i);
                     }
                 });
             }
