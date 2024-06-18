@@ -1,4 +1,5 @@
 ﻿using System;
+using Avalonia.Controls;
 using ReactiveUI;
 
 namespace Dota2Helper.Core.Timers;
@@ -32,6 +33,7 @@ public class DotaTimer : ReactiveObject
     }
 
     public bool IsManualReset { get; protected init; }
+    
     public string Speech { get; }
     
     private bool _isTts;
@@ -41,7 +43,12 @@ public class DotaTimer : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref _isTts, value);
     }
     
-    public TimeSpan Reminder { get; set; }
+    private TimeSpan _reminder;
+    public TimeSpan Reminder 
+    {
+        get => _reminder;
+        set => this.RaiseAndSetIfChanged(ref _reminder, value);
+    }
 
     public int ReminderInSeconds
     {
@@ -57,17 +64,57 @@ public class DotaTimer : ReactiveObject
     }
     
     public bool IsReminderActive => TimeRemaining - Reminder <= TimeSpan.Zero;
+    
     public string AudioFile { get; }
     public string Label { get; }
     public TimeSpan First { get; }
     public TimeSpan Interval { get; }
-    public TimeSpan TimeRemaining { get; private set; }
+    
 
-    public bool IsActive { get; set; }
-    public bool IsSoundEnabled { get; set; }
+    private TimeSpan _timeRemaining;
+    
+    public TimeSpan TimeRemaining
+    {
+        get => _timeRemaining;
+        private set
+        {
+            this.RaisePropertyChanging(nameof(TimeRemaining));
+            _timeRemaining = value;
+            this.RaisePropertyChanged(nameof(TimeRemaining));
+        }
+    }
+
+    private bool _isActive;
+
+    public bool IsActive
+    {
+        get => _isActive;
+        private set => this.RaiseAndSetIfChanged(ref _isActive, value);
+    }
+    
+
+    private bool _isSoundEnabled;
+    public bool IsSoundEnabled
+    {
+        get => _isSoundEnabled;
+        set => this.RaiseAndSetIfChanged(ref _isSoundEnabled, value);
+    }
+    
+    public string EnableDisableSoundTooltip => IsSoundEnabled ? "Disable sound" : "Enable sound";
+    
     public bool IsTriggered => TimeRemaining <= TimeSpan.Zero;
+    
     public bool IsPendingManualReset => !IsActive && IsManualReset;
-    private bool IsSoundPlayed { get; set; }
+    
+    private bool _isSoundPlayed;
+
+    private bool IsSoundPlayed
+    {   
+        get => _isSoundPlayed;
+        set => this.RaiseAndSetIfChanged(ref _isSoundPlayed, value);
+    }
+
+    public string EnableDisableTimerTooltip => IsEnabled ? "Disable timer" : "Enable timer";
 
     public event EventHandler<EventArgs>? OnReminder;
 
@@ -77,7 +124,7 @@ public class DotaTimer : ReactiveObject
         _manualResetTime = default;
     }
 
-    public TimeSpan GetObjectiveTime(TimeSpan gameTime)
+    private TimeSpan GetObjectiveTime(TimeSpan gameTime)
     {
         return gameTime > First ? Interval : First + (gameTime < TimeSpan.Zero ? gameTime.Negate() : TimeSpan.Zero);
     }
@@ -91,12 +138,16 @@ public class DotaTimer : ReactiveObject
         }
         
         TimeRemaining = CalculateTimeRemaining(gameTime);
-        
+
         if (TimeRemaining - Reminder > TimeSpan.Zero)
+        {
             IsSoundPlayed = false;
+        }
 
         if (IsTriggered && IsActive && IsManualReset)
+        {
             IsActive = false;
+        }
 
         if (IsSoundEnabled && IsReminderActive && !IsSoundPlayed)
         {
@@ -108,11 +159,16 @@ public class DotaTimer : ReactiveObject
     private TimeSpan CalculateTimeRemaining(TimeSpan gameTime)
     {
         var interval = GetObjectiveTime(gameTime);
-        
-        if (!IsManualReset) return interval - TimeSpan.FromTicks(gameTime.Ticks % interval.Ticks);
-        
-        if (_manualResetTime == default) 
+
+        if (!IsManualReset)
+        {
+            return interval - TimeSpan.FromTicks(gameTime.Ticks % interval.Ticks);
+        }
+
+        if (_manualResetTime == default)
+        {
             _manualResetTime = gameTime;
+        }
 
         return interval - TimeSpan.FromTicks((gameTime.Ticks - _manualResetTime.Ticks) % interval.Ticks);
     }

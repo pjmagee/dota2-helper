@@ -7,6 +7,7 @@ using Avalonia.Threading;
 using Dota2Helper.Core.Audio;
 using Dota2Helper.Core.Gsi;
 using Dota2Helper.Core.Timers;
+using DynamicData;
 using Microsoft.Extensions.Logging;
 using ReactiveUI;
 
@@ -23,19 +24,7 @@ public class TimersViewModel : ViewModelBase
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         WriteIndented = true
     };
-    
-    private ObservableCollection<DotaTimer>? _timers;
-
-    public ObservableCollection<DotaTimer>? Timers
-    {
-        get => _timers;
-        set
-        {
-            _timers = value;
-            this.RaisePropertyChanged(nameof(Timers));
-        }
-    }
-    
+    public DotaTimers Timers { get; }
 
     public TimersViewModel(ILogger<TimersViewModel> logger, DotaTimers timers, GameStateHolder stateHolder, AudioPlayer audioPlayer)
     {
@@ -43,7 +32,6 @@ public class TimersViewModel : ViewModelBase
         _stateHolder = stateHolder;
         _audioPlayer = audioPlayer;
         Timers = timers;
-        
         WireEvents();
     }
     
@@ -51,8 +39,9 @@ public class TimersViewModel : ViewModelBase
 
     private void WireEvents()
     {
-        foreach (var timer in Timers!)
+        foreach (var timer in Timers)
         {
+            timer.OnReminder -= QueueReminder;
             timer.OnReminder += QueueReminder;
         }
     }
@@ -65,7 +54,7 @@ public class TimersViewModel : ViewModelBase
 
     private void UnWireEvents()
     {
-        foreach (var timer in Timers!)
+        foreach (var timer in Timers)
         {
             timer.OnReminder -= QueueReminder;
         }
@@ -88,15 +77,15 @@ public class TimersViewModel : ViewModelBase
                                                         
             if (updateState)
             {
-                Dispatcher.UIThread.InvokeAsync(() =>
-                {   
-                    for(int i = 0; i < Timers.Count; i++)
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    foreach (var timer in Timers)
                     {
-                        var timer = Timers[i];
                         timer.Update(time);
-                        // Timers.Move(i, i);
                     }
                 });
+                
+                Timers.Refresh();
             }
         }
     }

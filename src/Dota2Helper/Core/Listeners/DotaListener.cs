@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Dota2Helper.Core.Configuration;
 using Dota2Helper.Core.Gsi;
@@ -17,17 +18,17 @@ public class DotaListener : IDotaListener
         _listener.Prefixes.Add(settings.Value.Address.AbsoluteUri);
     }
 
-    public async Task<GameState?> GetStateAsync()
-    {
-        if (!_listener.IsListening)
-        {
-            _listener.Start();
-        }
-        
+    public async Task<GameState?> GetStateAsync(CancellationToken cancellationToken)
+    {  
         try
         {
+            if (!_listener.IsListening)
+            {
+                _listener.Start();
+            }
+            
             HttpListenerContext context = await _listener.GetContextAsync();
-            GameState? state = await JsonSerializer.DeserializeAsync<GameState>(context.Request.InputStream);
+            GameState? state = await JsonSerializer.DeserializeAsync<GameState>(context.Request.InputStream, cancellationToken: cancellationToken);
             
             context.Response.StatusCode = 200;
             context.Response.Close();

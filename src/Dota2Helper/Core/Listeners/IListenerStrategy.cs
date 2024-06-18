@@ -1,6 +1,9 @@
-﻿namespace Dota2Helper.Core.Listeners;
+﻿using System.Threading;
+using System.Threading.Tasks;
+
+namespace Dota2Helper.Core.Listeners;
 
 public interface IListenerStrategy
 {
-    IDotaListener Current { get; }
+    Task<IDotaListener> GetListener(CancellationToken cancellationToken);
 }

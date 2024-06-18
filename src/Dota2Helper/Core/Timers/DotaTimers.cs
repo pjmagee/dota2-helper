@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using Dota2Helper.Core.Configuration;
 using Microsoft.Extensions.Options;
@@ -8,6 +10,11 @@ namespace Dota2Helper.Core.Timers;
 
 public class DotaTimers : ObservableCollection<DotaTimer>
 {
+    public void Refresh()
+    {
+        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+    }
+    
     public DotaTimers(IOptions<Settings> settings)
     {
         var timers = new List<DotaTimer>();

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.IO.Compression;
 using System.Speech.Synthesis;
-using System.Threading.Tasks;
 using Dota2Helper.Core.Timers;
 using LibVLCSharp.Shared;
 

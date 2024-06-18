@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Immutable;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
@@ -11,16 +12,11 @@ namespace Dota2Helper.ViewModels;
 
 public class SettingsViewModel : ViewModelBase
 {
-    private static object _writerLock = new();
+    private static readonly object WriterLock = new();
 
     private readonly AudioPlayer _audioPlayer;
-    private ObservableCollection<DotaTimer>? _timers;
 
-    public ObservableCollection<DotaTimer>? Timers
-    {
-        get => _timers;
-        set => this.RaiseAndSetIfChanged(ref _timers, value);
-    }
+    public DotaTimers Timers { get; }
 
     public double Volume
     {
@@ -48,12 +44,21 @@ public class SettingsViewModel : ViewModelBase
     public bool IsSpeakerMuted => Volume <= 0;
 
     public bool IsSpeakerOn => Volume > 0;
+    
+    private ImmutableArray<string> Properties =>
+    [
+        nameof(DotaTimer.IsEnabled),
+        nameof(DotaTimer.IsSoundEnabled),
+        nameof(DotaTimer.IsTts),
+        nameof(DotaTimer.Reminder)
+    ];
 
     private void TimerOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (sender is DotaTimer timer)
+        // Update the appsettings.json file when a valid timer property changes
+        if (sender is DotaTimer timer && e.PropertyName is not null && Properties.Contains(e.PropertyName))
         {
-            lock (_writerLock)
+            lock (WriterLock)
             {
                 using (var doc = JsonDocument.Parse(File.ReadAllText("appsettings.json")))
                 {

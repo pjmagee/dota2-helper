@@ -15,7 +15,8 @@ public class GameStateUpdater(GameStateHolder container, TimersViewModel timersV
         {
             try
             {
-                container.State = await listenerStrategy.Current.GetStateAsync();
+                var listener = await listenerStrategy.GetListener(stoppingToken);
+                container.State = await listener.GetStateAsync(stoppingToken); 
                 timersViewModel.Update();
             }
             catch (Exception ex)

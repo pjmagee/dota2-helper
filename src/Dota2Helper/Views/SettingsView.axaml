@@ -9,7 +9,6 @@
              d:DataContext="{x:Static framework:DesignData.SettingsViewModel}"
              x:Class="Dota2Helper.Views.SettingsView"
              x:DataType="viewModels:SettingsViewModel" Margin="5">
-    
     <UserControl.Styles>
         <Style Selector="ToggleButton PathIcon.audio-on">
             <Setter Property="IsVisible" Value="False" />
@@ -24,7 +23,6 @@
             <Setter Property="IsVisible" Value="False" />
         </Style>
     </UserControl.Styles>
-    
     <StackPanel Orientation="Vertical" Spacing="5">
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" DockPanel.Dock="Right" Spacing="5">
             <Panel Margin="5,0">
@@ -43,9 +41,12 @@
                         HorizontalAlignment="Stretch"
                         Margin="2,2">
                         
-                        <ToggleSwitch Margin="5,0,0,0"
-                                      IsEnabled="True"
-                                      IsChecked="{Binding Mode=TwoWay, Path=IsEnabled}" />
+                        <ToggleSwitch Margin="5,0,0,0" 
+                                      ToolTip.Placement="Right"
+                                      ToolTip.Tip="{Binding Path=EnableDisableTimerTooltip}"
+                                      IsEnabled="True" FlowDirection="LeftToRight"
+                                      IsChecked="{Binding Mode=TwoWay, Path=IsEnabled}">
+                        </ToggleSwitch>
                         
                         <TextBlock Width="100"
                                    Text="{Binding Path=Label}"
@@ -64,8 +65,10 @@
                                    FontWeight="Bold"
                                    IsVisible="{Binding IsReminderActive}" />
 
-                        <ToggleButton
-                            IsChecked="{Binding Mode=TwoWay, Path=IsSoundEnabled}">
+                        <ToggleButton 
+                            IsChecked="{Binding Mode=TwoWay, Path=IsSoundEnabled}" 
+                            ToolTip.HorizontalOffset="10"
+                            ToolTip.Tip="{Binding Mode=OneWay, Path=EnableDisableSoundTooltip}">
                             <Panel>
                                 <PathIcon Classes="audio-on" Data="{StaticResource speaker_regular}" />
                                 <PathIcon Classes="audio-mute" Data="{StaticResource speaker_off_regular}" />
@@ -84,8 +87,13 @@
                                        Value="{Binding ReminderInSeconds, Mode=TwoWay}"
                                        Width="110"
                                        DockPanel.Dock="Right"
-                                       Increment="1" Minimum="5"
-                                       AllowSpin="True" Maximum="60" ParsingNumberStyle="Integer">
+                                       Increment="1" 
+                                       Minimum="5"
+                                       AllowSpin="True" 
+                                       Maximum="60" 
+                                       ParsingNumberStyle="Integer"
+                                       ToolTip.Placement="Left"
+                                       ToolTip.Tip="Tweak when the reminder is triggered.&#x0a; Mouse Scroll Up/Down.">
                         </NumericUpDown>
                         
                     </StackPanel>

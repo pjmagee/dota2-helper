@@ -2,21 +2,23 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Dota2Helper.Core.Gsi;
+using Microsoft.Extensions.Logging;
 
 namespace Dota2Helper.Core.Listeners;
 
 public class FakeDotaListener : IDotaListener, IAsyncDisposable
 {
-    private readonly ITimer? _timer;
+    private readonly ILogger<FakeDotaListener> _logger = null!;
+    private readonly ITimer? _timer = null!;
     
     private TimeSpan _gameTime = new(hours: 0, minutes: 0, seconds: 0);
 
-    public FakeDotaListener() : this(TimeProvider.System)
+    public FakeDotaListener(ILogger<FakeDotaListener> logger) : this(TimeProvider.System)
     {
-        
+        _logger = logger;
     }
 
-    public FakeDotaListener(TimeProvider provider)
+    private FakeDotaListener(TimeProvider provider)
     {
         _timer = provider.CreateTimer(Update, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
     }
@@ -26,7 +28,7 @@ public class FakeDotaListener : IDotaListener, IAsyncDisposable
         _gameTime = _gameTime.Add(TimeSpan.FromSeconds(4 ));
     }
 
-    public Task<GameState?> GetStateAsync()
+    public Task<GameState?> GetStateAsync(CancellationToken cancellationToken)
     {
         var fakeState = new GameState()
         {
@@ -47,6 +49,16 @@ public class FakeDotaListener : IDotaListener, IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        if (_timer != null) await _timer.DisposeAsync();
+        try
+        {
+            if (_timer != null)
+            {
+                await _timer.DisposeAsync();
+            }
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to dispose timer");
+        }
     }
 }
