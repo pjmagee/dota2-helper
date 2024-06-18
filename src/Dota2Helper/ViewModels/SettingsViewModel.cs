@@ -40,6 +40,7 @@ public class SettingsViewModel : ViewModelBase
 
         foreach (var dotaTimer in Timers)
         {
+            dotaTimer.PropertyChanged -= TimerOnPropertyChanged;
             dotaTimer.PropertyChanged += TimerOnPropertyChanged;
         }
     }
