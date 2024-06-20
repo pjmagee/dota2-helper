@@ -1,5 +1,4 @@
 ﻿using System;
-using Avalonia.Controls;
 using ReactiveUI;
 
 namespace Dota2Helper.Core.Timers;
@@ -70,7 +69,7 @@ public class DotaTimer : ReactiveObject
     public TimeSpan First { get; }
     public TimeSpan Interval { get; }
     
-
+    
     private TimeSpan _timeRemaining;
     
     public TimeSpan TimeRemaining
@@ -78,9 +77,10 @@ public class DotaTimer : ReactiveObject
         get => _timeRemaining;
         private set
         {
-            this.RaisePropertyChanging(nameof(TimeRemaining));
+            this.RaisePropertyChanging();
             _timeRemaining = value;
-            this.RaisePropertyChanged(nameof(TimeRemaining));
+            this.RaisePropertyChanged();
+            this.RaisePropertyChanged(nameof(IsReminderActive));
         }
     }
 

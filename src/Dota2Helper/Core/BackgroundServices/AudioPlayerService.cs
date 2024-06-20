@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Dota2Helper.Core.Audio;
 using Microsoft.Extensions.Hosting;
 
-namespace Dota2Helper.Core.Audio;
+namespace Dota2Helper.Core.BackgroundServices;
 
 public class AudioPlayerService(AudioPlayer audioPlayer) : BackgroundService
 {

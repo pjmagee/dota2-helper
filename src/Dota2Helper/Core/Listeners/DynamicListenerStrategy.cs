@@ -20,21 +20,15 @@ public class DynamicListenerStrategy(
             return fakeDotaListener;
         }
 
-        if (Process.GetProcessesByName("dota2").Any())
+        var dota2 = Process.GetProcessesByName("dota2").FirstOrDefault();
+       
+        if (dota2 is not null)
         {
-            logger.LogInformation("Dota 2 is running, using DotaListener");
-            
-            var state = await dotaListener.GetStateAsync(cancellationToken);
-                
-            if (state != null)
-            {
-                logger.LogInformation("DotaListener is working");
-                return dotaListener;
-            }
+            logger.LogInformation("Dota2 is running, using DotaListener");
+            return dotaListener;
         }
-        
-        logger.LogInformation("Dota 2 is not running, using FakeDotaListener");
 
+        logger.LogInformation("Dota2 is not running, using FakeListener");
         return fakeDotaListener;
     }
 }

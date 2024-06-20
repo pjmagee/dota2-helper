@@ -33,6 +33,13 @@
             <TextBlock Text="{Binding #Slider.Value, StringFormat={}{0:0}}" HorizontalAlignment="Center" Margin="15" />
         </StackPanel>
         <ItemsControl ItemsSource="{Binding Path=Timers}">
+            <ItemsControl.Styles>
+                <Style Selector="TextBlock.IsReminderActive">
+                    <Setter Property="Foreground" Value="{DynamicResource SystemErrorTextColor}" />
+                    <Setter Property="FontWeight" Value="Bold" />
+                </Style>
+                
+            </ItemsControl.Styles>
             <ItemsControl.DataTemplates>
                 <DataTemplate DataType="timers:DotaTimer">
                     <StackPanel 
@@ -53,17 +60,11 @@
                                    TextAlignment="Right"
                                    VerticalAlignment="Center" />
 
-                        <TextBlock Width="45"
+                        <TextBlock x:Name="TimeRemainingTextBlock"
+                                   Width="45"
                                    VerticalAlignment="Center"
-                                   Text="{Binding Path=TimeRemaining, StringFormat=mm\\:ss}"
-                                   IsVisible="{Binding !IsReminderActive}" />
-
-                        <TextBlock Width="45"
-                                   VerticalAlignment="Center"
-                                   Text="{Binding Path=TimeRemaining, StringFormat=mm\\:ss}"
-                                   Foreground="{DynamicResource SystemErrorTextColor}"
-                                   FontWeight="Bold"
-                                   IsVisible="{Binding IsReminderActive}" />
+                                   Classes.IsReminderActive="{Binding Path=IsReminderActive}"
+                                   Text="{Binding Path=TimeRemaining, StringFormat=mm\\:ss}" />
 
                         <ToggleButton 
                             IsChecked="{Binding Mode=TwoWay, Path=IsSoundEnabled}" 

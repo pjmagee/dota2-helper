@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using Dota2Helper.Core.Audio;
+using Dota2Helper.Core.BackgroundServices;
 using Dota2Helper.Core.Configuration;
 using Dota2Helper.Core.Framework;
 using Dota2Helper.Core.Gsi;
@@ -68,6 +69,7 @@ public class App : Application
         builder.Services.AddSingleton<DotaListener>();
         builder.Services.AddSingleton<IListenerStrategy, DynamicListenerStrategy>();
 
+        builder.Logging.ClearProviders();
         builder.Logging.AddDebug();
 
         builder.Services.Configure<Settings>(options =>
@@ -100,8 +102,8 @@ public class App : Application
         builder.Services.AddView<MainWindowViewModel, MainWindow>();
         builder.Services.AddView<TimersViewModel, TimersView>();
         builder.Services.AddView<SettingsViewModel, SettingsView>();
-
-        builder.Services.AddHostedService<GameStateUpdater>();
+        
+        builder.Services.AddHostedService<GameStateService>();
         builder.Services.AddHostedService<AudioPlayerService>();
 
         return builder.Build();

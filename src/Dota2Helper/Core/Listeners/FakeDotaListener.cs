@@ -35,7 +35,8 @@ public class FakeDotaListener : IDotaListener, IAsyncDisposable
             Map = new Map()
             {
                 GameTime = (int) _gameTime.TotalSeconds,
-                ClockTime = (int) _gameTime.TotalSeconds
+                ClockTime = (int) _gameTime.TotalSeconds,
+                MatchId = "FAKE_MATCH_ID",
             }
         };
 

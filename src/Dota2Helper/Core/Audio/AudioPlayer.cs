@@ -15,13 +15,8 @@ public class AudioPlayer : IDisposable
     private readonly Queue<AudioQueueItem> _queue = new();
     private readonly SpeechSynthesizer _synthesizer = new();
 
-    public void QueueReminder(DotaTimer timer)
-    {
-        _queue.Enqueue(timer.IsTts
-            ? new AudioQueueItem { Value = timer.Speech, IsTts = false }
-            : new AudioQueueItem { Value = timer.AudioFile, IsTts = true });
-    }
-    
+    public void QueueReminder(DotaTimer timer) => _queue.Enqueue(AudioQueueItem.FromTimer(timer));
+
     public int Volume 
     {
         set
@@ -38,14 +33,15 @@ public class AudioPlayer : IDisposable
     {
         if (!_queue.TryDequeue(out var item)) return;
 
-        if (item.IsTts)
+        if (item.AudioQueueItemType == AudioQueueItemType.Audio)
         {
             using (var reminderAudio = new Media(LibVlc, item.Value))
             {
                 _player.Play(reminderAudio);
             }    
         }
-        else
+        
+        if (item.AudioQueueItemType == AudioQueueItemType.Tts)
         {
             _synthesizer.SpeakAsync(item.Value);
         }

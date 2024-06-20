@@ -6,6 +6,7 @@ using System.Text.Json;
 using Dota2Helper.Core.Audio;
 using Dota2Helper.Core.Configuration;
 using Dota2Helper.Core.Timers;
+using DynamicData.Binding;
 using ReactiveUI;
 
 namespace Dota2Helper.ViewModels;

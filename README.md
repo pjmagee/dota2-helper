@@ -4,9 +4,15 @@
 
 An objective timer tracker with audio notifications for Dota 2. This application is designed to help players keep track of important in-game events such as stacking, power runes, bounty runes, and more. The application is designed to be used in conjunction with the Game State Integration feature of Dota 2.
 
+## Support
+
+If you find this application useful, please consider supporting me by buying me a coffee.
+
+[![Buy Me A Coffee](https://cdn.buymeacoffee.com/buttons/default-orange.png)](https://www.buymeacoffee.com/pjmagee)
+
 ## Platform
 
-Only Windows is supported at this time.
+I do not own a Mac or Linux machine to test the application, so only Windows is supported at this time.  
 
 ## Features
 
@@ -151,7 +157,6 @@ Labels, removal of UI elements, intervals, starting times, and audio has additio
 
 ## UI Preview
 
-
 <details>
 <summary>Preview</summary>
 
@@ -167,4 +172,3 @@ Labels, removal of UI elements, intervals, starting times, and audio has additio
 ![timers2](./screenshots/Timers2.png)
 
 </details>
-

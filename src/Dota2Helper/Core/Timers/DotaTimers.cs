@@ -10,11 +10,6 @@ namespace Dota2Helper.Core.Timers;
 
 public class DotaTimers : ObservableCollection<DotaTimer>
 {
-    public void Refresh()
-    {
-        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-    }
-    
     public DotaTimers(IOptions<Settings> settings)
     {
         var timers = new List<DotaTimer>();
@@ -36,6 +31,14 @@ public class DotaTimers : ObservableCollection<DotaTimer>
         foreach (var timer in timers.OrderBy(x => x.Interval))
         {
             Add(timer);
+        }
+    }
+
+    public void Do(Action<DotaTimer> func)
+    {   
+        foreach (var timer in this)
+        {
+            func(timer);
         }
     }
 }
