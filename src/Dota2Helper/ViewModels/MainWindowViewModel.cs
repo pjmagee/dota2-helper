@@ -7,7 +7,9 @@ namespace Dota2Helper.ViewModels;
 public class MainWindowViewModel : ViewModelBase
 {
     ViewModelBase _contentViewModel;
-    
+
+
+
     public ViewModelBase ContentViewModel
     {
         get => _contentViewModel;
@@ -21,6 +23,7 @@ public class MainWindowViewModel : ViewModelBase
     }
 
     string? _viewName;
+
     public string? ViewName
     {
         get => _viewName;
@@ -35,16 +38,16 @@ public class MainWindowViewModel : ViewModelBase
     {
         ContentViewModel = ContentViewModel is SettingsViewModel ? TimersViewModel : SettingsViewModel;
     }
-    
+
     public MainWindowViewModel(TimersViewModel timersViewModel, SettingsViewModel settingsViewModel)
     {
         _contentViewModel = timersViewModel;
         ContentViewModel = timersViewModel;
-        
+
         TimersViewModel = timersViewModel;
         SettingsViewModel = settingsViewModel;
     }
-    
+
     public TimersViewModel TimersViewModel { get; set; }
     public SettingsViewModel SettingsViewModel { get; set; }
 }

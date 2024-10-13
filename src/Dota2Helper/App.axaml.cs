@@ -39,7 +39,7 @@ public class App : Application
         {
             desktop.MainWindow = new MainWindow
             {
-                DataContext = Host.Services.GetRequiredService<MainWindowViewModel>()
+                DataContext = Host.Services.GetRequiredService<MainWindowViewModel>(),
             };
 
             desktop.Exit += async (sender, args) =>

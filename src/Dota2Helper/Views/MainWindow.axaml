@@ -8,9 +8,14 @@
         x:Class="Dota2Helper.Views.MainWindow" x:Name="Main"
         x:DataType="vm:MainWindowViewModel" d:DataContext="{x:Static framework:DesignData.MainWindowViewModel}"
         Topmost="True" Icon="/Assets/dota2_helper.ico"
-        CanResize="False" ShowInTaskbar="True" WindowStartupLocation="Manual"
-        TransparencyLevelHint="AcrylicBlur" ExtendClientAreaChromeHints="SystemChrome"
-        Title="Dota2 Helper" SizeToContent="WidthAndHeight">
+        CanResize="False"
+        ShowInTaskbar="True"
+        WindowStartupLocation="Manual"
+        TransparencyLevelHint="AcrylicBlur"
+        ExtendClientAreaChromeHints="SystemChrome"
+        Title="D2 Helper" Opened="TopLevel_OnOpened"
+        SizeToContent="WidthAndHeight">
+
     <StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
             <Button x:Name="Settings"
