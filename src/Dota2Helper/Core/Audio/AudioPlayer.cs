@@ -10,7 +10,7 @@ namespace Dota2Helper.Core.Audio;
 [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
 public class AudioPlayer : IDisposable
 {
-    private static readonly LibVLC LibVlc = new();
+    private readonly static LibVLC LibVlc = new();
     private readonly MediaPlayer _player = new(LibVlc);
     private readonly Queue<AudioQueueItem> _queue = new();
     private readonly SpeechSynthesizer _synthesizer = new();

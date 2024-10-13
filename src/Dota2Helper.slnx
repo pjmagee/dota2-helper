@@ -1,0 +1,4 @@
+﻿<Solution>
+  <Project Path="Dota2Helper.Desktop\Dota2Helper.Desktop.csproj" />
+  <Project Path="Dota2Helper\Dota2Helper.csproj" />
+</Solution>

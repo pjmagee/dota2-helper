@@ -23,26 +23,40 @@ import (
 
 type Dota2Helper struct{}
 
-func (m *Dota2Helper) Build(ctx context.Context, src *Directory) (string, error) {
+func (m *Dota2Helper) Build(
+	ctx context.Context,
+	// +defaultPath="/src"
+	src *dagger.Directory) (string, error) {
+
+	cache := dag.CacheVolume("nuget-cache")
+
 	return dag.Container().
 		From("mcr.microsoft.com/dotnet/sdk:8.0").
 		WithDirectory("/src", src, dagger.ContainerWithDirectoryOpts{
 			Exclude: []string{"**/bin/**", "**/obj/**"},
 		}).
 		WithWorkdir("/src").
+		WithMountedCache("/root/.nuget/packages", cache).
 		WithExec([]string{
 			"dotnet",
 			"build"}).
 		Stdout(ctx)
 }
 
-func (m *Dota2Helper) PublishWindows(ctx context.Context, src *Directory, version string) *dagger.Container {
+func (m *Dota2Helper) PublishWindows(
+	ctx context.Context,
+	// +defaultPath="/src"
+	src *dagger.Directory,
+	version string) *dagger.Container {
+
+	cache := dag.CacheVolume("nuget-cache")
 
 	return dag.Container().
 		From("mcr.microsoft.com/dotnet/sdk:8.0").
 		WithDirectory("/src", src, dagger.ContainerWithDirectoryOpts{
 			Exclude: []string{"**/bin/**", "**/obj/**"},
 		}).
+		WithMountedCache("/root/.nuget/packages", cache).
 		WithWorkdir("/src").
 		WithExec([]string{
 			"dotnet",
@@ -57,12 +71,15 @@ func (m *Dota2Helper) PublishWindows(ctx context.Context, src *Directory, versio
 			fmt.Sprintf("/p:Version=%s", version),
 			"/p:PublishSingleFile=true",
 			"-o",
-			"/publish"})
+			"/publish",
+			"--verbosity", "normal",
+		})
 }
 
 func (m *Dota2Helper) Release(
 	ctx context.Context,
-	git *Directory,
+	// +defaultPath="/"
+	git *dagger.Directory,
 	tag string,
 	token *dagger.Secret) error {
 
@@ -70,17 +87,13 @@ func (m *Dota2Helper) Release(
 	published := m.PublishWindows(ctx, git.Directory("src"), version)
 	assets := published.Directory("/publish")
 
-	gh := dag.Gh(dagger.GhOpts{
-		Token:  token,
-		Repo:   "github.com/pjmagee/dota2-helper",
-		Source: git,
-	})
-
-	zip := dag.Arc(dagger.ArcOpts{}).ArchiveDirectory(fmt.Sprintf("Dota2Helper_%s_windows_amd64", tag), assets).Zip()
-
-	_, err := gh.Release().Create(ctx, tag, "", dagger.GhReleaseCreateOpts{
-		Target:        "main",
-		Files:         []*dagger.File{zip},
+	zip := dag.Arc().ArchiveDirectory(fmt.Sprintf("Dota2Helper_%s_windows_amd64", tag), assets).Zip()
+	ghOpts := dagger.GhOpts{Token: token, Repo: "github.com/pjmagee/dota2-helper", Source: git}
+	err := dag.Gh(ghOpts).Release().Create(ctx, tag, "", dagger.GhReleaseCreateOpts{
+		Target: "main",
+		Files: []*dagger.File{
+			zip,
+		},
 		Latest:        true,
 		VerifyTag:     true,
 		Draft:         true,

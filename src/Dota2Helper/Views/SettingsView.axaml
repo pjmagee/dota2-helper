@@ -30,7 +30,12 @@
                 <PathIcon Classes="audio-on" IsVisible="{Binding IsSpeakerOn}" Data="{DynamicResource speaker_regular}" />
             </Panel>
             <Slider Width="100" x:Name="Slider" HorizontalAlignment="Center" Value="{Binding Volume}" TickPlacement="BottomRight" />
+
             <TextBlock Text="{Binding #Slider.Value, StringFormat={}{0:0}}" HorizontalAlignment="Center" Margin="15" />
+            <Button x:Name="Theme"
+                    Content="{Binding ThemeName, Mode=OneWay}"
+                    Margin="0,0,5,5"
+                    Command="{Binding ToggleTheme}" />
         </StackPanel>
         <ItemsControl ItemsSource="{Binding Path=Timers}">
             <ItemsControl.Styles>
@@ -38,7 +43,6 @@
                     <Setter Property="Foreground" Value="{DynamicResource SystemErrorTextColor}" />
                     <Setter Property="FontWeight" Value="Bold" />
                 </Style>
-                
             </ItemsControl.Styles>
             <ItemsControl.DataTemplates>
                 <DataTemplate DataType="timers:DotaTimer">

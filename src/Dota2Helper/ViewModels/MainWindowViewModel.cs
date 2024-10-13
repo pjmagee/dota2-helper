@@ -6,7 +6,7 @@ namespace Dota2Helper.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
-    private ViewModelBase _contentViewModel;
+    ViewModelBase _contentViewModel;
     
     public ViewModelBase ContentViewModel
     {
@@ -15,36 +15,22 @@ public class MainWindowViewModel : ViewModelBase
         {
             this.RaiseAndSetIfChanged(ref _contentViewModel, value);
             ViewName = _contentViewModel is TimersViewModel ? "Settings" : "Timers";
+            this.RaisePropertyChanged(nameof(IsSettingsView));
+            this.RaisePropertyChanged(nameof(IsTimersView));
         }
     }
 
-    public void ToggleTheme()
-    {
-        var toggle = Application.Current!.RequestedThemeVariant switch
-        {
-            { Key: nameof(ThemeVariant.Light) }  => ThemeVariant.Dark,
-            { Key: nameof(ThemeVariant.Dark) } => ThemeVariant.Light,
-            _ => null,
-        };
-        
-        Application.Current!.RequestedThemeVariant = toggle;
-        ThemeName = (toggle == ThemeVariant.Dark ? ThemeVariant.Light : ThemeVariant.Dark).Key.ToString();
-    }
-
-    private string? _themeName;
-    public string? ThemeName
-    {
-        get => _themeName;
-        set => this.RaiseAndSetIfChanged(ref _themeName, value);
-    }
-    
-    private string? _viewName;
+    string? _viewName;
     public string? ViewName
     {
         get => _viewName;
         private set => this.RaiseAndSetIfChanged(ref _viewName, value);
     }
-    
+
+    public bool IsSettingsView => ContentViewModel is SettingsViewModel;
+
+    public bool IsTimersView => ContentViewModel is TimersViewModel;
+
     public void ToggleView()
     {
         ContentViewModel = ContentViewModel is SettingsViewModel ? TimersViewModel : SettingsViewModel;
@@ -57,8 +43,6 @@ public class MainWindowViewModel : ViewModelBase
         
         TimersViewModel = timersViewModel;
         SettingsViewModel = settingsViewModel;
-        
-        ThemeName = Application.Current!.ActualThemeVariant.Key.ToString();
     }
     
     public TimersViewModel TimersViewModel { get; set; }

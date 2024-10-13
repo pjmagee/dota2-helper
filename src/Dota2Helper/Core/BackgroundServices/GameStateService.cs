@@ -18,8 +18,8 @@ public class GameStateService(ILogger<GameStateService> logger, GameStateHolder 
     {
         await Task.Factory.StartNew((ct) => UpdateTimers((CancellationToken)ct!), stoppingToken, TaskCreationOptions.LongRunning);
     }
-    
-    private async Task UpdateTimers(CancellationToken stoppingToken)
+
+    async Task UpdateTimers(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -30,7 +30,7 @@ public class GameStateService(ILogger<GameStateService> logger, GameStateHolder 
                 
                 TimeSpan gameTime = container.State?.GameTime.GetValueOrDefault() ?? TimeSpan.FromSeconds(-30);
                     
-                Dispatcher.UIThread.Invoke(() => timers.Do(timer =>
+                await Dispatcher.UIThread.InvokeAsync(() => timers.Do(timer =>
                 {
                     try
                     {

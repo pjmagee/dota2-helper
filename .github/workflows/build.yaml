@@ -16,7 +16,7 @@ jobs:
       with:
         version: "latest"
         verb: call
-        args: build --src=./src
+        args: build
         cloud-token: ${{ secrets.DAGGER_CLOUD_TOKEN }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

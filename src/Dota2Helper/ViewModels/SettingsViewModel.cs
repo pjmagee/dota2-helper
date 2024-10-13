@@ -3,6 +3,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
+using Avalonia;
+using Avalonia.Styling;
 using Dota2Helper.Core.Audio;
 using Dota2Helper.Core.Configuration;
 using Dota2Helper.Core.Timers;
@@ -13,9 +15,11 @@ namespace Dota2Helper.ViewModels;
 
 public class SettingsViewModel : ViewModelBase
 {
-    private static readonly object WriterLock = new();
+    static readonly object WriterLock = new();
 
-    private readonly AudioPlayer _audioPlayer;
+
+
+    readonly AudioPlayer _audioPlayer;
 
     public DotaTimers Timers { get; }
 
@@ -35,6 +39,8 @@ public class SettingsViewModel : ViewModelBase
         _audioPlayer = audioPlayer;
         Timers = timers;
 
+        ThemeName = Application.Current!.ActualThemeVariant.Key.ToString();
+
         foreach (var dotaTimer in Timers)
         {
             dotaTimer.PropertyChanged -= TimerOnPropertyChanged;
@@ -45,8 +51,8 @@ public class SettingsViewModel : ViewModelBase
     public bool IsSpeakerMuted => Volume <= 0;
 
     public bool IsSpeakerOn => Volume > 0;
-    
-    private ImmutableArray<string> Properties =>
+
+    ImmutableArray<string> Properties =>
     [
         nameof(DotaTimer.IsEnabled),
         nameof(DotaTimer.IsSoundEnabled),
@@ -54,7 +60,27 @@ public class SettingsViewModel : ViewModelBase
         nameof(DotaTimer.Reminder)
     ];
 
-    private void TimerOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    public void ToggleTheme()
+    {
+        var toggle = Application.Current!.RequestedThemeVariant switch
+        {
+            { Key: nameof(ThemeVariant.Light) }  => ThemeVariant.Dark,
+            { Key: nameof(ThemeVariant.Dark) } => ThemeVariant.Light,
+            _ => null,
+        };
+
+        Application.Current!.RequestedThemeVariant = toggle;
+        ThemeName = (toggle == ThemeVariant.Dark ? ThemeVariant.Light : ThemeVariant.Dark).Key.ToString();
+    }
+
+    string? _themeName;
+    public string? ThemeName
+    {
+        get => _themeName;
+        set => this.RaiseAndSetIfChanged(ref _themeName, value);
+    }
+
+    void TimerOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         // Update the appsettings.json file when a valid timer property changes
         if (sender is DotaTimer timer && e.PropertyName is not null && Properties.Contains(e.PropertyName))

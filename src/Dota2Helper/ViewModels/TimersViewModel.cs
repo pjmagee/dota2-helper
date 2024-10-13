@@ -16,11 +16,11 @@ namespace Dota2Helper.ViewModels;
 
 public class TimersViewModel : ViewModelBase
 {
-    private readonly ILogger<TimersViewModel> _logger;
-    private readonly GameStateHolder _stateHolder;
-    private readonly AudioPlayer _audioPlayer;
+    readonly ILogger<TimersViewModel> _logger;
+    readonly GameStateHolder _stateHolder;
+    readonly AudioPlayer _audioPlayer;
 
-    private static readonly JsonSerializerOptions Options = new()
+    static readonly JsonSerializerOptions Options = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         WriteIndented = true
@@ -42,7 +42,7 @@ public class TimersViewModel : ViewModelBase
     
     ~TimersViewModel() => UnWireEvents();
 
-    private void WireEvents()
+    void WireEvents()
     {
         foreach (var timer in Timers)
         {
@@ -50,14 +50,14 @@ public class TimersViewModel : ViewModelBase
             timer.OnReminder += QueueReminder;
         }
     }
-    
-    private void QueueReminder(object? sender, EventArgs args)
+
+    void QueueReminder(object? sender, EventArgs args)
     {
         var timer = (DotaTimer) sender!;
         _audioPlayer.QueueReminder(timer);
     }
 
-    private void UnWireEvents()
+    void UnWireEvents()
     {
         foreach (var timer in Timers)
         {
