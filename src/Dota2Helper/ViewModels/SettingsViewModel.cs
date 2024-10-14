@@ -7,6 +7,7 @@ using Avalonia;
 using Avalonia.Styling;
 using Dota2Helper.Core.Audio;
 using Dota2Helper.Core.Configuration;
+using Dota2Helper.Core.Gsi;
 using Dota2Helper.Core.Timers;
 using DynamicData.Binding;
 using ReactiveUI;
@@ -15,10 +16,10 @@ namespace Dota2Helper.ViewModels;
 
 public class SettingsViewModel : ViewModelBase
 {
-    static readonly object WriterLock = new();
+    readonly static object WriterLock = new();
 
 
-
+    readonly SteamLibraryService _steamLibraryService;
     readonly AudioPlayer _audioPlayer;
 
     public DotaTimers Timers { get; }
@@ -34,8 +35,9 @@ public class SettingsViewModel : ViewModelBase
         get => _audioPlayer.Volume;
     }
 
-    public SettingsViewModel(AudioPlayer audioPlayer, DotaTimers timers)
+    public SettingsViewModel(SteamLibraryService steamLibraryService, AudioPlayer audioPlayer, DotaTimers timers)
     {
+        _steamLibraryService = steamLibraryService;
         _audioPlayer = audioPlayer;
         Timers = timers;
 
@@ -59,6 +61,14 @@ public class SettingsViewModel : ViewModelBase
         nameof(DotaTimer.IsTts),
         nameof(DotaTimer.Reminder)
     ];
+
+    public void Install()
+    {
+        _steamLibraryService.InstallIntegration();
+        this.RaisePropertyChanged(nameof(IsIntegrated));
+    }
+
+    public bool IsIntegrated => _steamLibraryService.IsIntegrationInstalled();
 
     public void ToggleTheme()
     {

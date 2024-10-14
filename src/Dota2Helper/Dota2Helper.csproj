@@ -8,7 +8,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <AvaloniaResource Include="Assets\**" />
+    <AvaloniaResource Include="Assets\**" CopyToOutputDirectory="Always"  />
   </ItemGroup>
 
   <ItemGroup>

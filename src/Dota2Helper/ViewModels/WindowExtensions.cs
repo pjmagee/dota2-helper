@@ -35,7 +35,6 @@ internal static class WindowExtensions
 
             SetWindowLong(hwnd, GWL_STYLE, (currentStyle & ~WS_MAXIMIZEBOX & ~WS_MINIMIZEBOX));
             SetWindowLong(hwnd, GWL_EXSTYLE, (currentExStyle | WS_EX_DLGMODALFRAME));
-
             SetWindowPos(hwnd, IntPtr.Zero, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED);
         }
     }

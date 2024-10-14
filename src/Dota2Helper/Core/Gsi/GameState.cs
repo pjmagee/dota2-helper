@@ -7,11 +7,11 @@ public class GameState
 {
     [JsonIgnore]
     // ReSharper disable once InconsistentNaming
-    private const string DOTA_GAMERULES_STATE_PRE_GAME = nameof(DOTA_GAMERULES_STATE_PRE_GAME);
+    const string DOTA_GAMERULES_STATE_PRE_GAME = nameof(DOTA_GAMERULES_STATE_PRE_GAME);
     
     [JsonIgnore]
     // ReSharper disable once InconsistentNaming
-    private const string DOTA_GAMERULES_STATE_GAME_IN_PROGRESS = nameof(DOTA_GAMERULES_STATE_GAME_IN_PROGRESS);
+    const string DOTA_GAMERULES_STATE_GAME_IN_PROGRESS = nameof(DOTA_GAMERULES_STATE_GAME_IN_PROGRESS);
     
     [JsonPropertyName("map")]
     public Map? Map { get; set; }

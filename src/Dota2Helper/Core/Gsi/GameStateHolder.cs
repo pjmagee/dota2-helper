@@ -4,10 +4,9 @@ namespace Dota2Helper.Core.Gsi;
 
 public class GameStateHolder
 {
-    
-    private static readonly object Lock = new();
-    
-    private GameState? _state;
+    static readonly object Lock = new();
+
+    GameState? _state;
 
     public GameState? State
     {

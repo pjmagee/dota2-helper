@@ -68,6 +68,7 @@ public class App : Application
         builder.Services.AddSingleton<FakeDotaListener>();
         builder.Services.AddSingleton<DotaListener>();
         builder.Services.AddSingleton<IListenerStrategy, DynamicListenerStrategy>();
+        builder.Services.AddSingleton<SteamLibraryService>();
 
         builder.Logging.ClearProviders();
         builder.Logging.AddDebug();

@@ -23,42 +23,62 @@
             <Setter Property="IsVisible" Value="False" />
         </Style>
     </UserControl.Styles>
+
+    <!-- Volume and Theme -->
     <StackPanel Orientation="Vertical" Spacing="5">
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" DockPanel.Dock="Right" Spacing="5">
+
             <Panel Margin="5,0">
                 <PathIcon Classes="audio-mute" IsVisible="{Binding IsSpeakerMuted}" Data="{DynamicResource speaker_off_regular}" />
                 <PathIcon Classes="audio-on" IsVisible="{Binding IsSpeakerOn}" Data="{DynamicResource speaker_regular}" />
             </Panel>
-            <Slider Width="100" x:Name="Slider" HorizontalAlignment="Center" Value="{Binding Volume}" TickPlacement="BottomRight" />
 
-            <TextBlock Text="{Binding #Slider.Value, StringFormat={}{0:0}}" HorizontalAlignment="Center" Margin="15" />
+            <Slider
+                Width="100"
+                x:Name="Slider"
+                HorizontalAlignment="Center"
+                Value="{Binding Volume}"
+                TickPlacement="BottomRight" />
+
+            <TextBlock
+                Text="{Binding #Slider.Value, StringFormat={}{0:0}}"
+                HorizontalAlignment="Center"
+                Margin="15" />
+
             <Button x:Name="Theme"
                     Content="{Binding ThemeName, Mode=OneWay}"
                     Margin="0,0,5,5"
                     Command="{Binding ToggleTheme}" />
+
         </StackPanel>
+
+        <!-- Configured Timers -->
         <ItemsControl ItemsSource="{Binding Path=Timers}">
+
             <ItemsControl.Styles>
                 <Style Selector="TextBlock.IsReminderActive">
                     <Setter Property="Foreground" Value="{DynamicResource SystemErrorTextColor}" />
                     <Setter Property="FontWeight" Value="Bold" />
                 </Style>
             </ItemsControl.Styles>
+
             <ItemsControl.DataTemplates>
+
                 <DataTemplate DataType="timers:DotaTimer">
-                    <StackPanel 
-                        Orientation="Horizontal" 
-                        Spacing="5" 
+
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Spacing="5"
                         HorizontalAlignment="Stretch"
                         Margin="2,2">
-                        
-                        <ToggleSwitch Margin="5,0,0,0" 
+
+                        <ToggleSwitch Margin="5,0,0,0"
                                       ToolTip.Placement="Right"
                                       ToolTip.Tip="{Binding Path=EnableDisableTimerTooltip}"
                                       IsEnabled="True" FlowDirection="LeftToRight"
                                       IsChecked="{Binding Mode=TwoWay, Path=IsEnabled}">
                         </ToggleSwitch>
-                        
+
                         <TextBlock Width="100"
                                    Text="{Binding Path=Label}"
                                    TextAlignment="Right"
@@ -70,41 +90,60 @@
                                    Classes.IsReminderActive="{Binding Path=IsReminderActive}"
                                    Text="{Binding Path=TimeRemaining, StringFormat=mm\\:ss}" />
 
-                        <ToggleButton 
-                            IsChecked="{Binding Mode=TwoWay, Path=IsSoundEnabled}" 
+                        <ToggleButton
+                            IsChecked="{Binding Mode=TwoWay, Path=IsSoundEnabled}"
                             ToolTip.HorizontalOffset="10"
                             ToolTip.Tip="{Binding Mode=OneWay, Path=EnableDisableSoundTooltip}">
+
                             <Panel>
                                 <PathIcon Classes="audio-on" Data="{StaticResource speaker_regular}" />
                                 <PathIcon Classes="audio-mute" Data="{StaticResource speaker_off_regular}" />
                             </Panel>
+
                         </ToggleButton>
-                        
+
                         <!-- <Button IsVisible="{Binding Mode=OneWay, Path=IsManualReset}" Command="{Binding Reset}"> -->
                         <!--     <Panel> -->
                         <!--         <PathIcon Data="{StaticResource timer_10_regular}" /> -->
                         <!--     </Panel> -->
                         <!-- </Button> -->
-                        
+
                         <NumericUpDown ShowButtonSpinner="True"
                                        VerticalContentAlignment="Center"
                                        HorizontalContentAlignment="Center"
                                        Value="{Binding ReminderInSeconds, Mode=TwoWay}"
                                        Width="110"
                                        DockPanel.Dock="Right"
-                                       Increment="1" 
+                                       Increment="1"
                                        Minimum="5"
-                                       AllowSpin="True" 
-                                       Maximum="60" 
+                                       AllowSpin="True"
+                                       Maximum="60"
                                        ParsingNumberStyle="Integer"
                                        ToolTip.Placement="Left"
                                        ToolTip.Tip="Tweak when the reminder is triggered.&#x0a; Mouse Scroll Up/Down.">
                         </NumericUpDown>
-                        
+
                     </StackPanel>
                 </DataTemplate>
             </ItemsControl.DataTemplates>
         </ItemsControl>
+
+        <!-- Dota2 Integration -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+
+            <CheckBox x:Name="Installed"
+                      IsEnabled="False"
+                      IsVisible="{Binding IsIntegrated}"
+                      IsChecked="{Binding IsIntegrated}"
+                      Content="Integrated" />
+
+            <Button x:Name="Install"
+                    IsVisible="{Binding !IsIntegrated}"
+                    Content="Install"
+                    Margin="10,0,0,0"
+                    Command="{Binding Install}" />
+        </StackPanel>
+
     </StackPanel>
 
 </UserControl>
