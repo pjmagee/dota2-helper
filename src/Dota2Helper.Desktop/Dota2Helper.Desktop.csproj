@@ -33,6 +33,6 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Content Include="gamestate_integration_timers.cfg" CopyToOutputDirectory="Always" />
+    <Content Include="gamestate_integration_d2helper.cfg" CopyToOutputDirectory="Always" />
   </ItemGroup>
 </Project>

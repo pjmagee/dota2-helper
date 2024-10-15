@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -11,7 +12,7 @@ namespace Dota2Helper.Core.Gsi;
 
 public partial class SteamLibraryService(ILogger<SteamLibraryService> logger)
 {
-    const string ConfigFile = "gamestate_integration_timers.cfg";
+    const string ConfigFile = "gamestate_integration_d2helper.cfg";
 
     string? FindGameStateIntegrationPath()
     {
@@ -124,4 +125,24 @@ public partial class SteamLibraryService(ILogger<SteamLibraryService> logger)
 
     [GeneratedRegex(@"\s*\""path\""\s*\""(.+?)\""", RegexOptions.Compiled)]
     private static partial Regex LibraryLocations();
+
+    public void OpenGameStateIntegrationFolder()
+    {
+        var gameStateIntegrationPath = FindGameStateIntegrationPath();
+
+        if (gameStateIntegrationPath == null)
+        {
+            logger.LogError("gamestate_integration folder not found");
+            return;
+        }
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            Process.Start("explorer.exe", gameStateIntegrationPath);
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            Process.Start("open", gameStateIntegrationPath);
+        }
+    }
 }

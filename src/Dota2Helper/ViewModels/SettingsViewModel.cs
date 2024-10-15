@@ -68,6 +68,12 @@ public class SettingsViewModel : ViewModelBase
         this.RaisePropertyChanged(nameof(IsIntegrated));
     }
 
+    // Open folder with steam dota2 install
+    public void Open()
+    {
+        _steamLibraryService.OpenGameStateIntegrationFolder();
+    }
+
     public bool IsIntegrated => _steamLibraryService.IsIntegrationInstalled();
 
     public void ToggleTheme()
