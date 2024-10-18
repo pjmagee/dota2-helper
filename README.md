@@ -24,6 +24,7 @@ I do not own a Mac or Linux machine to test the application, so only Windows is 
 - Advanced settings to modify audio files and intervals with `appsettings.json`
 - Fake timers are used when the game is not running for easy configuration
 - When the game is running, the timers will automatically start based on the game time
+- GSI integration with a simple install button to add the configuration file
 
 ## Game State Integration
 
