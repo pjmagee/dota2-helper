@@ -42,14 +42,20 @@ public class App : Application
                 DataContext = Host.Services.GetRequiredService<MainWindowViewModel>(),
             };
 
-            desktop.Exit += async (sender, args) =>
+            desktop.ShutdownRequested += (sender, args) =>
             {
-                foreach (var listener in Host.Services.GetRequiredService<List<IDotaListener>>())
+                foreach (var listener in Host.Services.GetServices<IDotaListener>())
                 {
-                    listener.Dispose();
+                    try
+                    {
+                        listener.Dispose();
+                    }
+                    catch (Exception e)
+                    {
+                        Host.Services.GetRequiredService<ILogger<App>>().LogError(e, "Error disposing listener");
+                    }
                 }
 
-                await Host.StopAsync(TimeSpan.FromSeconds(5));
                 Host.Dispose();
                 Host = null;
             };
@@ -61,7 +67,7 @@ public class App : Application
         await Host.StartAsync();
     }
 
-    private static IHost CreateHost()
+    static IHost CreateHost()
     {
         HostApplicationBuilder builder = Hosting.Host.CreateApplicationBuilder(Environment.GetCommandLineArgs());
 
@@ -69,26 +75,29 @@ public class App : Application
         builder.Services.AddSingleton<DotaListener>();
         builder.Services.AddSingleton<IListenerStrategy, DynamicListenerStrategy>();
         builder.Services.AddSingleton<SteamLibraryService>();
+        builder.Services.AddSingleton<IDotaListener>(serviceProvider => serviceProvider.GetRequiredService<DotaListener>());
+        builder.Services.AddSingleton<IDotaListener>(serviceProvider => serviceProvider.GetRequiredService<FakeDotaListener>());
 
         builder.Logging.ClearProviders();
         builder.Logging.AddDebug();
 
         builder.Services.Configure<Settings>(options =>
-        {
-            using (var stream = File.OpenRead("appsettings.json"))
             {
-                using (var document = JsonDocument.Parse(stream))
+                using (var stream = File.OpenRead("appsettings.json"))
                 {
-                    var parsed = document.RootElement.Deserialize<AppSettings>(JsonContext.Default.Options);
-
-                    if (parsed != null)
+                    using (var document = JsonDocument.Parse(stream))
                     {
-                        options.Timers = parsed.Settings.Timers;
-                        options.Address = parsed.Settings.Address;
+                        var parsed = document.RootElement.Deserialize<AppSettings>(JsonContext.Default.Options);
+
+                        if (parsed != null)
+                        {
+                            options.Timers = parsed.Settings.Timers;
+                            options.Address = parsed.Settings.Address;
+                        }
                     }
                 }
             }
-        });
+        );
 
         builder.Services.AddSingleton<DotaTimers>();
         builder.Services.AddSingleton<AudioPlayer>();
@@ -103,9 +112,10 @@ public class App : Application
         builder.Services.AddView<MainWindowViewModel, MainWindow>();
         builder.Services.AddView<TimersViewModel, TimersView>();
         builder.Services.AddView<SettingsViewModel, SettingsView>();
-        
+
         builder.Services.AddHostedService<GameStateService>();
         builder.Services.AddHostedService<AudioPlayerService>();
+        builder.Services.AddHostedService<ListenerUpdateService>();
 
         return builder.Build();
     }

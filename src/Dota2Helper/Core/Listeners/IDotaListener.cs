@@ -7,5 +7,5 @@ namespace Dota2Helper.Core.Listeners;
 
 public interface IDotaListener : IDisposable
 {
-    Task<GameState?> GetStateAsync(CancellationToken cancellationToken);
+    Task<GameState?> GetStateAsync(CancellationToken ct);
 }

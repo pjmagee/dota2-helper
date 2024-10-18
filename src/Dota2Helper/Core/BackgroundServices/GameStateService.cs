@@ -25,29 +25,28 @@ public class GameStateService(ILogger<GameStateService> logger, GameStateHolder 
         {
             try
             {
-                var listener = await listenerStrategy.GetListener(stoppingToken);
-                container.State = await listener.GetStateAsync(stoppingToken);
-                
+                container.State = await listenerStrategy.Listener.GetStateAsync(stoppingToken);
                 TimeSpan gameTime = container.State?.GameTime.GetValueOrDefault() ?? TimeSpan.FromSeconds(-30);
-                    
+
                 await Dispatcher.UIThread.InvokeAsync(() => timers.Do(timer =>
-                {
-                    try
-                    {
-                        timer.Update(gameTime);    
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.LogError(ex, "Error updating timer");
-                    }
-                }));   
+                        {
+                            try
+                            {
+                                timer.Update(gameTime);
+                            }
+                            catch (Exception ex)
+                            {
+                                logger.LogError(ex, "Error updating timer");
+                            }
+                        }
+                    ), DispatcherPriority.Background, stoppingToken);
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "Error updating timers");
             }
         }
-        
+
         await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
     }
 }

@@ -5,5 +5,6 @@ namespace Dota2Helper.Core.Listeners;
 
 public interface IListenerStrategy
 {
-    Task<IDotaListener> GetListener(CancellationToken cancellationToken);
+    IDotaListener Listener { get; }
+    void UpdateListener();
 }

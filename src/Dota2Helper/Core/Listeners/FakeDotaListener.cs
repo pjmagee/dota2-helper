@@ -8,27 +8,27 @@ namespace Dota2Helper.Core.Listeners;
 
 public class FakeDotaListener : IDotaListener, IAsyncDisposable
 {
-    private readonly ILogger<FakeDotaListener> _logger = null!;
-    private readonly ITimer? _timer = null!;
-    
-    private TimeSpan _gameTime = new(hours: 0, minutes: 0, seconds: 0);
+    readonly ILogger<FakeDotaListener> _logger = null!;
+    readonly ITimer? _timer = null!;
+
+    TimeSpan _gameTime = new(hours: 0, minutes: 0, seconds: 0);
 
     public FakeDotaListener(ILogger<FakeDotaListener> logger) : this(TimeProvider.System)
     {
         _logger = logger;
     }
 
-    private FakeDotaListener(TimeProvider provider)
+    FakeDotaListener(TimeProvider provider)
     {
         _timer = provider.CreateTimer(Update, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
     }
 
-    private void Update(object? state)
+    void Update(object? state)
     {
         _gameTime = _gameTime.Add(TimeSpan.FromSeconds(4 ));
     }
 
-    public Task<GameState?> GetStateAsync(CancellationToken cancellationToken)
+    public Task<GameState?> GetStateAsync(CancellationToken ct)
     {
         var fakeState = new GameState()
         {
@@ -45,6 +45,7 @@ public class FakeDotaListener : IDotaListener, IAsyncDisposable
 
     public void Dispose()
     {
+        _logger.LogInformation("Disposing FakeDotaListener");
         _timer?.Dispose();
     }
 

@@ -96,6 +96,13 @@ public class SettingsViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _themeName, value);
     }
 
+    private bool _isDotaListener;
+    public bool IsDotaListener
+    {
+        get => _isDotaListener;
+        set => this.RaiseAndSetIfChanged(ref _isDotaListener, value);
+    }
+
     void TimerOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         // Update the appsettings.json file when a valid timer property changes

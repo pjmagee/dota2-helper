@@ -131,6 +131,20 @@
         <!-- Dota2 Integration -->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 
+            <Panel IsVisible="{Binding IsDotaListener}">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Label Content="Live" Margin="0, 0, 5, 0" />
+                    <PathIcon Data="{DynamicResource live_regular}" Foreground="Chartreuse" />
+                </StackPanel>
+            </Panel>
+
+            <Panel IsVisible="{Binding !IsDotaListener}">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Label Content="Demo Timers" Margin="0, 0, 5, 0" />
+                    <PathIcon Data="{DynamicResource live_regular}" Foreground="Orange" />
+                </StackPanel>
+            </Panel>
+
             <Button x:Name="OpenGsiFolder"
                     IsVisible="True"
                     Content="GSI"

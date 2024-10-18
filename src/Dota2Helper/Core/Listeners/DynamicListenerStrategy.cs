@@ -8,27 +8,48 @@ using Microsoft.Extensions.Logging;
 
 namespace Dota2Helper.Core.Listeners;
 
-public class DynamicListenerStrategy(
-    ILogger<DynamicListenerStrategy> logger,
-    FakeDotaListener fakeDotaListener, 
-    DotaListener dotaListener) : IListenerStrategy
+public class DynamicListenerStrategy(ILogger<DynamicListenerStrategy> logger, FakeDotaListener fakeDotaListener, DotaListener dotaListener) : IListenerStrategy
 {
-    public async Task<IDotaListener> GetListener(CancellationToken cancellationToken)
+    IDotaListener? _listener;
+
+    Process? _dota2;
+
+    public IDotaListener Listener => _listener ?? fakeDotaListener;
+
+    public void UpdateListener()
     {
         if (Design.IsDesignMode)
         {
-            return fakeDotaListener;
+            _listener = fakeDotaListener;
         }
 
-        var dota2 = Process.GetProcessesByName("dota2").FirstOrDefault();
-       
-        if (dota2 is not null)
+        if (_dota2 == null)
+        {
+            _dota2 = Process.GetProcessesByName("dota2").FirstOrDefault();
+
+            if (_dota2 != null)
+            {
+                logger.LogInformation("Dota2 is running, caching detected process for exit event");
+
+                _dota2.EnableRaisingEvents = true;
+                _dota2.Exited += (sender, args) =>
+                {
+                    logger.LogInformation("Dota2 exited, switching to FakeDotaListener");
+                    _listener = fakeDotaListener;
+                    _dota2 = null;
+                };
+            }
+        }
+
+        if (_dota2 != null)
         {
             logger.LogInformation("Dota2 is running, using DotaListener");
-            return dotaListener;
+            _listener = dotaListener;
         }
-
-        logger.LogInformation("Dota2 is not running, using FakeListener");
-        return fakeDotaListener;
+        else
+        {
+            logger.LogInformation("Dota2 is not running, using FakeDotaListener");
+            _listener = fakeDotaListener;
+        }
     }
 }
