@@ -80,7 +80,7 @@ public class SettingsViewModel : ViewModelBase
     {
         var toggle = Application.Current!.RequestedThemeVariant switch
         {
-            { Key: nameof(ThemeVariant.Light) }  => ThemeVariant.Dark,
+            { Key: nameof(ThemeVariant.Light) } => ThemeVariant.Dark,
             { Key: nameof(ThemeVariant.Dark) } => ThemeVariant.Light,
             _ => null,
         };
@@ -89,7 +89,24 @@ public class SettingsViewModel : ViewModelBase
         ThemeName = (toggle == ThemeVariant.Dark ? ThemeVariant.Light : ThemeVariant.Dark).Key.ToString();
     }
 
+    int? _portNumber;
+
+    public int? PortNumber
+    {
+        get => _steamLibraryService.GetPortNumber();
+        set
+        {
+            if (value != _portNumber)
+            {
+                _steamLibraryService.SetPortNumber(value!.Value);
+            }
+
+            this.RaiseAndSetIfChanged(ref _portNumber, value);
+        }
+    }
+
     string? _themeName;
+
     public string? ThemeName
     {
         get => _themeName;
@@ -97,6 +114,7 @@ public class SettingsViewModel : ViewModelBase
     }
 
     private bool _isDotaListener;
+
     public bool IsDotaListener
     {
         get => _isDotaListener;
@@ -129,7 +147,7 @@ public class SettingsViewModel : ViewModelBase
                             break;
                         }
                     }
-                    
+
                     File.WriteAllText("appsettings.json", JsonSerializer.Serialize(appSettings, JsonContext.Default.Options));
                 }
             }

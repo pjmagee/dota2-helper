@@ -129,39 +129,62 @@
         </ItemsControl>
 
         <!-- Dota2 Integration -->
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
 
-            <Panel IsVisible="{Binding IsDotaListener}">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <Label Content="Live" Margin="0, 0, 5, 0" />
-                    <PathIcon Data="{DynamicResource live_regular}" Foreground="Chartreuse" />
+            <StackPanel Orientation="Vertical" Margin="2">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Mode:"/>
+                    <Panel IsVisible="{Binding IsDotaListener}">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Label Content="Live" Margin="0, 0, 5, 0" />
+                            <PathIcon Data="{DynamicResource live_regular}" Foreground="Chartreuse" />
+                        </StackPanel>
+                    </Panel>
+                    <Panel IsVisible="{Binding !IsDotaListener}">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Label Content="Demo" Margin="0, 0, 5, 0" />
+                            <PathIcon Data="{DynamicResource live_regular}" Foreground="Orange" />
+                        </StackPanel>
+                    </Panel>
                 </StackPanel>
-            </Panel>
+            </StackPanel>
 
-            <Panel IsVisible="{Binding !IsDotaListener}">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <Label Content="Demo Timers" Margin="0, 0, 5, 0" />
-                    <PathIcon Data="{DynamicResource live_regular}" Foreground="Orange" />
-                </StackPanel>
-            </Panel>
+            <StackPanel Orientation="Horizontal" Margin="2">
+                <Label Content="Installation:" VerticalContentAlignment="Center" />
+                <CheckBox x:Name="Installed"
+                          IsEnabled="False"
+                          IsVisible="{Binding IsIntegrated}"
+                          IsChecked="{Binding IsIntegrated}"
+                          Content="Integrated" />
+                <Button x:Name="Install"
+                        IsVisible="{Binding !IsIntegrated}"
+                        Content="Install"
+                        Margin="10,0,0,0"
+                        Command="{Binding Install}" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Port:" VerticalContentAlignment="Center" />
+                <NumericUpDown
+                    x:Name="PortNumber"
+                    Margin="10, 0, 0 ,0"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Height="30"
+                    Increment="1"
+                    ToolTip.Placement="Left"
+                    ToolTip.Tip="The port number to listen for Dota2 GSI events."
+                    ParsingNumberStyle="Integer"
+                    Value="{Binding PortNumber, Mode=TwoWay}"
+                    ShowButtonSpinner="True"/>
+            </StackPanel>
 
             <Button x:Name="OpenGsiFolder"
                     IsVisible="True"
-                    Content="GSI"
-                    Margin="10,0,10,0"
+                    Content="GSI Folder"
+                    Margin="0, 10, 10, 0"
                     Command="{Binding Open}" />
 
-            <CheckBox x:Name="Installed"
-                      IsEnabled="False"
-                      IsVisible="{Binding IsIntegrated}"
-                      IsChecked="{Binding IsIntegrated}"
-                      Content="Integrated" />
-
-            <Button x:Name="Install"
-                    IsVisible="{Binding !IsIntegrated}"
-                    Content="Install"
-                    Margin="10,0,0,0"
-                    Command="{Binding Install}" />
         </StackPanel>
 
     </StackPanel>

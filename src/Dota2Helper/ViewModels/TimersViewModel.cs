@@ -20,7 +20,7 @@ public class TimersViewModel : ViewModelBase
     readonly GameStateHolder _stateHolder;
     readonly AudioPlayer _audioPlayer;
 
-    static readonly JsonSerializerOptions Options = new()
+    readonly static JsonSerializerOptions Options = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         WriteIndented = true

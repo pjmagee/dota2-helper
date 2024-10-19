@@ -24,6 +24,51 @@ public partial class SteamLibraryService(ILogger<SteamLibraryService> logger)
         return Directory.Exists(gameStateIntegrationPath) ? gameStateIntegrationPath : null;
     }
 
+    // Port number is from the Uri field which is
+    // "uri"           "http://localhost:4001/"
+    public int? GetPortNumber()
+    {
+        var gameStateIntegrationPath = FindGameStateIntegrationPath();
+
+        if (gameStateIntegrationPath == null) return null;
+
+        var configFileFullPath = Path.Combine(gameStateIntegrationPath, ConfigFile);
+
+        if (!File.Exists(configFileFullPath)) return null;
+
+        var configFileContent = File.ReadAllText(configFileFullPath);
+        // regex match on: "uri""http://localhost:4001/"
+
+        var match = Regex.Match(configFileContent, @"""uri""\s*""http://localhost:(\d+)/""");
+        if (!match.Success) return null;
+
+        return int.Parse(match.Groups[1].Value);
+    }
+
+    public void SetPortNumber(int portNumber)
+    {
+        var gameStateIntegrationPath = FindGameStateIntegrationPath();
+
+        if (gameStateIntegrationPath == null)
+        {
+            logger.LogError("gamestate_integration folder not found");
+            return;
+        }
+
+        var configFileFullPath = Path.Combine(gameStateIntegrationPath, ConfigFile);
+
+        if (!File.Exists(configFileFullPath))
+        {
+            logger.LogError("gamestate_integration config file not found");
+            return;
+        }
+
+        var configFileContent = File.ReadAllText(configFileFullPath);
+        var newConfigFileContent = Regex.Replace(configFileContent, @"""uri""\s*""http://localhost:\d+/""", $@"""uri"" ""http://localhost:{portNumber}/""");
+
+        File.WriteAllText(configFileFullPath, newConfigFileContent);
+    }
+
     public bool IsIntegrationInstalled()
     {
         var gameStateIntegrationPath = FindGameStateIntegrationPath();
