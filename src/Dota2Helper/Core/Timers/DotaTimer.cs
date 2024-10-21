@@ -27,7 +27,6 @@ public class DotaTimer : ReactiveObject
         Speech = speech;
         IsTts = isTts;
         IsEnabled = isEnabled;
-        
         IsActive = true;
     }
 
@@ -115,6 +114,7 @@ public class DotaTimer : ReactiveObject
     }
 
     public string EnableDisableTimerTooltip => IsEnabled ? "Disable timer" : "Enable timer";
+    public string EnableDisableTtsTooltip => "TTS or Effect";
 
     public event EventHandler<EventArgs>? OnReminder;
 

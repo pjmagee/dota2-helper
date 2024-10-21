@@ -60,6 +60,20 @@
                     <Setter Property="Foreground" Value="{DynamicResource SystemErrorTextColor}" />
                     <Setter Property="FontWeight" Value="Bold" />
                 </Style>
+
+                <Style Selector="ToggleButton PathIcon.tts-on">
+                    <Setter Property="IsVisible" Value="False"/>
+                </Style>
+                <Style Selector="ToggleButton:checked PathIcon.tts-on">
+                    <Setter Property="IsVisible" Value="True"/>
+                </Style>
+                <Style Selector="ToggleButton PathIcon.tts-off">
+                    <Setter Property="IsVisible" Value="True"/>
+                </Style>
+                <Style Selector="ToggleButton:checked PathIcon.tts-off">
+                    <Setter Property="IsVisible" Value="False"/>
+                </Style>
+
             </ItemsControl.Styles>
 
             <ItemsControl.DataTemplates>
@@ -94,12 +108,22 @@
                             IsChecked="{Binding Mode=TwoWay, Path=IsSoundEnabled}"
                             ToolTip.HorizontalOffset="10"
                             ToolTip.Tip="{Binding Mode=OneWay, Path=EnableDisableSoundTooltip}">
-
                             <Panel>
                                 <PathIcon Classes="audio-on" Data="{StaticResource speaker_regular}" />
                                 <PathIcon Classes="audio-mute" Data="{StaticResource speaker_off_regular}" />
                             </Panel>
+                        </ToggleButton>
 
+                        <ToggleButton
+                            ToolTip.Placement="Right"
+                            ToolTip.Tip="{Binding Path=EnableDisableTtsTooltip}"
+                            IsChecked="{Binding IsTts}">
+                            <Panel>
+                                <PathIcon Classes="tts-on" Foreground="Yellow"
+                                          Data="{StaticResource person_voice_regular}" />
+                                <PathIcon Classes="tts-off" Foreground="Green"
+                                          Data="{StaticResource music_regular}" />
+                            </Panel>
                         </ToggleButton>
 
                         <!-- <Button IsVisible="{Binding Mode=OneWay, Path=IsManualReset}" Command="{Binding Reset}"> -->
