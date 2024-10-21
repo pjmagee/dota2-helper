@@ -12,7 +12,7 @@ using Microsoft.Extensions.Options;
 
 namespace Dota2Helper.Core.Listeners;
 
-public class DotaListener(ILogger<DotaListener> logger, IOptions<Settings> settings) : IDotaListener
+public class DotaListener(ILogger<DotaListener> logger, IOptions<Settings> settings, GameStateService gameStateService) : IDotaListener
 {
     HttpListener? _listener;
 
@@ -34,31 +34,29 @@ public class DotaListener(ILogger<DotaListener> logger, IOptions<Settings> setti
             if (_listener == null)
             {
                 _listener = new HttpListener();
-                _listener.Prefixes.Add(settings.Value.Address.AbsoluteUri);
+                _listener.Prefixes.Add(gameStateService.GetUri().ToString());
                 _listener.Start();
             }
 
             try
             {
-                using (var timeoutCts = new CancellationTokenSource(TimeSpan.FromSeconds(2)))
-                {
-                    // Supports instant cancellation from the caller and a timeout for the listener
-                    using (var waitCts = CancellationTokenSource.CreateLinkedTokenSource(ct, timeoutCts.Token))
-                    {
-                        var resp = await _listener.GetContextAsync().WaitAsync(waitCts.Token);
-                        _state = JsonSerializer.Deserialize<GameState>(resp.Request.InputStream, Options);
+                var resp = await _listener.GetContextAsync().WaitAsync(ct);
+                _state = JsonSerializer.Deserialize<GameState>(resp.Request.InputStream, Options);
 
-                        /*
-                         * timeout: Game expects an HTTP 2XX response code from its HTTP POST request
-                         * and game will not attempt submitting the next HTTP POST request while a previous request is still in flight.
-                         * This response is sent to the game to unblock it and is important to get consistent updates.
-                         */
-                        resp.Response.StatusCode = (int)HttpStatusCode.OK;
-                        resp.Response.Close();
+                /*
+                 * timeout: Game expects an HTTP 2XX response code from its HTTP POST request
+                 * and game will not attempt submitting the next HTTP POST request while a previous request is still in flight.
+                 * This response is sent to the game to unblock it and is important to get consistent updates.
+                 */
+                resp.Response.StatusCode = (int)HttpStatusCode.OK;
+                resp.Response.Close();
 
-                        logger.LogDebug("{@Message}", _state);
-                    }
-                }
+                logger.LogDebug("{@Message}", _state);
+            }
+            catch (ObjectDisposedException e)
+            {
+                logger.LogWarning(e, "Listener disposed");
+                _listener = null;
             }
             catch (Exception e)
             {
@@ -81,8 +79,15 @@ public class DotaListener(ILogger<DotaListener> logger, IOptions<Settings> setti
     public void Dispose()
     {
         logger.LogInformation("Disposing DotaListener");
-        _listener?.Stop();
-        _listener?.Close();
-        _listener = null;
+
+        try
+        {
+            _listener?.Stop();
+            _listener?.Close();
+        }
+        finally
+        {
+            _listener = null;
+        }
     }
 }

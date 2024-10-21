@@ -19,7 +19,7 @@ public class SettingsViewModel : ViewModelBase
     readonly static object WriterLock = new();
 
 
-    readonly SteamLibraryService _steamLibraryService;
+    readonly GameStateService _gameStateService;
     readonly AudioPlayer _audioPlayer;
 
     public DotaTimers Timers { get; }
@@ -35,9 +35,9 @@ public class SettingsViewModel : ViewModelBase
         get => _audioPlayer.Volume;
     }
 
-    public SettingsViewModel(SteamLibraryService steamLibraryService, AudioPlayer audioPlayer, DotaTimers timers)
+    public SettingsViewModel(GameStateService gameStateService, AudioPlayer audioPlayer, DotaTimers timers)
     {
-        _steamLibraryService = steamLibraryService;
+        _gameStateService = gameStateService;
         _audioPlayer = audioPlayer;
         Timers = timers;
 
@@ -64,17 +64,17 @@ public class SettingsViewModel : ViewModelBase
 
     public void Install()
     {
-        _steamLibraryService.InstallIntegration();
+        _gameStateService.InstallIntegration();
         this.RaisePropertyChanged(nameof(IsIntegrated));
     }
 
     // Open folder with steam dota2 install
     public void Open()
     {
-        _steamLibraryService.OpenGameStateIntegrationFolder();
+        _gameStateService.OpenGameStateIntegrationFolder();
     }
 
-    public bool IsIntegrated => _steamLibraryService.IsIntegrationInstalled();
+    public bool IsIntegrated => _gameStateService.IsIntegrationInstalled();
 
     public void ToggleTheme()
     {
@@ -93,12 +93,12 @@ public class SettingsViewModel : ViewModelBase
 
     public int? PortNumber
     {
-        get => _steamLibraryService.GetPortNumber();
+        get => _gameStateService.GetPortNumber();
         set
         {
             if (value != _portNumber)
             {
-                _steamLibraryService.SetPortNumber(value!.Value);
+                _gameStateService.SetPortNumber(value!.Value);
             }
 
             this.RaiseAndSetIfChanged(ref _portNumber, value);

@@ -8,7 +8,4 @@ public class Settings
 {
     [JsonPropertyName("Timers")]
     public required List<TimerOptions> Timers { get; set; }
-    
-    [JsonPropertyName("Address")]
-    public required Uri Address { get; set; } = new("http://localhost:4001/");
 }

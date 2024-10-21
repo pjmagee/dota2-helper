@@ -10,7 +10,7 @@ using Microsoft.Win32;
 
 namespace Dota2Helper.Core.Gsi;
 
-public partial class SteamLibraryService(ILogger<SteamLibraryService> logger)
+public partial class GameStateService(ILogger<GameStateService> logger)
 {
     const string ConfigFile = "gamestate_integration_d2helper.cfg";
 
@@ -24,49 +24,49 @@ public partial class SteamLibraryService(ILogger<SteamLibraryService> logger)
         return Directory.Exists(gameStateIntegrationPath) ? gameStateIntegrationPath : null;
     }
 
-    // Port number is from the Uri field which is
-    // "uri"           "http://localhost:4001/"
     public int? GetPortNumber()
     {
-        var gameStateIntegrationPath = FindGameStateIntegrationPath();
+        var gsiPath = FindGameStateIntegrationPath();
+        if (gsiPath == null) return null;
 
-        if (gameStateIntegrationPath == null) return null;
+        var gsiCfgPath = Path.Combine(gsiPath, ConfigFile);
+        if (!File.Exists(gsiCfgPath)) return null;
 
-        var configFileFullPath = Path.Combine(gameStateIntegrationPath, ConfigFile);
-
-        if (!File.Exists(configFileFullPath)) return null;
-
-        var configFileContent = File.ReadAllText(configFileFullPath);
-        // regex match on: "uri""http://localhost:4001/"
-
-        var match = Regex.Match(configFileContent, @"""uri""\s*""http://localhost:(\d+)/""");
+        var rawConfig = File.ReadAllText(gsiCfgPath);
+        var match = Regex.Match(rawConfig, @"""uri""\s*""http://localhost:(\d+)/""");
         if (!match.Success) return null;
 
         return int.Parse(match.Groups[1].Value);
     }
 
+    public Uri GetUri()
+    {
+        var portNumber = GetPortNumber();
+        return portNumber == null ? new Uri("http://localhost:4001/") : new Uri($"http://localhost:{portNumber}/");
+    }
+
     public void SetPortNumber(int portNumber)
     {
-        var gameStateIntegrationPath = FindGameStateIntegrationPath();
+        var gsiPath = FindGameStateIntegrationPath();
 
-        if (gameStateIntegrationPath == null)
+        if (gsiPath == null)
         {
             logger.LogError("gamestate_integration folder not found");
             return;
         }
 
-        var configFileFullPath = Path.Combine(gameStateIntegrationPath, ConfigFile);
+        var gsiCfgPath = Path.Combine(gsiPath, ConfigFile);
 
-        if (!File.Exists(configFileFullPath))
+        if (!File.Exists(gsiCfgPath))
         {
             logger.LogError("gamestate_integration config file not found");
             return;
         }
 
-        var configFileContent = File.ReadAllText(configFileFullPath);
-        var newConfigFileContent = Regex.Replace(configFileContent, @"""uri""\s*""http://localhost:\d+/""", $@"""uri"" ""http://localhost:{portNumber}/""");
+        var rawContents = File.ReadAllText(gsiCfgPath);
+        var newConfigFileContent = Regex.Replace(rawContents, @"""uri""\s*""http://localhost:\d+/""", $@"""uri"" ""http://localhost:{portNumber}/""");
 
-        File.WriteAllText(configFileFullPath, newConfigFileContent);
+        File.WriteAllText(gsiCfgPath, newConfigFileContent);
     }
 
     public bool IsIntegrationInstalled()
