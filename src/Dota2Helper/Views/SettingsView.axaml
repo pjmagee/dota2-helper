@@ -163,21 +163,21 @@
                         Command="{Binding Install}" />
             </StackPanel>
 
-            <StackPanel Orientation="Horizontal">
-                <Label Content="Port:" VerticalContentAlignment="Center" />
-                <NumericUpDown
-                    x:Name="PortNumber"
-                    Margin="10, 0, 0 ,0"
-                    HorizontalContentAlignment="Center"
-                    VerticalContentAlignment="Center"
-                    Height="30"
-                    Increment="1"
-                    ToolTip.Placement="Left"
-                    ToolTip.Tip="The port number to listen for Dota2 GSI events."
-                    ParsingNumberStyle="Integer"
-                    Value="{Binding PortNumber, Mode=TwoWay}"
-                    ShowButtonSpinner="True"/>
-            </StackPanel>
+            <!-- <StackPanel Orientation="Horizontal"> -->
+            <!--     <Label Content="Port:" VerticalContentAlignment="Center" /> -->
+            <!--     <NumericUpDown -->
+            <!--         x:Name="PortNumber" -->
+            <!--         Margin="10, 0, 0 ,0" -->
+            <!--         HorizontalContentAlignment="Center" -->
+            <!--         VerticalContentAlignment="Center" -->
+            <!--         Height="30" -->
+            <!--         Increment="1" -->
+            <!--         ToolTip.Placement="Left" -->
+            <!--         ToolTip.Tip="The port number to listen for Dota2 GSI events." -->
+            <!--         ParsingNumberStyle="Integer" -->
+            <!--         Value="{Binding PortNumber, Mode=TwoWay}" -->
+            <!--         ShowButtonSpinner="True"/> -->
+            <!-- </StackPanel> -->
 
             <Button x:Name="OpenGsiFolder"
                     IsVisible="True"
