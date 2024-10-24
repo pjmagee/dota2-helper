@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Dota2Helper.Core.Configuration;
@@ -11,5 +12,9 @@ namespace Dota2Helper.Core.Configuration;
 [JsonSerializable(typeof(Uri))]
 public partial class JsonContext : JsonSerializerContext
 {
-    
+    public static JsonContext Custom { get; } = new(new JsonSerializerOptions()
+        {
+            WriteIndented = true,
+        }
+    );
 }

@@ -31,7 +31,7 @@
 
   <ItemGroup>
     <None Update="appsettings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Content Include="gamestate_integration_d2helper.cfg" CopyToOutputDirectory="Always" />
   </ItemGroup>

@@ -8,14 +8,15 @@ public class DotaTimer : ReactiveObject
     private TimeSpan _manualResetTime;
 
     protected internal DotaTimer(
-        string label, 
-        TimeSpan first, 
-        TimeSpan interval, 
+        string label,
+        TimeSpan first,
+        TimeSpan interval,
         TimeSpan reminder,
-        string audioFile, 
+        string audioFile,
         bool isManualReset,
         string speech,
         bool isTts,
+        bool isSoundEnabled,
         bool isEnabled)
     {
         Label = label;
@@ -25,24 +26,28 @@ public class DotaTimer : ReactiveObject
         AudioFile = audioFile;
         IsManualReset = isManualReset;
         Speech = speech;
-        IsTts = isTts;
         IsEnabled = isEnabled;
+        IsSoundEnabled = isSoundEnabled;
+        IsTts = isTts;
+
         IsActive = true;
     }
 
     public bool IsManualReset { get; protected init; }
-    
+
     public string Speech { get; }
-    
+
     private bool _isTts;
-    public bool IsTts 
+
+    public bool IsTts
     {
         get => _isTts;
         set => this.RaiseAndSetIfChanged(ref _isTts, value);
     }
-    
+
     private TimeSpan _reminder;
-    public TimeSpan Reminder 
+
+    public TimeSpan Reminder
     {
         get => _reminder;
         set => this.RaiseAndSetIfChanged(ref _reminder, value);
@@ -55,22 +60,23 @@ public class DotaTimer : ReactiveObject
     }
 
     private bool _isEnabled;
-    public bool IsEnabled 
+
+    public bool IsEnabled
     {
         get => _isEnabled;
         set => this.RaiseAndSetIfChanged(ref _isEnabled, value);
     }
-    
+
     public bool IsReminderActive => TimeRemaining - Reminder <= TimeSpan.Zero;
-    
+
     public string AudioFile { get; }
     public string Label { get; }
     public TimeSpan First { get; }
     public TimeSpan Interval { get; }
-    
-    
+
+
     private TimeSpan _timeRemaining;
-    
+
     public TimeSpan TimeRemaining
     {
         get => _timeRemaining;
@@ -90,25 +96,26 @@ public class DotaTimer : ReactiveObject
         get => _isActive;
         private set => this.RaiseAndSetIfChanged(ref _isActive, value);
     }
-    
+
 
     private bool _isSoundEnabled;
+
     public bool IsSoundEnabled
     {
         get => _isSoundEnabled;
         set => this.RaiseAndSetIfChanged(ref _isSoundEnabled, value);
     }
-    
+
     public string EnableDisableSoundTooltip => IsSoundEnabled ? "Disable sound" : "Enable sound";
-    
+
     public bool IsTriggered => TimeRemaining <= TimeSpan.Zero;
-    
+
     public bool IsPendingManualReset => !IsActive && IsManualReset;
-    
+
     private bool _isSoundPlayed;
 
     private bool IsSoundPlayed
-    {   
+    {
         get => _isSoundPlayed;
         set => this.RaiseAndSetIfChanged(ref _isSoundPlayed, value);
     }
@@ -136,7 +143,7 @@ public class DotaTimer : ReactiveObject
             TimeRemaining = TimeSpan.Zero;
             return;
         }
-        
+
         TimeRemaining = CalculateTimeRemaining(gameTime);
 
         if (TimeRemaining - Reminder > TimeSpan.Zero)

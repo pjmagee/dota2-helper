@@ -25,6 +25,7 @@ public class DotaTimers : ObservableCollection<DotaTimer>
                 item.IsManualReset, 
                 item.Speech, 
                 item.IsTts,
+                item.IsSoundEnabled,
                 item.IsEnabled));
         }
         

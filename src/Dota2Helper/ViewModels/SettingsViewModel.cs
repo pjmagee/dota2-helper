@@ -1,5 +1,4 @@
 ﻿using System.Collections.Immutable;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
@@ -9,7 +8,6 @@ using Dota2Helper.Core.Audio;
 using Dota2Helper.Core.Configuration;
 using Dota2Helper.Core.Gsi;
 using Dota2Helper.Core.Timers;
-using DynamicData.Binding;
 using ReactiveUI;
 
 namespace Dota2Helper.ViewModels;
@@ -17,7 +15,6 @@ namespace Dota2Helper.ViewModels;
 public class SettingsViewModel : ViewModelBase
 {
     readonly static object WriterLock = new();
-
 
     readonly GameStateService _gameStateService;
     readonly AudioPlayer _audioPlayer;
@@ -136,19 +133,19 @@ public class SettingsViewModel : ViewModelBase
                     {
                         if (item.Label == timer.Label)
                         {
-                            // Update the properties of the timer object
                             item.First = timer.First;
                             item.Interval = timer.Interval;
                             item.Reminder = timer.Reminder;
                             item.AudioFile = timer.AudioFile;
                             item.IsManualReset = timer.IsManualReset;
+                            item.IsSoundEnabled = timer.IsSoundEnabled;
                             item.IsEnabled = timer.IsEnabled;
                             item.IsTts = timer.IsTts;
                             break;
                         }
                     }
 
-                    File.WriteAllText("appsettings.json", JsonSerializer.Serialize(appSettings, JsonContext.Default.Options));
+                    File.WriteAllText("appsettings.json", JsonSerializer.Serialize(appSettings, JsonContext.Custom.Options));
                 }
             }
         }
