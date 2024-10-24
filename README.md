@@ -18,19 +18,23 @@ I do not own a Mac or Linux machine to test the application, so only Windows is 
 
 - Timers view optimised to place over Dota 2 Game in full screen mode
 - Customisable timers with intervals and reminders
-- Audio notifications for each timer
+- Audio effect or text to speech (tts) notifications for each timer
 - Dark & light modes available
 - Manual reset for dynamic objectives (e.g. Tormentors, Roshan)
-- Advanced settings to modify audio files and intervals with `appsettings.json`
 - Fake timers are used when the game is not running for easy configuration
 - When the game is running, the timers will automatically start based on the game time
-- GSI integration with a simple install button to add the configuration file
+- Game State Integration (GSI) with the click of a button when you launch the application
+- Advanced settings to modify audio files and intervals with `appsettings.json`
 
-## Game State Integration
+## (GSI) Game State Integration
 
-Go to `..\steamapps\common\dota 2 beta\game\dota\cfg\gamestate_integration` and add the following file:
+The application uses the Game State Integration feature of Dota 2 to get the game time and other information.
 
-`gamestate_integration_timers.cfg`
+When you launch the application, you will need to enable the Game State Integration by clicking the `Install` button on the Dota 2 Helper Configuration window.
+
+Go to `..\steamapps\common\dota 2 beta\game\dota\cfg\gamestate_integration`:
+
+You should be able to see a file created called `gamestate_integration_dota2_helper.cfg` with the following content:
 
 ```plaintext
 "Dota 2 Integration Configuration"
@@ -51,6 +55,11 @@ Go to `..\steamapps\common\dota 2 beta\game\dota\cfg\gamestate_integration` and 
     }
 }
 ```
+Dota2 will send the game state information to the application when the game is running on the provided URI.
+
+This application runs a small local web server waiting for Dota2 to post the game state information to the helper app, which it uses to calculate the timers.
+
+Valve does not seem to have dedicated GSI documentation for Dota2, but the concept and configuration is similar to Valves CSGO GSI, which is documented [here](https://developer.valvesoftware.com/wiki/Counter-Strike:_Global_Offensive_Game_State_Integration).
 
 ## How to?
 
@@ -61,6 +70,18 @@ Go to `..\steamapps\common\dota 2 beta\game\dota\cfg\gamestate_integration` and 
 ## Advanced settings
 
 Labels, removal of UI elements, intervals, starting times, and audio has additional customisation for advanced users
+
+Note on the fields:
+
+- `IsTts` - Text to speech
+- `IsSoundEnabled` - Audio on or off
+- `IsManualReset` - Manual reset for dynamic objectives
+- `IsEnabled` - Timer on or off
+- `First` - Starting time
+- `Interval` - Interval between timers
+- `Reminder` - Reminder time (i.e 15 seconds before the timer)
+- `AudioFile` - Audio file path for effect sound if not using Text to speech
+- `Label` - Name of the timer
 
 <!-- markdownlint-disable MD033 -->
 <details>
@@ -76,7 +97,9 @@ Labels, removal of UI elements, intervals, starting times, and audio has additio
       "Reminder": "00:15",
       "AudioFile": "audio/Stack.mp3",
       "IsManualReset": false,
-      "IsEnabled": true
+      "IsEnabled": true,
+      "IsTts": false,
+      "IsSoundEnabled": true
     },
     {
       "Label": "Wisdom",
@@ -85,7 +108,9 @@ Labels, removal of UI elements, intervals, starting times, and audio has additio
       "Reminder": "00:45",
       "AudioFile": "audio/Wisdom.mp3",
       "IsManualReset": false,
-      "IsEnabled": true
+      "IsEnabled": true,
+      "IsTts": false,
+      "IsSoundEnabled": true
     },
     {
       "Label": "Bounty",
@@ -94,7 +119,9 @@ Labels, removal of UI elements, intervals, starting times, and audio has additio
       "Reminder": "00:20",
       "AudioFile": "audio/Bounty.mp3",
       "IsManualReset": false,
-      "IsEnabled": true
+      "IsEnabled": true,
+      "IsTts": false,
+      "IsSoundEnabled": true
     },
     {
       "Label": "Power",
@@ -103,7 +130,9 @@ Labels, removal of UI elements, intervals, starting times, and audio has additio
       "Reminder": "00:20",
       "AudioFile": "audio/Power.mp3",
       "IsManualReset": false,
-      "IsEnabled": true
+      "IsEnabled": true,
+      "IsTts": false,
+      "IsSoundEnabled": true
     },
     {
       "Label": "Lotus",
@@ -112,7 +141,9 @@ Labels, removal of UI elements, intervals, starting times, and audio has additio
       "Reminder": "00:15",
       "AudioFile": "audio/Lotus.mp3",
       "IsManualReset": false,
-      "IsEnabled": true
+      "IsEnabled": true,
+      "IsTts": false,
+      "IsSoundEnabled": true
     },
     {
       "Label": "Tormentor (R)",
@@ -121,7 +152,9 @@ Labels, removal of UI elements, intervals, starting times, and audio has additio
       "Reminder": "00:45",
       "AudioFile": "audio/Tormentor.mp3",
       "IsManualReset": true,
-      "IsEnabled": true
+      "IsEnabled": true,
+      "IsTts": false,
+      "IsSoundEnabled": true
     },
     {
       "Label": "Tormentor (D)",
@@ -130,7 +163,9 @@ Labels, removal of UI elements, intervals, starting times, and audio has additio
       "Reminder": "00:45",
       "AudioFile": "audio/Tormentor.mp3",
       "IsManualReset": true,
-      "IsEnabled": true
+      "IsEnabled": true,
+      "IsTts": false,
+      "IsSoundEnabled": true
     },
     {
       "Label": "Roshan",
@@ -139,7 +174,9 @@ Labels, removal of UI elements, intervals, starting times, and audio has additio
       "Reminder": "03:00",
       "AudioFile": "audio/Roshan.mp3",
       "IsManualReset": true,
-      "IsEnabled": false
+      "IsEnabled": false,
+      "IsTts": false,
+      "IsSoundEnabled": true
     },
     {
       "Label": "Catapult",
@@ -148,7 +185,9 @@ Labels, removal of UI elements, intervals, starting times, and audio has additio
       "Reminder": "00:30",
       "AudioFile": "audio/Catapult.mp3",
       "IsManualReset": false,
-      "IsEnabled": false
+      "IsEnabled": false,
+      "IsTts": false,
+      "IsSoundEnabled": true
     }
   ]
 }
