@@ -10,12 +10,21 @@ namespace Dota2Helper.Core.Audio;
 [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
 public class AudioPlayer : IDisposable
 {
-    private readonly static LibVLC LibVlc = new();
-    private readonly MediaPlayer _player = new(LibVlc);
-    private readonly Queue<AudioQueueItem> _queue = new();
-    private readonly SpeechSynthesizer _synthesizer = new();
+    readonly static LibVLC LibVlc = new();
+    readonly MediaPlayer _player = new(LibVlc);
+    readonly Queue<AudioQueueItem> _queue = new();
+    readonly SpeechSynthesizer _synthesizer = new();
 
-    public void QueueReminder(DotaTimer timer) => _queue.Enqueue(AudioQueueItem.FromTimer(timer));
+    public void QueueReminder(DotaTimer timer)
+    {
+        // Prevent duplicate reminders
+        foreach (var item in _queue)
+        {
+            if (item.Label == timer.Label) return;
+        }
+
+        _queue.Enqueue(AudioQueueItem.FromTimer(timer));
+    }
 
     public int Volume 
     {
@@ -33,7 +42,7 @@ public class AudioPlayer : IDisposable
     {
         if (!_queue.TryDequeue(out var item)) return;
 
-        if (item.AudioQueueItemType == AudioQueueItemType.Audio)
+        if (item.AudioQueueItemType == AudioQueueItemType.Effect)
         {
             using (var reminderAudio = new Media(LibVlc, item.Value))
             {
@@ -41,7 +50,7 @@ public class AudioPlayer : IDisposable
             }    
         }
         
-        if (item.AudioQueueItemType == AudioQueueItemType.Tts)
+        if (item.AudioQueueItemType == AudioQueueItemType.TextToSpeech)
         {
             _synthesizer.SpeakAsync(item.Value);
         }

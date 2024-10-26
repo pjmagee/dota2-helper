@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using Avalonia.Controls;
 using Dota2Helper.Core.Audio;
 using Dota2Helper.Core.BackgroundServices;
 using Dota2Helper.Core.Configuration;
@@ -17,8 +18,6 @@ using Dota2Helper.Core.Gsi;
 using Dota2Helper.Core.Listeners;
 using Dota2Helper.Core.Timers;
 using Microsoft.Extensions.Logging;
-using GameStateService = Dota2Helper.Core.Gsi.GameStateService;
-using ViewLocator = Dota2Helper.Core.Framework.ViewLocator;
 using Hosting = Microsoft.Extensions.Hosting;
 
 namespace Dota2Helper;
@@ -74,8 +73,8 @@ public class App : Application
 
         builder.Services.AddSingleton<FakeDotaListener>();
         builder.Services.AddSingleton<DotaListener>();
+        builder.Services.AddSingleton<GsiConfigService>();
         builder.Services.AddSingleton<IListenerStrategy, DynamicListenerStrategy>();
-        builder.Services.AddSingleton<GameStateService>();
         builder.Services.AddSingleton<IDotaListener>(serviceProvider => serviceProvider.GetRequiredService<DotaListener>());
         builder.Services.AddSingleton<IDotaListener>(serviceProvider => serviceProvider.GetRequiredService<FakeDotaListener>());
 
@@ -113,7 +112,7 @@ public class App : Application
         builder.Services.AddView<TimersViewModel, TimersView>();
         builder.Services.AddView<SettingsViewModel, SettingsView>();
 
-        builder.Services.AddHostedService<Core.BackgroundServices.GameStateService>();
+        builder.Services.AddHostedService<GameStateService>();
         builder.Services.AddHostedService<AudioPlayerService>();
         builder.Services.AddHostedService<ListenerUpdateService>();
 

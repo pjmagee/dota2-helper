@@ -23,6 +23,9 @@ public class TimerOptions
     [JsonConverter(typeof(TimeSpanConverter))]
     public required TimeSpan Reminder { get; set; }
 
+    [JsonConverter(typeof(TimeSpanConverter))]
+    public TimeSpan Offset { get; set; } = TimeSpan.Zero;
+
     /// <summary>
     ///  The audio file for effect sound
     /// </summary>

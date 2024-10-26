@@ -1,6 +1,5 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:framework="clr-namespace:Dota2Helper.Core.Framework"
              x:Class="Dota2Helper.App"
              RequestedThemeVariant="Dark">
     <Application.Styles>

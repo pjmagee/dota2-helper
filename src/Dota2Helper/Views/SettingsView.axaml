@@ -26,6 +26,7 @@
 
     <!-- Volume and Theme -->
     <StackPanel Orientation="Vertical" Spacing="5">
+
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" DockPanel.Dock="Right" Spacing="5">
 
             <Panel Margin="5,0">
@@ -53,6 +54,7 @@
         </StackPanel>
 
         <!-- Configured Timers -->
+
         <ItemsControl ItemsSource="{Binding Path=Timers}">
 
             <ItemsControl.Styles>
@@ -62,16 +64,16 @@
                 </Style>
 
                 <Style Selector="ToggleButton PathIcon.tts-on">
-                    <Setter Property="IsVisible" Value="False"/>
+                    <Setter Property="IsVisible" Value="False" />
                 </Style>
                 <Style Selector="ToggleButton:checked PathIcon.tts-on">
-                    <Setter Property="IsVisible" Value="True"/>
+                    <Setter Property="IsVisible" Value="True" />
                 </Style>
                 <Style Selector="ToggleButton PathIcon.tts-off">
-                    <Setter Property="IsVisible" Value="True"/>
+                    <Setter Property="IsVisible" Value="True" />
                 </Style>
                 <Style Selector="ToggleButton:checked PathIcon.tts-off">
-                    <Setter Property="IsVisible" Value="False"/>
+                    <Setter Property="IsVisible" Value="False" />
                 </Style>
 
             </ItemsControl.Styles>
@@ -104,10 +106,9 @@
                                    Classes.IsReminderActive="{Binding Path=IsReminderActive}"
                                    Text="{Binding Path=TimeRemaining, StringFormat=mm\\:ss}" />
 
-                        <ToggleButton
-                            IsChecked="{Binding Mode=TwoWay, Path=IsSoundEnabled}"
-                            ToolTip.HorizontalOffset="10"
-                            ToolTip.Tip="{Binding Mode=OneWay, Path=EnableDisableSoundTooltip}">
+                        <ToggleButton IsChecked="{Binding Mode=TwoWay, Path=IsSoundEnabled}"
+                                      ToolTip.HorizontalOffset="10"
+                                      ToolTip.Tip="{Binding Mode=OneWay, Path=EnableDisableSoundTooltip}">
                             <Panel>
                                 <PathIcon Classes="audio-on" Data="{StaticResource speaker_regular}" />
                                 <PathIcon Classes="audio-mute" Data="{StaticResource speaker_off_regular}" />
@@ -139,17 +140,35 @@
                                        Width="110"
                                        DockPanel.Dock="Right"
                                        Increment="1"
-                                       Minimum="5"
+                                       Minimum="-60"
                                        AllowSpin="True"
                                        Maximum="60"
                                        ParsingNumberStyle="Integer"
                                        ToolTip.Placement="Left"
-                                       ToolTip.Tip="Tweak when the reminder is triggered.&#x0a; Mouse Scroll Up/Down.">
+                                       ToolTip.Tip="Reminder trigger&#x0a;Mouse Scroll Up/Down">
+                        </NumericUpDown>
+
+                        <NumericUpDown ShowButtonSpinner="True"
+                                       VerticalContentAlignment="Center"
+                                       HorizontalContentAlignment="Center"
+                                       Value="{Binding OffsetInSeconds, Mode=TwoWay}"
+                                       Width="110"
+                                       DockPanel.Dock="Right"
+                                       Increment="1"
+                                       Minimum="-60"
+                                       AllowSpin="True"
+                                       Maximum="60"
+                                       ParsingNumberStyle="Integer"
+                                       ToolTip.Placement="Left"
+                                       ToolTip.Tip="Tweak Offset&#x0a;Mouse Scroll Up/Down">
                         </NumericUpDown>
 
                     </StackPanel>
+
                 </DataTemplate>
+
             </ItemsControl.DataTemplates>
+
         </ItemsControl>
 
         <!-- Dota2 Integration -->
@@ -157,7 +176,7 @@
 
             <StackPanel Orientation="Vertical" Margin="2">
                 <StackPanel Orientation="Horizontal">
-                    <Label Content="Mode:"/>
+                    <Label Content="Mode:" />
                     <Panel IsVisible="{Binding IsDotaListener}">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <Label Content="Live" Margin="0, 0, 5, 0" />

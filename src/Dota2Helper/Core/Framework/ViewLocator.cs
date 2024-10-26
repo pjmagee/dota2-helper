@@ -8,7 +8,7 @@ namespace Dota2Helper.Core.Framework;
 
 public class ViewLocator : IDataTemplate
 {
-    private readonly Dictionary<Type, Func<Control>> _dic;
+    readonly Dictionary<Type, Func<Control>> _dic;
 
     public ViewLocator(IEnumerable<ViewLocationDescriptor> descriptors)
     {

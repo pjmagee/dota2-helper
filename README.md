@@ -82,7 +82,11 @@ Note on the fields:
 - `Reminder` - Reminder time (i.e 15 seconds before the timer)
 - `AudioFile` - Audio file path for effect sound if not using Text to speech
 - `Label` - Name of the timer
+- `Offset` - Some timers can be offset from the minute mark. This is used to adjust the timer for these cases.
 
+Offset example:
+
+Pulling the small camp at `0:15` and `0:45` is a common strategy in Dota 2. To set up a timer for this, you would set the `First` to `02:00`, the `Interval` to `00:30`, and the `Reminder` to `00:15`. The `Offset` would be `-00:15` to adjust the timer to `0:15` and `0:45`.
 <!-- markdownlint-disable MD033 -->
 <details>
 <summary>appsettings.json</summary>
@@ -94,6 +98,18 @@ Note on the fields:
       "Label": "Stack",
       "First": "02:00",
       "Interval": "01:00",
+      "Reminder": "00:15",
+      "AudioFile": "audio/Stack.mp3",
+      "IsManualReset": false,
+      "IsEnabled": true,
+      "IsTts": false,
+      "IsSoundEnabled": true
+    },
+    {
+      "Label": "Pull",
+      "First": "02:00",
+      "Interval": "00:30",
+      "Offset": "-00:15",
       "Reminder": "00:15",
       "AudioFile": "audio/Stack.mp3",
       "IsManualReset": false,

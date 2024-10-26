@@ -20,8 +20,9 @@ public class DotaTimers : ObservableCollection<DotaTimer>
                 item.Label, 
                 item.First, 
                 item.Interval, 
-                item.Reminder, 
-                item.AudioFile,  
+                item.Reminder,
+                item.Offset,
+                item.AudioFile,
                 item.IsManualReset, 
                 item.Speech, 
                 item.IsTts,
@@ -29,7 +30,7 @@ public class DotaTimers : ObservableCollection<DotaTimer>
                 item.IsEnabled));
         }
         
-        foreach (var timer in timers.OrderBy(x => x.Interval))
+        foreach (var timer in timers)
         {
             Add(timer);
         }

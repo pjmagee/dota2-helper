@@ -10,7 +10,7 @@ using Microsoft.Win32;
 
 namespace Dota2Helper.Core.Gsi;
 
-public partial class GameStateService(ILogger<GameStateService> logger)
+public partial class GsiConfigService(ILogger<GsiConfigService> logger)
 {
     const string ConfigFile = "gamestate_integration_d2helper.cfg";
 

@@ -5,6 +5,7 @@ using System.Text.Json;
 using Avalonia;
 using Avalonia.Styling;
 using Dota2Helper.Core.Audio;
+using Dota2Helper.Core.BackgroundServices;
 using Dota2Helper.Core.Configuration;
 using Dota2Helper.Core.Gsi;
 using Dota2Helper.Core.Timers;
@@ -16,7 +17,7 @@ public class SettingsViewModel : ViewModelBase
 {
     readonly static object WriterLock = new();
 
-    readonly GameStateService _gameStateService;
+    readonly GsiConfigService _gsiConfigService;
     readonly AudioPlayer _audioPlayer;
 
     public DotaTimers Timers { get; }
@@ -32,9 +33,9 @@ public class SettingsViewModel : ViewModelBase
         get => _audioPlayer.Volume;
     }
 
-    public SettingsViewModel(GameStateService gameStateService, AudioPlayer audioPlayer, DotaTimers timers)
+    public SettingsViewModel(GsiConfigService gsiConfigService, AudioPlayer audioPlayer, DotaTimers timers)
     {
-        _gameStateService = gameStateService;
+        _gsiConfigService = gsiConfigService;
         _audioPlayer = audioPlayer;
         Timers = timers;
 
@@ -51,27 +52,25 @@ public class SettingsViewModel : ViewModelBase
 
     public bool IsSpeakerOn => Volume > 0;
 
-    ImmutableArray<string> Properties =>
+    ImmutableArray<string> IgnoredProperties =>
     [
-        nameof(DotaTimer.IsEnabled),
-        nameof(DotaTimer.IsSoundEnabled),
-        nameof(DotaTimer.IsTts),
-        nameof(DotaTimer.Reminder)
+        nameof(DotaTimer.TimeRemaining),
+        nameof(DotaTimer.IsActive),
     ];
 
     public void Install()
     {
-        _gameStateService.InstallIntegration();
+        _gsiConfigService.InstallIntegration();
         this.RaisePropertyChanged(nameof(IsIntegrated));
     }
 
     // Open folder with steam dota2 install
     public void Open()
     {
-        _gameStateService.OpenGameStateIntegrationFolder();
+        _gsiConfigService.OpenGameStateIntegrationFolder();
     }
 
-    public bool IsIntegrated => _gameStateService.IsIntegrationInstalled();
+    public bool IsIntegrated => _gsiConfigService.IsIntegrationInstalled();
 
     public void ToggleTheme()
     {
@@ -90,12 +89,12 @@ public class SettingsViewModel : ViewModelBase
 
     public int? PortNumber
     {
-        get => _gameStateService.GetPortNumber();
+        get => _gsiConfigService.GetPortNumber();
         set
         {
             if (value != _portNumber)
             {
-                _gameStateService.SetPortNumber(value!.Value);
+                _gsiConfigService.SetPortNumber(value!.Value);
             }
 
             this.RaiseAndSetIfChanged(ref _portNumber, value);
@@ -110,7 +109,7 @@ public class SettingsViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _themeName, value);
     }
 
-    private bool _isDotaListener;
+    bool _isDotaListener;
 
     public bool IsDotaListener
     {
@@ -120,8 +119,13 @@ public class SettingsViewModel : ViewModelBase
 
     void TimerOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
+        if(e.PropertyName is null || IgnoredProperties.Contains(e.PropertyName))
+        {
+            return;
+        }
+
         // Update the appsettings.json file when a valid timer property changes
-        if (sender is DotaTimer timer && e.PropertyName is not null && Properties.Contains(e.PropertyName))
+        if (sender is DotaTimer timer && e.PropertyName is not null)
         {
             lock (WriterLock)
             {
@@ -136,7 +140,9 @@ public class SettingsViewModel : ViewModelBase
                             item.First = timer.First;
                             item.Interval = timer.Interval;
                             item.Reminder = timer.Reminder;
+                            item.Offset = timer.Offset;
                             item.AudioFile = timer.AudioFile;
+                            item.Speech = timer.Speech;
                             item.IsManualReset = timer.IsManualReset;
                             item.IsSoundEnabled = timer.IsSoundEnabled;
                             item.IsEnabled = timer.IsEnabled;

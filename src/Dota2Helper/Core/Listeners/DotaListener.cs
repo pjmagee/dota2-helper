@@ -5,6 +5,7 @@ using System.Reactive.Disposables;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia.Controls;
 using Dota2Helper.Core.Configuration;
 using Dota2Helper.Core.Gsi;
 using Microsoft.Extensions.Logging;
@@ -12,7 +13,7 @@ using Microsoft.Extensions.Options;
 
 namespace Dota2Helper.Core.Listeners;
 
-public class DotaListener(ILogger<DotaListener> logger, IOptions<Settings> settings, GameStateService gameStateService) : IDotaListener
+public class DotaListener(ILogger<DotaListener> logger, IOptions<Settings> settings, GsiConfigService gsiConfig) : IDotaListener
 {
     HttpListener? _listener;
 
@@ -33,9 +34,16 @@ public class DotaListener(ILogger<DotaListener> logger, IOptions<Settings> setti
 
             if (_listener == null)
             {
-                _listener = new HttpListener();
-                _listener.Prefixes.Add(gameStateService.GetUri().ToString());
-                _listener.Start();
+                if (!Design.IsDesignMode)
+                {
+                    _listener = new HttpListener();
+                    _listener.Prefixes.Add(gsiConfig.GetUri().ToString());
+                    _listener.Start();
+                }
+                else
+                {
+                    return null;
+                }
             }
 
             try
