@@ -8,8 +8,6 @@ public class MainWindowViewModel : ViewModelBase
 {
     ViewModelBase _contentViewModel;
 
-
-
     public ViewModelBase ContentViewModel
     {
         get => _contentViewModel;

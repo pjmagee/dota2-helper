@@ -18,9 +18,3 @@ public class AudioQueueItem
         Label = timer.Label
     };
 }
-
-public enum AudioQueueItemType
-{
-    TextToSpeech,
-    Effect
-}

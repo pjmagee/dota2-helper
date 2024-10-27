@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Linq;
 using Dota2Helper.Core.Configuration;
 using Microsoft.Extensions.Options;
 
@@ -17,17 +15,18 @@ public class DotaTimers : ObservableCollection<DotaTimer>
         foreach (var item in settings.Value.Timers)
         {
             timers.Add(new DotaTimer(
-                item.Label, 
-                item.First, 
-                item.Interval, 
-                item.Reminder,
-                item.Offset,
-                item.AudioFile,
-                item.IsManualReset, 
-                item.Speech, 
-                item.IsTts,
-                item.IsSoundEnabled,
-                item.IsEnabled));
+                label: item.Label,
+                first: item.First,
+                interval: item.Interval,
+                reminder: item.Reminder,
+                offset: item.Offset,
+                expireAt: item.ExpireAt,
+                audioFile: item.AudioFile,
+                isManualReset: item.IsManualReset,
+                speech: item.Speech,
+                isTts: item.IsTts,
+                isSoundEnabled: item.IsSoundEnabled,
+                isEnabled: item.IsEnabled));
         }
         
         foreach (var timer in timers)
@@ -40,7 +39,14 @@ public class DotaTimers : ObservableCollection<DotaTimer>
     {   
         foreach (var timer in this)
         {
-            func(timer);
+            try
+            {
+                func(timer);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine(ex);
+            }
         }
     }
 }

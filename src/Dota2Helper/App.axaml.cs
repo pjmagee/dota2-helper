@@ -44,18 +44,8 @@ public class App : Application
 
             desktop.ShutdownRequested += (sender, args) =>
             {
-                foreach (var listener in Host.Services.GetServices<IDotaListener>())
-                {
-                    try
-                    {
-                        listener.Dispose();
-                    }
-                    catch (Exception e)
-                    {
-                        Host.Services.GetRequiredService<ILogger<App>>().LogError(e, "Error disposing listener");
-                    }
-                }
-
+                Host.Services.GetRequiredService<DotaListener>().Dispose();
+                Host.Services.GetRequiredService<FakeDotaListener>().Dispose();
                 Host.Dispose();
                 Host = null;
             };
@@ -75,8 +65,19 @@ public class App : Application
         builder.Services.AddSingleton<DotaListener>();
         builder.Services.AddSingleton<GsiConfigService>();
         builder.Services.AddSingleton<IListenerStrategy, DynamicListenerStrategy>();
-        builder.Services.AddSingleton<IDotaListener>(serviceProvider => serviceProvider.GetRequiredService<DotaListener>());
-        builder.Services.AddSingleton<IDotaListener>(serviceProvider => serviceProvider.GetRequiredService<FakeDotaListener>());
+
+        if (Design.IsDesignMode)
+        {
+            builder.Services.AddSingleton<ITextToSpeech, StubTextToSpeech>();
+        }
+        else if (OperatingSystem.IsWindows())
+        {
+            builder.Services.AddSingleton<ITextToSpeech, TextToSpeechWindows>();
+        }
+        else if (OperatingSystem.IsMacOS())
+        {
+            builder.Services.AddSingleton<ITextToSpeech, TextToSpeechMac>();
+        }
 
         builder.Logging.ClearProviders();
         builder.Logging.AddDebug();

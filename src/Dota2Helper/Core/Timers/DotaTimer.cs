@@ -5,14 +5,28 @@ namespace Dota2Helper.Core.Timers;
 
 public class DotaTimer : ReactiveObject
 {
+    TimeSpan? _expireAt;
     TimeSpan _manualResetTime;
+    TimeSpan? _offset;
+    TimeSpan _timeRemaining;
+    TimeSpan _reminder;
+
+    bool _isEnabled;
+    bool _isActive;
+    bool _isReminderActive;
+    bool _isSoundEnabled;
+    bool _isSoundPlayed;
+    bool _isTts;
+    bool _isVisible;
+    bool _isExpired;
 
     protected internal DotaTimer(
         string label,
         TimeSpan first,
         TimeSpan interval,
         TimeSpan reminder,
-        TimeSpan offset,
+        TimeSpan? offset,
+        TimeSpan? expireAt,
         string audioFile,
         bool isManualReset,
         string speech,
@@ -20,6 +34,7 @@ public class DotaTimer : ReactiveObject
         bool isSoundEnabled,
         bool isEnabled)
     {
+
         Label = label;
         First = first;
         Interval = interval;
@@ -28,18 +43,30 @@ public class DotaTimer : ReactiveObject
         IsManualReset = isManualReset;
         Speech = speech;
         Offset = offset;
+        ExpireAt = expireAt;
         IsEnabled = isEnabled;
         IsSoundEnabled = isSoundEnabled;
         IsTts = isTts;
-
         IsActive = true;
+        IsExpired = false;
+        IsVisible = true;
+    }
+
+    public bool IsExpired
+    {
+        get => _isExpired;
+        set => this.RaiseAndSetIfChanged(ref _isExpired, value);
+    }
+
+    public TimeSpan? ExpireAt
+    {
+        get => _expireAt;
+        set =>  this.RaiseAndSetIfChanged(ref _expireAt, value);
     }
 
     public bool IsManualReset { get; protected init; }
 
     public string Speech { get; }
-
-    bool _isTts;
 
     public bool IsTts
     {
@@ -47,12 +74,10 @@ public class DotaTimer : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref _isTts, value);
     }
 
-    TimeSpan _reminder;
-
     public TimeSpan Reminder
     {
         get => _reminder;
-        set => this.RaiseAndSetIfChanged(ref _reminder, value);
+        private set => this.RaiseAndSetIfChanged(ref _reminder, value);
     }
 
     public int ReminderInSeconds
@@ -63,11 +88,15 @@ public class DotaTimer : ReactiveObject
 
     public int OffsetInSeconds
     {
-        get => (int) Offset.TotalSeconds;
+        get => (int) (Offset?.TotalSeconds ?? TimeSpan.Zero.TotalSeconds);
         set => Offset = TimeSpan.FromSeconds(value);
     }
 
-    bool _isEnabled;
+    public int ExpireInMinutes
+    {
+        get => (int) (ExpireAt?.Minutes ?? TimeSpan.Zero.Minutes);
+        set => ExpireAt = TimeSpan.FromMinutes(value);
+    }
 
     public bool IsEnabled
     {
@@ -75,27 +104,23 @@ public class DotaTimer : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref _isEnabled, value);
     }
 
-    public bool IsReminderActive => TimeRemaining - Reminder <= TimeSpan.Zero;
+
+    public bool IsReminderActive
+    {
+        get => _isReminderActive;
+        set => this.RaiseAndSetIfChanged(ref _isReminderActive, value);
+    }
 
     public string AudioFile { get; }
     public string Label { get; }
     public TimeSpan First { get; }
     public TimeSpan Interval { get; }
 
-    TimeSpan _offset;
-    public TimeSpan Offset
+    public TimeSpan? Offset
     {
         get => _offset;
-        set
-        {
-            this.RaisePropertyChanging();
-            _offset = value;
-            this.RaisePropertyChanged();
-            this.RaisePropertyChanged(nameof(IsReminderActive));
-        }
+        private set => this.RaiseAndSetIfChanged(ref _offset, value);
     }
-
-    TimeSpan _timeRemaining;
 
     public TimeSpan TimeRemaining
     {
@@ -103,16 +128,11 @@ public class DotaTimer : ReactiveObject
         private set => this.RaiseAndSetIfChanged(ref _timeRemaining, value);
     }
 
-    bool _isActive;
-
     public bool IsActive
     {
         get => _isActive;
         private set => this.RaiseAndSetIfChanged(ref _isActive, value);
     }
-
-
-    bool _isSoundEnabled;
 
     public bool IsSoundEnabled
     {
@@ -122,11 +142,9 @@ public class DotaTimer : ReactiveObject
 
     public string EnableDisableSoundTooltip => IsSoundEnabled ? "Disable sound" : "Enable sound";
 
-    public bool IsTriggered => TimeRemaining <= TimeSpan.Zero;
+    bool IsTriggered => TimeRemaining <= TimeSpan.Zero;
 
     public bool IsPendingManualReset => !IsActive && IsManualReset;
-
-    bool _isSoundPlayed;
 
     bool IsSoundPlayed
     {
@@ -135,6 +153,7 @@ public class DotaTimer : ReactiveObject
     }
 
     public string EnableDisableTimerTooltip => IsEnabled ? "Disable timer" : "Enable timer";
+
     public string EnableDisableTtsTooltip => "TTS or Effect";
 
     public event EventHandler<EventArgs>? OnReminder;
@@ -149,9 +168,9 @@ public class DotaTimer : ReactiveObject
     {
         var time =  gameTime > First ? Interval : First + (gameTime < TimeSpan.Zero ? gameTime.Negate() : TimeSpan.Zero);
 
-        if (Offset != TimeSpan.Zero)
+        if (Offset.HasValue)
         {
-            time = time.Add(Offset);
+            time = time.Add(Offset.Value);
         }
 
         return time;
@@ -159,6 +178,15 @@ public class DotaTimer : ReactiveObject
 
     public void Update(TimeSpan gameTime)
     {
+        IsExpired = gameTime >= ExpireAt;
+        IsVisible = !IsExpired && IsEnabled;
+
+        if (IsExpired || !IsVisible || !IsEnabled)
+        {
+            TimeRemaining = TimeSpan.Zero;
+            return;
+        }
+
         if (!IsActive)
         {
             TimeRemaining = TimeSpan.Zero;
@@ -177,11 +205,22 @@ public class DotaTimer : ReactiveObject
             IsActive = false;
         }
 
-        if (IsSoundEnabled && IsReminderActive && !IsSoundPlayed)
+        if (IsSoundEnabled && CheckIsReminderActive() && !IsSoundPlayed)
         {
             OnReminder?.Invoke(this, EventArgs.Empty);
             IsSoundPlayed = true;
         }
+    }
+
+    public bool IsVisible
+    {
+        get => _isVisible;
+        set => this.RaiseAndSetIfChanged(ref _isVisible, value);
+    }
+
+    bool CheckIsReminderActive()
+    {
+        return IsReminderActive = TimeRemaining - Reminder <= TimeSpan.Zero;
     }
 
     TimeSpan CalculateTimeRemaining(TimeSpan gameTime)

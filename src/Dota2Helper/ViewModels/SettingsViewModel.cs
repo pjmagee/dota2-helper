@@ -16,9 +16,12 @@ namespace Dota2Helper.ViewModels;
 public class SettingsViewModel : ViewModelBase
 {
     readonly static object WriterLock = new();
-
     readonly GsiConfigService _gsiConfigService;
     readonly AudioPlayer _audioPlayer;
+
+    int? _portNumber;
+    string? _themeName;
+    bool _isDotaListener;
 
     public DotaTimers Timers { get; }
 
@@ -85,8 +88,6 @@ public class SettingsViewModel : ViewModelBase
         ThemeName = (toggle == ThemeVariant.Dark ? ThemeVariant.Light : ThemeVariant.Dark).Key.ToString();
     }
 
-    int? _portNumber;
-
     public int? PortNumber
     {
         get => _gsiConfigService.GetPortNumber();
@@ -101,15 +102,11 @@ public class SettingsViewModel : ViewModelBase
         }
     }
 
-    string? _themeName;
-
     public string? ThemeName
     {
         get => _themeName;
         set => this.RaiseAndSetIfChanged(ref _themeName, value);
     }
-
-    bool _isDotaListener;
 
     public bool IsDotaListener
     {

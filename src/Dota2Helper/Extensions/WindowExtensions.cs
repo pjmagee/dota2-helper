@@ -1,14 +1,20 @@
 using System;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using Avalonia.Controls;
 
-namespace Dota2Helper.ViewModels;
+namespace Dota2Helper;
 
+[SupportedOSPlatform("windows")]
 internal static class WindowExtensions
 {
     const int GWL_STYLE = -16, GWL_EXSTYLE = -20;
     const int WS_MAXIMIZEBOX = 0x10000, WS_MINIMIZEBOX = 0x20000, WS_SYSMENU = 0x80000;
     const int WS_EX_DLGMODALFRAME = 0x0001;
+    const uint SWP_NOSIZE = 0x0001;
+    const uint SWP_NOMOVE = 0x0002;
+    const uint SWP_NOZORDER = 0x0004;
+    const uint SWP_FRAMECHANGED = 0x0020;
 
     [DllImport("user32.dll")]
     static extern int GetWindowLong(IntPtr hwnd, int index);
@@ -18,11 +24,6 @@ internal static class WindowExtensions
 
     [DllImport("user32.dll")]
     static extern bool SetWindowPos(IntPtr hwnd, IntPtr hwndInsertAfter, int x, int y, int cx, int cy, uint uFlags);
-
-    const uint SWP_NOSIZE = 0x0001;
-    const uint SWP_NOMOVE = 0x0002;
-    const uint SWP_NOZORDER = 0x0004;
-    const uint SWP_FRAMECHANGED = 0x0020;
 
     internal static void HideMinimizeAndMaximizeButtons(this Window window)
     {

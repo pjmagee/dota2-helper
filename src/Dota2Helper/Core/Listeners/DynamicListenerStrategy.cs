@@ -1,28 +1,21 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Avalonia.Controls;
 using Microsoft.Extensions.Logging;
 
 namespace Dota2Helper.Core.Listeners;
 
-public class DynamicListenerStrategy(ILogger<DynamicListenerStrategy> logger, FakeDotaListener fakeDotaListener, DotaListener dotaListener) : IListenerStrategy
+public class DynamicListenerStrategy(
+    ILogger<DynamicListenerStrategy> logger,
+    FakeDotaListener fakeDotaListener,
+    DotaListener dotaListener) : IListenerStrategy
 {
     IDotaListener? _listener;
-
     Process? _dota2;
 
     public IDotaListener Listener => _listener ?? fakeDotaListener;
 
     public void UpdateListener()
     {
-        if (Design.IsDesignMode)
-        {
-            _listener = fakeDotaListener;
-        }
-
         if (_dota2 == null)
         {
             _dota2 = Process.GetProcessesByName("dota2").FirstOrDefault();
@@ -32,9 +25,11 @@ public class DynamicListenerStrategy(ILogger<DynamicListenerStrategy> logger, Fa
                 logger.LogInformation("Dota2 is running, caching detected process for exit event");
 
                 _dota2.EnableRaisingEvents = true;
+
                 _dota2.Exited += (sender, args) =>
                 {
                     logger.LogInformation("Dota2 exited, switching to FakeDotaListener");
+
                     _listener = fakeDotaListener;
                     _dota2 = null;
                 };

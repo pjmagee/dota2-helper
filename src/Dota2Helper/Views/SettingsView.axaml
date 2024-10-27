@@ -140,7 +140,7 @@
                                        Width="110"
                                        DockPanel.Dock="Right"
                                        Increment="1"
-                                       Minimum="-60"
+                                       Minimum="0"
                                        AllowSpin="True"
                                        Maximum="60"
                                        ParsingNumberStyle="Integer"
@@ -160,7 +160,22 @@
                                        Maximum="60"
                                        ParsingNumberStyle="Integer"
                                        ToolTip.Placement="Left"
-                                       ToolTip.Tip="Tweak Offset&#x0a;Mouse Scroll Up/Down">
+                                       ToolTip.Tip="Offset&#x0a;Mouse Scroll Up/Down">
+                        </NumericUpDown>
+
+                        <NumericUpDown ShowButtonSpinner="True"
+                                       VerticalContentAlignment="Center"
+                                       HorizontalContentAlignment="Center"
+                                       Value="{Binding ExpireInMinutes, Mode=TwoWay}"
+                                       Width="110"
+                                       DockPanel.Dock="Right"
+                                       Increment="1"
+                                       Minimum="0"
+                                       AllowSpin="True"
+                                       Maximum="30"
+                                       ParsingNumberStyle="Integer"
+                                       ToolTip.Placement="Left"
+                                       ToolTip.Tip="Inactive after minutes&#x0a;Mouse Scroll Up/Down">
                         </NumericUpDown>
 
                     </StackPanel>

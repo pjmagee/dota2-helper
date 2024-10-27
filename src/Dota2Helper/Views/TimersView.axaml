@@ -21,7 +21,7 @@
                        HorizontalAlignment="Left" 
                        Spacing="5" 
                        Margin="0,1"
-                       IsVisible="{Binding Path=IsEnabled}">
+                       IsVisible="{Binding Path=IsVisible}">
                        
                        <TextBlock Width="100" Text="{Binding Path=Label}" TextAlignment="Right" VerticalAlignment="Center" />
                        

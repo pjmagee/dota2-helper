@@ -18,13 +18,16 @@ public class TimerOptions
     [JsonRequired]
     [JsonConverter(typeof(TimeSpanConverter))]
     public required TimeSpan Interval { get; set; }
+
+    [JsonConverter(typeof(TimeSpanConverter))]
+    public TimeSpan? ExpireAt { get; set; }
     
     [JsonRequired]
     [JsonConverter(typeof(TimeSpanConverter))]
     public required TimeSpan Reminder { get; set; }
 
     [JsonConverter(typeof(TimeSpanConverter))]
-    public TimeSpan Offset { get; set; } = TimeSpan.Zero;
+    public TimeSpan? Offset { get; set; }
 
     /// <summary>
     ///  The audio file for effect sound

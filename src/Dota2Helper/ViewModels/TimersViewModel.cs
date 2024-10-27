@@ -25,6 +25,7 @@ public class TimersViewModel : ViewModelBase
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         WriteIndented = true
     };
+
     public DotaTimers Timers { get; }
 
     public TimersViewModel(

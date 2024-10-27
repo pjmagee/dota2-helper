@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
+using Avalonia.Controls;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 
@@ -12,7 +13,7 @@ namespace Dota2Helper.Core.Gsi;
 
 public partial class GsiConfigService(ILogger<GsiConfigService> logger)
 {
-    const string ConfigFile = "gamestate_integration_d2helper.cfg";
+    string ConfigFile => Design.IsDesignMode ? "gamestate_integration_design.cfg" : "gamestate_integration_d2helper.cfg";
 
     string? FindGameStateIntegrationPath()
     {

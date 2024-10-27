@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using Avalonia.Controls;
-using Dota2Helper.ViewModels;
 
 namespace Dota2Helper.Views;
 
@@ -14,6 +14,10 @@ public partial class MainWindow : Window
     void TopLevel_OnOpened(object? sender, EventArgs e)
     {
         var window = (Window)sender!;
-        window.HideMinimizeAndMaximizeButtons();
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            window.HideMinimizeAndMaximizeButtons();
+        }
     }
 }

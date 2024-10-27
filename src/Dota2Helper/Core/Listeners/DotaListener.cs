@@ -34,16 +34,9 @@ public class DotaListener(ILogger<DotaListener> logger, IOptions<Settings> setti
 
             if (_listener == null)
             {
-                if (!Design.IsDesignMode)
-                {
-                    _listener = new HttpListener();
-                    _listener.Prefixes.Add(gsiConfig.GetUri().ToString());
-                    _listener.Start();
-                }
-                else
-                {
-                    return null;
-                }
+                _listener = new HttpListener();
+                _listener.Prefixes.Add(gsiConfig.GetUri().ToString());
+                _listener.Start();
             }
 
             try

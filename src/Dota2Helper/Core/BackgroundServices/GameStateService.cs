@@ -39,7 +39,7 @@ public class GameStateService(ILogger<GameStateService> logger, GameStateHolder 
                                 logger.LogError(ex, "Error updating timer");
                             }
                         }
-                    ), DispatcherPriority.Background, stoppingToken);
+                    ), DispatcherPriority.Render, stoppingToken);
             }
             catch (Exception ex)
             {
