@@ -1,0 +1,31 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:D2Helper.Views"
+        xmlns:viewModels="clr-namespace:D2Helper.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="260" d:DesignHeight="250"
+        x:Class="D2Helper.Views.TimersWindow"
+        SizeToContent="WidthAndHeight"
+        Width="260"
+        Height="250"
+        Icon="/Assets/avalonia-logo.ico"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaTitleBarHeightHint="0"
+        ExtendClientAreaToDecorationsHint="False"
+        Opacity="0.7"
+        Topmost="True"
+        PointerMoved="InputElement_OnPointerMoved"
+        PointerPressed="InputElement_OnPointerPressed"
+        PointerReleased="InputElement_OnPointerReleased"
+        SystemDecorations="None"
+        Title="Timers">
+        <d:DesignData>
+                <views:TimersView>
+                        <views:TimersView.DataContext>
+                                <viewModels:TimersViewModel />
+                        </views:TimersView.DataContext>
+                </views:TimersView>
+        </d:DesignData>
+        <views:TimersView />
+</Window>

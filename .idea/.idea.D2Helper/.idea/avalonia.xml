@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="D2Helper/D2Helper/App.axaml" value="D2Helper/D2Helper.Desktop/D2Helper.Desktop.csproj" />
+        <entry key="D2Helper/D2Helper/Controls/TimePicker2.axaml" value="D2Helper/D2Helper.Desktop/D2Helper.Desktop.csproj" />
+        <entry key="D2Helper/D2Helper/Views/MainView.axaml" value="D2Helper/D2Helper.Desktop/D2Helper.Desktop.csproj" />
+        <entry key="D2Helper/D2Helper/Views/MainWindow.axaml" value="D2Helper/D2Helper.Desktop/D2Helper.Desktop.csproj" />
+        <entry key="D2Helper/D2Helper/Views/SettingsView.axaml" value="D2Helper/D2Helper.Desktop/D2Helper.Desktop.csproj" />
+        <entry key="D2Helper/D2Helper/Views/SettingsWindow.axaml" value="D2Helper/D2Helper.Desktop/D2Helper.Desktop.csproj" />
+        <entry key="D2Helper/D2Helper/Views/TimersView.axaml" value="D2Helper/D2Helper.Desktop/D2Helper.Desktop.csproj" />
+        <entry key="D2Helper/D2Helper/Views/TimersWindow.axaml" value="D2Helper/D2Helper.Desktop/D2Helper.Desktop.csproj" />
+      </map>
+    </option>
+  </component>
+</project>

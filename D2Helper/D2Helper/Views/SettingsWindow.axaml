@@ -1,0 +1,19 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:D2Helper.Views"
+        xmlns:viewModels="clr-namespace:D2Helper.ViewModels"
+        mc:Ignorable="d"
+        x:Class="D2Helper.Views.SettingsWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        SizeToContent="WidthAndHeight"
+        Title="Settings">
+    <views:SettingsView>
+        <d:DesignData>
+            <views:SettingsView.DataContext>
+                <viewModels:SettingsViewModel />
+            </views:SettingsView.DataContext>
+        </d:DesignData>
+    </views:SettingsView>
+</Window>

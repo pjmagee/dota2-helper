@@ -1,0 +1,85 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:D2Helper.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="250"
+             x:Class="D2Helper.Views.TimersView"
+             d:DataContext="{x:Type vm:TimersViewModel}"
+             xmlns:icons="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
+             xmlns:models="clr-namespace:D2Helper.Models"
+             x:DataType="vm:TimersViewModel">
+    <Design.DataContext>
+        <vm:TimersViewModel />
+    </Design.DataContext>
+    <StackPanel Orientation="Vertical" Margin="2" Spacing="5">
+        <!-- Setting and Game time -->
+        <StackPanel Spacing="5" Margin="0"
+                    Orientation="Horizontal"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center">
+            <Button Command="{Binding OpenSettingsCommand}">
+                <Button.Content>
+                    <icons:SymbolIcon Symbol="Settings" />
+                </Button.Content>
+            </Button>
+            <TimePicker
+                IsEnabled="False"
+                UseSeconds="True"
+                SelectedTime="{Binding Time}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+                <!-- reduce width of each time segment -->
+                <TimePicker.Resources>
+                    <x:Double x:Key="TimePickerThemeMinWidth">120</x:Double>
+                </TimePicker.Resources>
+            </TimePicker>
+        </StackPanel>
+
+        <!-- Timers DataGrid -->
+        <DataGrid
+            IsReadOnly="True"
+            HeadersVisibility="None"
+            RowHeight="22"
+            CanUserReorderColumns="False"
+            CanUserResizeColumns="False"
+            CanUserSortColumns="False"
+            GridLinesVisibility="Horizontal"
+            ItemsSource="{Binding Timers}">
+            <DataGrid.Styles>
+                <Style Selector="DataGridRow">
+                    <Setter
+                        Property="IsVisible"
+                        Value="{Binding (models:DotaTimer).IsEnabled}" />
+                </Style>
+            </DataGrid.Styles>
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Name}" Width="Auto" />
+                <DataGridTemplateColumn Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock x:Name="Remaining"
+                                Text="{Binding Remaining}"
+                                IsVisible="{Binding !IsResetRequired}"
+                                HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Margin="5 0"
+                                HorizontalContentAlignment="Center"
+                                Command="{Binding ResetCommand}"
+                                    IsVisible="{Binding IsResetRequired}">
+                                <Button.Content>
+                                    <icons:SymbolIcon Symbol="Timer" />
+                                </Button.Content>
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </StackPanel>
+</UserControl>
