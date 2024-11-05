@@ -1,6 +1,4 @@
-using System.Collections.ObjectModel;
 using Avalonia.Controls;
-using Avalonia.Interactivity;
 
 namespace D2Helper.Views;
 

@@ -11,10 +11,19 @@ namespace D2Helper.ViewModels;
 public class SettingsViewModel : ViewModelBase
 {
     readonly TimerService _timerService;
+    readonly IStrategyProvider _strategyProvider;
+
     DotaTimer _selectedTimer;
     double _timerVolume;
+    TimerStrategy _selectedTimerMode;
+    string _status;
+    string _installPath;
+    bool _demoMuted;
 
     public ObservableCollection<DotaTimer> Timers => _timerService.Timers;
+
+    public RelayCommand<DotaTimer> DeleteCommand { get; }
+    public RelayCommand<SettingsView> BrowseAudioFileCommand { get; }
 
     public DotaTimer SelectedTimer
     {
@@ -22,8 +31,15 @@ public class SettingsViewModel : ViewModelBase
         set => SetProperty(ref _selectedTimer, value);
     }
 
-    public RelayCommand<DotaTimer> DeleteCommand { get; }
-    public RelayCommand<object> BrowseAudioFileCommand { get; }
+    public TimerStrategy SelectedTimerMode
+    {
+        get => _selectedTimerMode;
+        set
+        {
+            SetProperty(ref _selectedTimerMode, value);
+            TimerModeCommand.Execute(value);
+        }
+    }
 
     public double TimerVolume
     {
@@ -31,25 +47,91 @@ public class SettingsViewModel : ViewModelBase
         set => SetProperty(ref _timerVolume, value);
     }
 
-    public IRelayCommand InstallGSICommand { get; }
+    public ObservableCollection<TimerStrategy> TimerModes { get; set; }
 
-    public SettingsViewModel(TimerService timerService)
+    public IRelayCommand InstallCommand { get; }
+    public IRelayCommand UninstallCommand { get; }
+    public IRelayCommand TimerModeCommand { get; }
+
+    public string Status
     {
-        _timerService = timerService;
-        DeleteCommand = new RelayCommand<DotaTimer>(Delete);
-        BrowseAudioFileCommand = new RelayCommand<object>(BrowseAudioFile);
-        InstallGSICommand = new RelayCommand(InstallGSI);
-        SelectedTimer = _timerService.Timers[0];
+        get => _status;
+        set => SetProperty(ref _status, value);
     }
 
-    void InstallGSI()
+    public string InstallPath
+    {
+        get => _installPath;
+        set => SetProperty(ref _installPath, value);
+    }
+
+    public bool DemoMuted
+    {
+        get => _demoMuted;
+        set => SetProperty(ref _demoMuted, value);
+    }
+
+
+    public SettingsViewModel(TimerService timerService, IStrategyProvider strategyProvider)
+    {
+        _timerService = timerService;
+        _strategyProvider = strategyProvider;
+
+        DeleteCommand = new RelayCommand<DotaTimer>(DeleteTimer);
+        BrowseAudioFileCommand = new RelayCommand<SettingsView>(SelectFile);
+        InstallCommand = new RelayCommand(Install);
+        UninstallCommand = new RelayCommand(Uninstall);
+        SelectedTimer = _timerService.Timers[0];
+        TimerModeCommand = new RelayCommand<TimerStrategy>(SetStrategy);
+        TimerModes =
+        [
+            new()
+            {
+                Name = "Real",
+                Strategy = GameStateStrategy.Real
+            },
+            new()
+            {
+                Name = "Demo",
+                Strategy = GameStateStrategy.Demo
+            },
+            new()
+            {
+                Name = "Auto",
+                Strategy = GameStateStrategy.Auto
+            },
+        ];
+
+        SelectedTimerMode = TimerModes[^1];
+        TimerVolume = 50;
+    }
+
+    void SetStrategy(TimerStrategy? option)
+    {
+        if (option is { Strategy: var strategy })
+        {
+            _strategyProvider.Strategy = strategy;
+        }
+    }
+
+    public SettingsViewModel() : this(new TimerService(), new DynamicProvider(new RealGameTimeProvider(), new DemoGameTimeProvider()))
+    {
+
+    }
+
+    void Install()
     {
         // TODO: install gsi config into dota2 installation gsi folder
     }
 
-    async void BrowseAudioFile(object obj)
+    void Uninstall()
     {
-        if (obj is SettingsView view)
+        // TODO: uninstall gsi config from dota2 installation gsi folder
+    }
+
+    async void SelectFile(SettingsView? view)
+    {
+        if (view is not null)
         {
             var topLevel = TopLevel.GetTopLevel(view);
 
@@ -82,11 +164,6 @@ public class SettingsViewModel : ViewModelBase
         }
     }
 
-    public SettingsViewModel() : this(new TimerService())
-    {
-
-    }
-
     public void Reset()
     {
         _timerService.Reset();
@@ -101,13 +178,11 @@ public class SettingsViewModel : ViewModelBase
         );
     }
 
-    public void Delete(DotaTimer? timer)
+    public void DeleteTimer(DotaTimer? timer)
     {
-        if (timer is null)
+        if (timer is not null)
         {
-            return;
+            _timerService.Timers.Remove(timer);
         }
-
-        _timerService.Timers.Remove(timer);
     }
 }

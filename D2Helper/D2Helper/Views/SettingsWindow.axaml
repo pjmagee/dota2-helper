@@ -5,15 +5,13 @@
         xmlns:views="clr-namespace:D2Helper.Views"
         xmlns:viewModels="clr-namespace:D2Helper.ViewModels"
         mc:Ignorable="d"
+        d:DesignWidth="720" d:DesignHeight="600"
         x:Class="D2Helper.Views.SettingsWindow"
         Icon="/Assets/avalonia-logo.ico"
         SizeToContent="WidthAndHeight"
         Title="Settings">
-    <views:SettingsView>
-        <d:DesignData>
-            <views:SettingsView.DataContext>
-                <viewModels:SettingsViewModel />
-            </views:SettingsView.DataContext>
-        </d:DesignData>
-    </views:SettingsView>
+    <Design.DataContext>
+        <viewModels:DesignSettingsViewModel />
+    </Design.DataContext>
+    <views:SettingsView />
 </Window>

@@ -1,18 +1,20 @@
+using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using D2Helper.Services;
 using D2Helper.ViewModels;
 using D2Helper.Views;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace D2Helper;
 
 public partial class App : Application
 {
-    TimerService _timerService;
-    GameStateService _gameStateService;
+    public static IServiceProvider ServiceProvider => _serviceProvider ?? throw new InvalidOperationException("Service provider is not initialized");
+
+    private static IServiceProvider? _serviceProvider;
 
     public override void Initialize()
     {
@@ -21,8 +23,18 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        _timerService = new TimerService();
-        _gameStateService = new GameStateService();
+        _serviceProvider = new ServiceCollection()
+            .AddSingleton<DynamicProvider>()
+            .AddSingleton<IStrategyProvider>(sp => sp.GetRequiredService<DynamicProvider>())
+            .AddSingleton<IGameTimeProvider>(sp => sp.GetRequiredService<DynamicProvider>())
+            .AddSingleton<DemoGameTimeProvider>()
+            .AddSingleton<RealGameTimeProvider>()
+            .AddSingleton<Dota2ConfigurationService>()
+            .AddSingleton<LongLivedHttpListener>()
+            .AddSingleton<TimerService>()
+            .AddSingleton<TimersViewModel>()
+            .AddSingleton<SettingsViewModel>()
+            .BuildServiceProvider();
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -32,18 +44,16 @@ public partial class App : Application
 
             desktop.MainWindow = new TimersWindow()
             {
-                DataContext = new TimersViewModel(_timerService, _gameStateService),
+                DataContext = ServiceProvider.GetRequiredService<TimersViewModel>(),
             };
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {
             singleViewPlatform.MainView = new TimersWindow
             {
-                DataContext = new TimersViewModel(_timerService, _gameStateService),
+                DataContext = ServiceProvider.GetRequiredService<TimersViewModel>(),
             };
         }
-
-        _gameStateService.RunWorkerAsync();
 
         base.OnFrameworkInitializationCompleted();
     }

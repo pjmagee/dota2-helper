@@ -7,25 +7,24 @@
         mc:Ignorable="d" d:DesignWidth="260" d:DesignHeight="250"
         x:Class="D2Helper.Views.TimersWindow"
         SizeToContent="WidthAndHeight"
+        MinWidth="250"
+        MinHeight="200"
         Width="260"
         Height="250"
         Icon="/Assets/avalonia-logo.ico"
         ExtendClientAreaChromeHints="NoChrome"
         ExtendClientAreaTitleBarHeightHint="0"
         ExtendClientAreaToDecorationsHint="False"
-        Opacity="0.7"
+        Opacity="0.65"
         Topmost="True"
         PointerMoved="InputElement_OnPointerMoved"
         PointerPressed="InputElement_OnPointerPressed"
         PointerReleased="InputElement_OnPointerReleased"
-        SystemDecorations="None"
+        SystemDecorations="BorderOnly"
+        CornerRadius="15"
         Title="Timers">
-        <d:DesignData>
-                <views:TimersView>
-                        <views:TimersView.DataContext>
-                                <viewModels:TimersViewModel />
-                        </views:TimersView.DataContext>
-                </views:TimersView>
-        </d:DesignData>
+        <Design.DataContext>
+                <viewModels:DesignTimersViewModel />
+        </Design.DataContext>
         <views:TimersView />
 </Window>
