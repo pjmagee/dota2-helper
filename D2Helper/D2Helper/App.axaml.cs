@@ -1,11 +1,14 @@
 using System;
+using System.IO;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
+using D2Helper.Models;
 using D2Helper.Services;
 using D2Helper.ViewModels;
 using D2Helper.Views;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace D2Helper;
@@ -23,8 +26,9 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        _serviceProvider = new ServiceCollection()
+        var services = new ServiceCollection()
             .AddSingleton<DynamicProvider>()
+            .AddSingleton<SettingsService>()
             .AddSingleton<IStrategyProvider>(sp => sp.GetRequiredService<DynamicProvider>())
             .AddSingleton<IGameTimeProvider>(sp => sp.GetRequiredService<DynamicProvider>())
             .AddSingleton<DemoGameTimeProvider>()
@@ -33,8 +37,9 @@ public partial class App : Application
             .AddSingleton<LongLivedHttpListener>()
             .AddSingleton<TimerService>()
             .AddSingleton<TimersViewModel>()
-            .AddSingleton<SettingsViewModel>()
-            .BuildServiceProvider();
+            .AddSingleton<SettingsViewModel>();
+
+        _serviceProvider = services.BuildServiceProvider();
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {

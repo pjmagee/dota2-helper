@@ -10,9 +10,10 @@
              d:DataContext="{x:Type vm:TimersViewModel}"
              xmlns:icons="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
              xmlns:models="clr-namespace:D2Helper.Models"
+             xmlns:design="clr-namespace:D2Helper.Design"
              x:DataType="vm:TimersViewModel">
     <Design.DataContext>
-        <vm:DesignTimersViewModel />
+        <design:DesignTimersViewModel />
     </Design.DataContext>
     <StackPanel Orientation="Vertical" Margin="2" Spacing="5">
         <!-- Setting and Game time -->
@@ -48,9 +49,11 @@
             ItemsSource="{Binding Timers}">
             <DataGrid.Styles>
                 <Style Selector="DataGridRow">
+                    <Setter Property="IsSelected" Value="False" />
+                    <Setter Property="IsHitTestVisible" Value="False" />
                     <Setter
                         Property="IsVisible"
-                        Value="{Binding (models:DotaTimer).IsEnabled}" />
+                        Value="{Binding (vm:DotaTimerViewModel).IsEnabled}" />
                 </Style>
             </DataGrid.Styles>
             <DataGrid.Columns>

@@ -4,6 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:D2Helper.Views"
         xmlns:viewModels="clr-namespace:D2Helper.ViewModels"
+        xmlns:design="clr-namespace:D2Helper.Design"
         mc:Ignorable="d"
         d:DesignWidth="720" d:DesignHeight="600"
         x:Class="D2Helper.Views.SettingsWindow"
@@ -11,7 +12,7 @@
         SizeToContent="WidthAndHeight"
         Title="Settings">
     <Design.DataContext>
-        <viewModels:DesignSettingsViewModel />
+        <design:DesignSettingsViewModel />
     </Design.DataContext>
     <views:SettingsView />
 </Window>

@@ -7,14 +7,6 @@ using D2Helper.Models;
 
 namespace D2Helper.Services;
 
-public class DesignDynamicProvider : DynamicProvider
-{
-    public DesignDynamicProvider() : base(new RealGameTimeProvider(), new DemoGameTimeProvider())
-    {
-
-    }
-}
-
 public class DynamicProvider : BackgroundWorker, IGameTimeProvider, IStrategyProvider
 {
     public DynamicProvider(RealGameTimeProvider gameTimeProvider, DemoGameTimeProvider demoGameTimeProvider)

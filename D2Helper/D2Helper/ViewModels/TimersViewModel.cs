@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using D2Helper.Models;
 using D2Helper.Services;
 using D2Helper.Views;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace D2Helper.ViewModels;
 
@@ -31,7 +32,7 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
         {
             var settings = new SettingsWindow()
             {
-                DataContext = new SettingsViewModel(_timerService, _strategyProvider)
+                DataContext = App.ServiceProvider.GetRequiredService<SettingsViewModel>(),
             };
 
             settings.Show();
@@ -54,7 +55,7 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
         Time = _gameTimeProvider.Time;
     }
 
-    public ObservableCollection<DotaTimer> Timers => _timerService.Timers;
+    public ObservableCollection<DotaTimerViewModel> Timers => _timerService.Timers;
     public IRelayCommand OpenSettingsCommand { get; }
 
     public TimeSpan Time

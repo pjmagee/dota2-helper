@@ -4,6 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:D2Helper.Views"
         xmlns:viewModels="clr-namespace:D2Helper.ViewModels"
+        xmlns:design="clr-namespace:D2Helper.Design"
         mc:Ignorable="d" d:DesignWidth="260" d:DesignHeight="250"
         x:Class="D2Helper.Views.TimersWindow"
         SizeToContent="WidthAndHeight"
@@ -24,7 +25,7 @@
         CornerRadius="15"
         Title="Timers">
         <Design.DataContext>
-                <viewModels:DesignTimersViewModel />
+                <design:DesignTimersViewModel />
         </Design.DataContext>
         <views:TimersView />
 </Window>

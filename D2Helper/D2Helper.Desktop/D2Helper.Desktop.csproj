@@ -21,4 +21,10 @@
     <ItemGroup>
         <ProjectReference Include="..\D2Helper\D2Helper.csproj"/>
     </ItemGroup>
+
+    <ItemGroup>
+      <None Update="appsettings.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
 </Project>

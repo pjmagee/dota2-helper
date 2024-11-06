@@ -1,24 +1,79 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Linq;
 using D2Helper.Models;
+using D2Helper.ViewModels;
 
 namespace D2Helper.Services;
 
 public class TimerService
 {
-    public ObservableCollection<DotaTimer> Timers { get; } = new();
+    readonly SettingsService _settingsService;
+    public ObservableCollection<DotaTimerViewModel> Timers { get; } = new();
 
-    public TimerService()
+    public TimerService(SettingsService settingsService)
     {
-        Reset();
+        _settingsService = settingsService;
+
+        if (_settingsService.Settings.Timers.Count == 0)
+        {
+            Default();
+        }
+        else
+        {
+            foreach (var timer in _settingsService.Settings.Timers)
+            {
+                Timers.Add(new DotaTimerViewModel(timer));
+            }
+        }
+
+        Timers.CollectionChanged += TimersChanged;
     }
 
-    public void Reset()
+    void TimersChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.Action == NotifyCollectionChangedAction.Add)
+        {
+            foreach (DotaTimerViewModel item in e.NewItems)
+            {
+                item.PropertyChanged += TimerChanged;
+            }
+        }
+        else if (e.Action == NotifyCollectionChangedAction.Remove)
+        {
+            foreach (DotaTimerViewModel item in e.OldItems)
+            {
+                item.PropertyChanged -= TimerChanged;
+            }
+        }
+    }
+
+    void TimerChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        _settingsService.Settings.Timers.Clear();
+        _settingsService.Settings.Timers.AddRange(Timers.Select(x => new DotaTimer()
+        {
+            Name = x.Name,
+            Every = x.Every,
+            RemindAt = x.RemindAt,
+            DisableAfter = x.DisableAfter,
+            IsManualReset = x.IsManualReset,
+            IsInterval = x.IsInterval,
+            IsEnabled = x.IsEnabled,
+            Starts = x.Starts
+        }));
+
+        _settingsService.SaveSettings();
+    }
+
+    public void Default()
     {
         Timers.Clear();
 
         // Roshan Spawn
-        Timers.Add(new DotaTimer()
+        Timers.Add(new DotaTimerViewModel()
         {
             Name = "Roshan",
             Every = TimeSpan.FromMinutes(11),
@@ -30,7 +85,7 @@ public class TimerService
         });
 
         // Tormentor Radiant
-        Timers.Add(new DotaTimer()
+        Timers.Add(new DotaTimerViewModel()
         {
             Name = "Tormentor Radiant",
             Every = TimeSpan.FromMinutes(10),
@@ -42,7 +97,7 @@ public class TimerService
         });
 
         // Tormentor Dire
-        Timers.Add(new DotaTimer()
+        Timers.Add(new DotaTimerViewModel()
         {
             Name = "Tormentor Dire",
             Every = TimeSpan.FromMinutes(10),
@@ -53,7 +108,7 @@ public class TimerService
         });
 
         // Powerup Rune
-        Timers.Add(new DotaTimer()
+        Timers.Add(new DotaTimerViewModel()
         {
             Name = "Power Rune",
             Every = TimeSpan.FromMinutes(2),
@@ -64,7 +119,7 @@ public class TimerService
         });
 
         // Bounty Rune
-        Timers.Add(new DotaTimer()
+        Timers.Add(new DotaTimerViewModel()
         {
             Name = "Bounty Rune",
             Every = TimeSpan.FromMinutes(3),
@@ -76,7 +131,7 @@ public class TimerService
         });
 
         // Wisdom Rune
-        Timers.Add(new DotaTimer()
+        Timers.Add(new DotaTimerViewModel()
         {
             Name = "Wisdom Rune",
             Every = TimeSpan.FromMinutes(7),
@@ -87,7 +142,7 @@ public class TimerService
         });
 
         // Stack Camp
-        Timers.Add(new DotaTimer()
+        Timers.Add(new DotaTimerViewModel()
         {
             Name = "Stack Camp",
             Every = TimeSpan.FromMinutes(1),
@@ -99,7 +154,7 @@ public class TimerService
         });
 
         // Pull (15s)
-        Timers.Add(new DotaTimer()
+        Timers.Add(new DotaTimerViewModel()
         {
             Name = "Pull (15s)",
             Every = TimeSpan.FromSeconds(15),
@@ -110,7 +165,7 @@ public class TimerService
         });
 
         // Pull (45s)
-        Timers.Add(new DotaTimer()
+        Timers.Add(new DotaTimerViewModel()
         {
             Name = "Pull (45s)",
             Every = TimeSpan.FromSeconds(45),
