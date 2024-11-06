@@ -7,23 +7,46 @@ namespace D2Helper.Design;
 
 public class DesignSettingsService : SettingsService
 {
-    public DesignSettingsService()
+    public DesignSettingsService() : base()
     {
         Settings = new Settings
         {
             // All Dota2 Timers
             Timers = new List<DotaTimer>
             {
-                new DotaTimer { Name = "Roshan", Every = TimeSpan.FromMinutes(8), RemindAt = TimeSpan.FromMinutes(5) },
-                new DotaTimer { Name = "Power Rune", Every = TimeSpan.FromMinutes(2), RemindAt = TimeSpan.FromMinutes(1) },
-                new DotaTimer { Name = "Bounty Rune", Every = TimeSpan.FromMinutes(5), RemindAt = TimeSpan.FromMinutes(1) },
-                new DotaTimer { Name = "Neutral Items", Every = TimeSpan.FromMinutes(7), RemindAt = TimeSpan.FromMinutes(1) },
-                new DotaTimer { Name = "Outpost", Every = TimeSpan.FromMinutes(10), RemindAt = TimeSpan.FromMinutes(1) },
-                new DotaTimer { Name = "Glyph", Every = TimeSpan.FromMinutes(5), RemindAt = TimeSpan.FromMinutes(1) },
-                new DotaTimer { Name = "Scan", Every = TimeSpan.FromMinutes(4), RemindAt = TimeSpan.FromMinutes(1) },
-                new DotaTimer { Name = "Aegis", Every = TimeSpan.FromMinutes(5), RemindAt = TimeSpan.FromMinutes(1) },
-                new DotaTimer { Name = "Cheese", Every = TimeSpan.FromMinutes(5), RemindAt = TimeSpan.FromMinutes(1) },
-                new DotaTimer { Name = "Aghanim's Blessing", Every = TimeSpan.FromMinutes(5), RemindAt = TimeSpan.FromMinutes(1) }
+                new()
+                {
+                    IsEnabled = true,
+                    IsMuted = false,
+                    Name = "Starts at 30s",
+                    Every = TimeSpan.FromMinutes(1),
+                    StartsAfter = TimeSpan.FromSeconds(30),
+                    RemindAt = TimeSpan.FromSeconds(15),
+                    ExpireAfter = TimeSpan.FromMinutes(20),
+                    IsManualReset = false,
+                    IsInterval = true,
+                },
+                new()
+                {
+                    IsEnabled = true,
+                    IsMuted = false,
+                    Name = "Expires at 30s",
+                    Every = TimeSpan.FromMinutes(1),
+                    ExpireAfter = TimeSpan.FromSeconds(30),
+                    IsManualReset = false,
+                    IsInterval = true,
+                },
+                new()
+                {
+                    IsEnabled = true,
+                    IsMuted = false,
+                    Name = "Manual Reset",
+                    Every = TimeSpan.FromSeconds(20),
+                    RemindAt = TimeSpan.FromSeconds(15),
+                    ExpireAfter = TimeSpan.FromMinutes(20),
+                    IsManualReset = true,
+                    IsInterval = false
+                },
             },
             Volume = 50,
             Mode = GameStateStrategy.Auto,

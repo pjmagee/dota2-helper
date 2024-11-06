@@ -49,7 +49,10 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
     {
         foreach (var timer in Timers)
         {
-            timer.Update(_gameTimeProvider.Time);
+            if (timer.IsEnabled)
+            {
+                timer.Update(_gameTimeProvider.Time);
+            }
         }
 
         Time = _gameTimeProvider.Time;

@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using D2Helper.Models;
 using D2Helper.ViewModels;
+using FluentAvalonia.Core;
 
 namespace D2Helper.Services;
 
@@ -17,6 +19,9 @@ public class TimerService
     {
         _settingsService = settingsService;
 
+        Timers.CollectionChanged -= TimersChanged;
+        Timers.CollectionChanged += TimersChanged;
+
         if (_settingsService.Settings.Timers.Count == 0)
         {
             Default();
@@ -28,8 +33,6 @@ public class TimerService
                 Timers.Add(new DotaTimerViewModel(timer));
             }
         }
-
-        Timers.CollectionChanged += TimersChanged;
     }
 
     void TimersChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -50,19 +53,36 @@ public class TimerService
         }
     }
 
+    readonly HashSet<string> _ignoredProperties = new()
+    {
+        nameof(DotaTimerViewModel.Remaining),
+        nameof(DotaTimerViewModel.IsAlerting),
+        nameof(DotaTimerViewModel.IsExpired),
+        nameof(DotaTimerViewModel.IsVisible),
+        nameof(DotaTimerViewModel.IsResetRequired)
+    };
+
     void TimerChanged(object? sender, PropertyChangedEventArgs e)
     {
+        if(_ignoredProperties.Contains(e.PropertyName)) return;
+
         _settingsService.Settings.Timers.Clear();
         _settingsService.Settings.Timers.AddRange(Timers.Select(x => new DotaTimer()
         {
             Name = x.Name,
-            Every = x.Every,
-            RemindAt = x.RemindAt,
-            DisableAfter = x.DisableAfter,
+
+            IsMuted = x.IsMuted,
             IsManualReset = x.IsManualReset,
             IsInterval = x.IsInterval,
             IsEnabled = x.IsEnabled,
-            Starts = x.Starts
+
+            Speech = x.Speech,
+            AudioFile = x.AudioFile,
+
+            Every = x.Every,
+            RemindAt = x.RemindAt,
+            ExpireAfter = x.ExpireAfter,
+            StartsAfter = x.StartsAfter
         }));
 
         _settingsService.SaveSettings();
@@ -73,107 +93,121 @@ public class TimerService
         Timers.Clear();
 
         // Roshan Spawn
-        Timers.Add(new DotaTimerViewModel()
+        Timers.Add(new DotaTimerViewModel(new DotaTimer()
         {
             Name = "Roshan",
             Every = TimeSpan.FromMinutes(11),
             RemindAt = TimeSpan.FromMinutes(1),
-            DisableAfter = TimeSpan.FromMinutes(60),
+            ExpireAfter = TimeSpan.FromMinutes(60),
             IsManualReset = true,
+            IsMuted = false,
             IsInterval = true,
             IsEnabled = false,
-        });
+        }));
 
         // Tormentor Radiant
-        Timers.Add(new DotaTimerViewModel()
+        Timers.Add(new DotaTimerViewModel(new DotaTimer()
         {
             Name = "Tormentor Radiant",
             Every = TimeSpan.FromMinutes(10),
             RemindAt = TimeSpan.FromMinutes(1),
-            DisableAfter = TimeSpan.FromMinutes(35),
+            ExpireAfter = TimeSpan.FromMinutes(35),
+            IsMuted = false,
             IsManualReset = true,
             IsInterval = true,
             IsEnabled = true
-        });
+        }));
 
         // Tormentor Dire
-        Timers.Add(new DotaTimerViewModel()
+        Timers.Add(new DotaTimerViewModel(new DotaTimer()
         {
             Name = "Tormentor Dire",
             Every = TimeSpan.FromMinutes(10),
             RemindAt = TimeSpan.FromMinutes(1),
-            DisableAfter = TimeSpan.FromMinutes(35),
+            ExpireAfter = TimeSpan.FromMinutes(35),
+            IsEnabled = true,
+            IsMuted = false,
             IsManualReset = true,
             IsInterval = true
-        });
+        }));
 
         // Powerup Rune
-        Timers.Add(new DotaTimerViewModel()
+        Timers.Add(new DotaTimerViewModel(new DotaTimer()
         {
             Name = "Power Rune",
             Every = TimeSpan.FromMinutes(2),
             RemindAt = TimeSpan.FromMinutes(0.25),
-            DisableAfter = TimeSpan.FromMinutes(20),
+            ExpireAfter = TimeSpan.FromMinutes(20),
+            IsMuted = false,
+            IsManualReset = false,
             IsInterval = true,
             IsEnabled = true,
-        });
+        }));
 
         // Bounty Rune
-        Timers.Add(new DotaTimerViewModel()
+        Timers.Add(new DotaTimerViewModel(new DotaTimer()
         {
             Name = "Bounty Rune",
             Every = TimeSpan.FromMinutes(3),
             RemindAt = TimeSpan.FromSeconds(20),
-            DisableAfter = TimeSpan.FromMinutes(30),
+            ExpireAfter = TimeSpan.FromMinutes(30),
+            IsMuted = false,
             IsManualReset = false,
             IsInterval = true,
             IsEnabled = true,
-        });
+        }));
 
         // Wisdom Rune
-        Timers.Add(new DotaTimerViewModel()
+        Timers.Add(new DotaTimerViewModel(new DotaTimer()
         {
             Name = "Wisdom Rune",
             Every = TimeSpan.FromMinutes(7),
             RemindAt = TimeSpan.FromSeconds(45),
-            DisableAfter = TimeSpan.FromMinutes(30),
+            ExpireAfter = TimeSpan.FromMinutes(30),
+            IsMuted = false,
             IsInterval = true,
+            IsManualReset = false,
             IsEnabled = true,
-        });
+        }));
 
         // Stack Camp
-        Timers.Add(new DotaTimerViewModel()
+        Timers.Add(new DotaTimerViewModel(new DotaTimer()
         {
             Name = "Stack Camp",
             Every = TimeSpan.FromMinutes(1),
             RemindAt = TimeSpan.FromSeconds(15),
-            DisableAfter = TimeSpan.FromMinutes(30),
-            Starts = TimeSpan.FromMinutes(2),
+            ExpireAfter = TimeSpan.FromMinutes(30),
+            StartsAfter = TimeSpan.FromMinutes(2),
+            IsMuted = false,
+            IsManualReset = false,
             IsInterval = true,
             IsEnabled = true,
-        });
+        }));
 
         // Pull (15s)
-        Timers.Add(new DotaTimerViewModel()
+        Timers.Add(new DotaTimerViewModel(new DotaTimer()
         {
             Name = "Pull (15s)",
             Every = TimeSpan.FromSeconds(15),
             RemindAt = TimeSpan.FromSeconds(5),
-            DisableAfter = TimeSpan.FromMinutes(20),
+            ExpireAfter = TimeSpan.FromMinutes(20),
+            IsEnabled = true,
             IsInterval = false,
-            IsManualReset = false
-        });
+            IsMuted = false,
+            IsManualReset = false,
+        }));
 
         // Pull (45s)
-        Timers.Add(new DotaTimerViewModel()
+        Timers.Add(new DotaTimerViewModel(new DotaTimer()
         {
             Name = "Pull (45s)",
             Every = TimeSpan.FromSeconds(45),
             RemindAt = TimeSpan.FromSeconds(5),
-            DisableAfter = TimeSpan.FromMinutes(20),
+            ExpireAfter = TimeSpan.FromMinutes(20),
+            IsEnabled = true,
+            IsMuted = false,
             IsInterval = false,
             IsManualReset = false
-        });
+        }));
     }
-
 }

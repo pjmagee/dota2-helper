@@ -96,7 +96,7 @@
                                         When the timer will become active and begin to trigger based on the game time
                                     </ToolTip.Tip>
                                     <TextBlock Text="Starts at" VerticalAlignment="Center" />
-                                    <TimePicker UseSeconds="True" SelectedTime="{Binding SelectedTimerViewModel.Starts, Mode=TwoWay}" />
+                                    <TimePicker UseSeconds="True" SelectedTime="{Binding SelectedTimerViewModel.StartsAfter, Mode=TwoWay}" />
                                 </StackPanel>
                                 <StackPanel Orientation="Vertical" Margin="5">
                                     <ToolTip.Tip>
@@ -104,7 +104,7 @@
                                         For example, pulling or stacking camps becomes less meaningful after a certain time.
                                     </ToolTip.Tip>
                                     <TextBlock Text="Expires after" VerticalAlignment="Center" />
-                                    <TimePicker UseSeconds="True" SelectedTime="{Binding SelectedTimerViewModel.DisableAfter, Mode=TwoWay}" />
+                                    <TimePicker UseSeconds="True" SelectedTime="{Binding SelectedTimerViewModel.ExpireAfter, Mode=TwoWay}" />
                                 </StackPanel>
                                 <StackPanel Orientation="Vertical" Margin="5" Spacing="5">
                                     <ToolTip.Tip>

@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
@@ -189,11 +190,16 @@ public class SettingsViewModel : ViewModelBase
 
     public void Add()
     {
-        _timerService.Timers.Add(new DotaTimerViewModel()
+        _timerService.Timers.Add(new DotaTimerViewModel(new DotaTimer()
             {
-                Name = $"Timer {_timerService.Timers.Count + 1}"
+                Name = $"Timer {_timerService.Timers.Count + 1}",
+                Every = TimeSpan.FromMinutes(1),
+                IsEnabled = false,
+                IsMuted = false,
+                IsManualReset = false,
+                IsInterval = true
             }
-        );
+        ));
     }
 
     public void DeleteTimer(DotaTimerViewModel? timer)

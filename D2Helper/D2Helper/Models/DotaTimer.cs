@@ -1,75 +1,41 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace D2Helper.Models;
 
 public class DotaTimer
 {
-    public bool IsEnabled { get; set; }
-    public bool IsManualReset { get; set; }
-    public bool IsMuted { get; set; }
-    public bool IsInterval { get; set; }
+    [JsonPropertyName("IsEnabled")]
+    public required bool IsEnabled { get; set; }
 
-    public string Name { get; set; }
+    [JsonPropertyName("IsManualReset")]
+    public required bool IsManualReset { get; set; }
+
+    [JsonPropertyName("IsMuted")]
+
+    public required bool IsMuted { get; set; }
+
+    [JsonPropertyName("IsInterval")]
+    public required bool IsInterval { get; set; }
+
+    [JsonPropertyName("Name")]
+    public required string Name { get; set; }
+
+    [JsonPropertyName("Speech")]
     public string? Speech { get; set; }
+
+    [JsonPropertyName("AudioFile")]
     public string? AudioFile { get; set; }
 
-    public TimeSpan Every { get; set; }
+    [JsonPropertyName("Every")]
+    public required TimeSpan Every { get; set; }
+
+    [JsonPropertyName("RemindAt")]
     public TimeSpan? RemindAt { get; set; }
-    public TimeSpan? DisableAfter { get; set; }
-    public TimeSpan? Starts { get; set; }
+
+    [JsonPropertyName("ExpireAfter")]
+    public TimeSpan? ExpireAfter { get; set; }
+
+    [JsonPropertyName("StartsAfter")]
+    public TimeSpan? StartsAfter { get; set; }
 }
-
-// Example appsettings.json for the Timer:
-
-/*
-
-{
-  "Settings": {
-    "Timers": [
-      {
-        "IsEnabled": true,
-        "IsManualReset": false,
-        "IsMuted": false,
-        "IsInterval": false,
-        "Name": "Roshan",
-        "Speech": "Roshan is up",
-        "AudioFile": "roshan.wav",
-        "Every": "0:08:00",
-        "RemindAt": "0:07:00",
-        "DisableAfter": "0:00:00",
-        "Starts": "0:00:00"
-      },
-      {
-        "IsEnabled": true,
-        "IsManualReset": false,
-        "IsMuted": false,
-        "IsInterval": false,
-        "Name": "Aegis",
-        "Speech": "Aegis is up",
-        "AudioFile": "aegis.wav",
-        "Every": "0:05:00",
-        "RemindAt": "0:04:00",
-        "DisableAfter": "0:00:00",
-        "Starts": "0:00:00"
-      },
-      {
-        "IsEnabled": true,
-        "IsManualReset": false,
-        "IsMuted": false,
-        "IsInterval": false,
-        "Name": "Bounty",
-        "Speech": "Bounty is up",
-        "AudioFile": "bounty.wav",
-        "Every": "0:05:00",
-        "RemindAt": "0:04:00",
-        "DisableAfter": "0:00:00",
-        "Starts": "0:00:00"
-      }
-    ],
-    "Volume": 50,
-    "Mode": 0,
-    "DemoMuted": true
-  }
-}
-
-*/

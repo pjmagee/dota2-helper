@@ -7,7 +7,7 @@
         xmlns:design="clr-namespace:D2Helper.Design"
         mc:Ignorable="d" d:DesignWidth="260" d:DesignHeight="250"
         x:Class="D2Helper.Views.TimersWindow"
-        SizeToContent="WidthAndHeight"
+        SizeToContent="Manual"
         MinWidth="250"
         MinHeight="200"
         Width="260"

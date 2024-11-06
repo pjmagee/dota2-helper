@@ -48,21 +48,18 @@ public class DynamicProvider : BackgroundWorker, IGameTimeProvider, IStrategyPro
                 if (_dota2 == null || _dota2.HasExited)
                 {
                     _dota2 = Process.GetProcessesByName("dota2").FirstOrDefault();
-                }
 
-                if (_dota2 != null)
-                {
-                    _dota2.Exited += (sender, args) =>
+                    if(_dota2 != null)
                     {
-                        Strategy = GameStateStrategy.Demo;
-                    };
+                        _dota2.Exited += (sender, args) =>
+                        {
+                            Strategy = GameStateStrategy.Demo;
+                            _dota2 = null;
+                        };
+                    }
+                }
 
-                    Strategy = GameStateStrategy.Real;
-                }
-                else
-                {
-                    Strategy = GameStateStrategy.Demo;
-                }
+                Strategy = _dota2 != null ? GameStateStrategy.Real : GameStateStrategy.Demo;
             }
 
             Thread.Sleep(2000);

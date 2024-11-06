@@ -4,30 +4,46 @@ using D2Helper.Models;
 
 namespace D2Helper.ViewModels;
 
-
-
-
 /// <summary>
 /// Dota2 Timer configuration
 /// </summary>
 public class DotaTimerViewModel : ViewModelBase
 {
+    DotaTimer _timer;
+
+    // The timer is currently enabled for usage
     bool _isEnabled;
+
+    // The timer requires manual reset ( e.g. Roshan timer)
     bool _isResetRequired;
+
+    // The timer is currently alerting the player
     bool _isAlerting;
+
+    // The timer requires manual reset ( e.g. Roshan timer)
     bool _isManualReset;
+
+    // The timer is sound muted
     bool _isMuted;
+
+    // The timer is an interval timer ( e.g. every N seconds)
     bool _isInterval;
+
+    // The timer has gone beyond the disable after time
+    bool _isExpired;
 
     string _name;
     string? _speech;
 
     TimeSpan _time;
     TimeSpan _timeRemaining;
-    TimeSpan? _timeStarts;
+    TimeSpan? _startsAfter;
     TimeSpan? _timeRemind;
-    TimeSpan? _timeDisabled;
+    TimeSpan? _expireAfter;
     string? _audioFile;
+
+    // The timer is currently visible
+    bool _isVisible;
 
     public string Name
     {
@@ -47,6 +63,12 @@ public class DotaTimerViewModel : ViewModelBase
         set => SetProperty(ref _time, value);
     }
 
+    public bool IsExpired
+    {
+        get => _isExpired;
+        set => SetProperty(ref _isExpired, value);
+    }
+
     public bool IsEnabled
     {
         get => _isEnabled;
@@ -57,25 +79,25 @@ public class DotaTimerViewModel : ViewModelBase
     public TimeSpan? RemindAt
     {
         get => _timeRemind;
-        set
-        {
-            if (SetProperty(ref _timeRemind, value)) OnPropertyChanged(nameof(ReminderInSeconds));
-        }
+        set => SetProperty(ref _timeRemind, value);
     }
 
-    public TimeSpan? DisableAfter
+    public TimeSpan? ExpireAfter
     {
-        get => _timeDisabled;
-        set
-        {
-            if (SetProperty(ref _timeDisabled, value)) OnPropertyChanged(nameof(DisableAfterMinutes));
-        }
+        get => _expireAfter;
+        set => SetProperty(ref _expireAfter, value);
     }
 
     public bool IsAlerting
     {
         get => _isAlerting;
         set => SetProperty(ref _isAlerting, value);
+    }
+
+    public bool IsVisible
+    {
+        get => _isVisible;
+        set => SetProperty(ref _isVisible, value);
     }
 
     public bool IsResetRequired
@@ -86,20 +108,32 @@ public class DotaTimerViewModel : ViewModelBase
 
     public IRelayCommand ResetCommand { get; }
 
-    public DotaTimerViewModel()
+    private DotaTimerViewModel()
     {
-        ResetCommand = new RelayCommand(() => { Remaining = Every; });
+        ResetCommand = new RelayCommand(ResetTimer);
+    }
+
+    void ResetTimer()
+    {
+        IsResetRequired = false;
+        Every = _timer.Every;
     }
 
     public DotaTimerViewModel(DotaTimer timer) : this()
     {
+        _timer = timer;
+
         Name = timer.Name;
         Every = timer.Every;
-        RemindAt = timer.RemindAt;
-        DisableAfter = timer.DisableAfter;
+
         IsManualReset = timer.IsManualReset;
         IsInterval = timer.IsInterval;
         IsEnabled = timer.IsEnabled;
+
+        RemindAt = timer.RemindAt;
+        ExpireAfter = timer.ExpireAfter;
+        StartsAfter = timer.StartsAfter;
+
         AudioFile = timer.AudioFile;
         Speech = timer.Speech;
     }
@@ -113,31 +147,10 @@ public class DotaTimerViewModel : ViewModelBase
     /// <summary>
     /// When the timer becomes active
     /// </summary>
-    public TimeSpan? Starts
+    public TimeSpan? StartsAfter
     {
-        get => _timeStarts;
-        set
-        {
-            if (SetProperty(ref _timeStarts, value)) OnPropertyChanged(nameof(StartsAtAfterMinutes));
-        }
-    }
-
-    public decimal? ReminderInSeconds
-    {
-        get => (decimal?)RemindAt?.TotalSeconds;
-        set => RemindAt = value is > 0 ? TimeSpan.FromSeconds((double)value.Value) : null;
-    }
-
-    public decimal? DisableAfterMinutes
-    {
-        get => (decimal?)DisableAfter?.TotalMinutes;
-        set => DisableAfter = value is > 0 ? TimeSpan.FromMinutes((double)value.Value) : null;
-    }
-
-    public decimal? StartsAtAfterMinutes
-    {
-        get => (decimal?)Starts?.TotalMinutes;
-        set => Starts = value is > 0 ? TimeSpan.FromMinutes((double)value.Value) : null;
+        get => _startsAfter;
+        set => SetProperty(ref _startsAfter, value);
     }
 
     /// <summary>
@@ -175,7 +188,11 @@ public class DotaTimerViewModel : ViewModelBase
 
     public void Update(TimeSpan gameTime)
     {
-        if (Starts.HasValue && gameTime < Starts) return;
+        IsResetRequired = CalculateIsResetRequired(gameTime);
+        IsExpired = CalculateIsExpired(gameTime);
+        IsVisible = CalculateIsVisible(gameTime);
+
+        if(IsResetRequired || IsExpired) return;
 
         if (IsInterval)
         {
@@ -185,8 +202,44 @@ public class DotaTimerViewModel : ViewModelBase
         {
             Remaining = CalculateTimeUntilNextOccurrence(gameTime, Every.Seconds);
         }
+    }
 
-        IsResetRequired = Remaining <= TimeSpan.Zero && IsManualReset;
+    bool CalculateIsResetRequired(TimeSpan gameTime)
+    {
+        if (IsManualReset is not true) return false;
+        return Remaining <= TimeSpan.Zero;
+    }
+
+    bool CalculateIsExpired(TimeSpan gameTime)
+    {
+        if (ExpireAfter.HasValue)
+        {
+            return gameTime >= ExpireAfter;
+        }
+
+        return false;
+    }
+
+    bool CalculateIsVisible(TimeSpan gameTime)
+    {
+        if (IsEnabled is not true) return false;
+
+        if (StartsAfter.HasValue && ExpireAfter.HasValue)
+        {
+            return gameTime > StartsAfter && gameTime < ExpireAfter;
+        }
+
+        if (StartsAfter.HasValue && !ExpireAfter.HasValue)
+        {
+            return gameTime > StartsAfter;
+        }
+
+        if (ExpireAfter.HasValue && !StartsAfter.HasValue)
+        {
+            return gameTime < ExpireAfter;
+        }
+
+        return false;
     }
 
     TimeSpan CalculateTimeUntilNextOccurrence(TimeSpan gameTime, int targetSecond)
@@ -209,7 +262,7 @@ public class DotaTimerViewModel : ViewModelBase
 
     TimeSpan GetObjectiveTime(TimeSpan gameTime)
     {
-        return gameTime > Starts.GetValueOrDefault() ? Every : Starts.GetValueOrDefault() + (gameTime < TimeSpan.Zero ? gameTime.Negate() : TimeSpan.Zero);
+        return gameTime > StartsAfter.GetValueOrDefault() ? Every : StartsAfter.GetValueOrDefault() + (gameTime < TimeSpan.Zero ? gameTime.Negate() : TimeSpan.Zero);
     }
 
     TimeSpan CalculateIntervalRemaining(TimeSpan gameTime)
