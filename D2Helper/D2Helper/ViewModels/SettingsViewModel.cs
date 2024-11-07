@@ -193,7 +193,7 @@ public class SettingsViewModel : ViewModelBase
         _timerService.Timers.Add(new DotaTimerViewModel(new DotaTimer()
             {
                 Name = $"Timer {_timerService.Timers.Count + 1}",
-                Every = TimeSpan.FromMinutes(1),
+                Time = TimeSpan.FromMinutes(1),
                 IsEnabled = false,
                 IsMuted = false,
                 IsManualReset = false,

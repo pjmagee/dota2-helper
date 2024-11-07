@@ -18,6 +18,7 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
     readonly ITimer? _timer = null;
     TimeSpan _time;
 
+    SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
     public TimersViewModel(
         TimerService timerService,
@@ -40,22 +41,32 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
 
         _timer = TimeProvider.System.CreateTimer(
             callback: UpdateTimers,
-            state: null, dueTime:
-            TimeSpan.Zero,
-            period:TimeSpan.FromSeconds(1));
+            state: null,
+            dueTime: TimeSpan.Zero,
+            period: TimeSpan.FromSeconds(1));
     }
 
-    void UpdateTimers(object? state)
+    async void UpdateTimers(object? state)
     {
-        foreach (var timer in Timers)
+        if (await _semaphore.WaitAsync(0))
         {
-            if (timer.IsEnabled)
+            try
             {
-                timer.Update(_gameTimeProvider.Time);
+                Time = _gameTimeProvider.Time;
+
+                foreach (var timer in Timers)
+                {
+                    if (timer.IsEnabled)
+                    {
+                        timer.Update(Time);
+                    }
+                }
+            }
+            finally
+            {
+                _semaphore.Release();
             }
         }
-
-        Time = _gameTimeProvider.Time;
     }
 
     public ObservableCollection<DotaTimerViewModel> Timers => _timerService.Timers;

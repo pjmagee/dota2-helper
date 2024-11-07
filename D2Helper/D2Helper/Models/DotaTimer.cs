@@ -12,7 +12,6 @@ public class DotaTimer
     public required bool IsManualReset { get; set; }
 
     [JsonPropertyName("IsMuted")]
-
     public required bool IsMuted { get; set; }
 
     [JsonPropertyName("IsInterval")]
@@ -27,15 +26,15 @@ public class DotaTimer
     [JsonPropertyName("AudioFile")]
     public string? AudioFile { get; set; }
 
-    [JsonPropertyName("Every")]
-    public required TimeSpan Every { get; set; }
+    [JsonPropertyName("Time")]
+    public required TimeSpan Time { get; set; }
 
     [JsonPropertyName("RemindAt")]
     public TimeSpan? RemindAt { get; set; }
 
-    [JsonPropertyName("ExpireAfter")]
-    public TimeSpan? ExpireAfter { get; set; }
+    [JsonPropertyName("HideAfter")]
+    public TimeSpan? HideAfter { get; set; }
 
-    [JsonPropertyName("StartsAfter")]
-    public TimeSpan? StartsAfter { get; set; }
+    [JsonPropertyName("ShowAfter")]
+    public TimeSpan? ShowAfter { get; set; }
 }

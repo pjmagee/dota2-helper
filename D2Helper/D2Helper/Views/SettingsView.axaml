@@ -8,6 +8,7 @@
     xmlns:models="clr-namespace:D2Helper.Models"
     xmlns:design="clr-namespace:D2Helper.Design"
     mc:Ignorable="d"
+    Width="700" Height="560"
     d:DesignWidth="700" d:DesignHeight="560"
     d:DataContext="{x:Type vm:SettingsViewModel}"
     x:Class="D2Helper.Views.SettingsView"
@@ -27,7 +28,7 @@
         </StackPanel>
         <TabControl>
             <TabItem Header="Timers">
-                <StackPanel Orientation="Vertical" Margin="0 10">
+                <StackPanel Orientation="Vertical" Margin="0 10" Spacing="5">
                     <StackPanel Orientation="Horizontal" Spacing="5">
                         <DataGrid ItemsSource="{Binding Timers}"
                                   GridLinesVisibility="All"
@@ -43,7 +44,7 @@
                                 <DataGridTemplateColumn Header="Time">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TimePicker UseSeconds="True" SelectedTime="{Binding Every}">
+                                            <TimePicker UseSeconds="True" SelectedTime="{Binding Time}">
                                                 <TimePicker.Resources>
                                                     <x:Double x:Key="TimePickerThemeMinWidth">120</x:Double>
                                                 </TimePicker.Resources>
@@ -70,33 +71,32 @@
                                 </DataGridTemplateColumn>
                             </DataGrid.Columns>
                         </DataGrid>
-                        <StackPanel Orientation="Vertical">
-                            <StackPanel Orientation="Vertical" Margin="0">
+                          <StackPanel Orientation="Vertical" Margin="0">
                                 <StackPanel Orientation="Vertical" Margin="5">
                                     <TextBlock Text="Name" VerticalAlignment="Center" />
                                     <TextBox Text="{Binding SelectedTimerViewModel.Name, Mode=TwoWay}" />
                                 </StackPanel>
-                                <StackPanel Orientation="Vertical" Margin="5">
-                                    <ToolTip.Tip>
-                                        The text that will be spoken when the timer triggers.
-                                    </ToolTip.Tip>
-                                    <TextBlock Text="Speech" VerticalAlignment="Center" />
-                                    <TextBox Text="{Binding SelectedTimerViewModel.Speech, Mode=TwoWay}" />
-                                </StackPanel>
+                                <!-- <StackPanel Orientation="Vertical" Margin="5"> -->
+                                <!--     <ToolTip.Tip> -->
+                                <!--         The text that will be spoken when the timer triggers. -->
+                                <!--     </ToolTip.Tip> -->
+                                <!--     <TextBlock Text="Speech" VerticalAlignment="Center" /> -->
+                                <!--     <TextBox Text="{Binding SelectedTimerViewModel.Speech, Mode=TwoWay}" /> -->
+                                <!-- </StackPanel> -->
                                 <StackPanel Orientation="Vertical" Margin="5">
                                     <ToolTip.Tip>
                                         If the timer is an interval timer, this is the time between each trigger.
                                         If the timer is not an interval timer, when game seconds or minutes = this time, the timer will trigger.
                                     </ToolTip.Tip>
                                     <TextBlock Text="Time" VerticalAlignment="Center" />
-                                    <TimePicker UseSeconds="True" SelectedTime="{Binding SelectedTimerViewModel.Every, Mode=TwoWay}" />
+                                    <TimePicker UseSeconds="True" SelectedTime="{Binding SelectedTimerViewModel.Time, Mode=TwoWay}" />
                                 </StackPanel>
                                 <StackPanel Orientation="Vertical" Margin="5">
                                     <ToolTip.Tip>
                                         When the timer will become active and begin to trigger based on the game time
                                     </ToolTip.Tip>
                                     <TextBlock Text="Starts at" VerticalAlignment="Center" />
-                                    <TimePicker UseSeconds="True" SelectedTime="{Binding SelectedTimerViewModel.StartsAfter, Mode=TwoWay}" />
+                                    <TimePicker UseSeconds="True" SelectedTime="{Binding SelectedTimerViewModel.ShowAfter, Mode=TwoWay}" />
                                 </StackPanel>
                                 <StackPanel Orientation="Vertical" Margin="5">
                                     <ToolTip.Tip>
@@ -104,7 +104,9 @@
                                         For example, pulling or stacking camps becomes less meaningful after a certain time.
                                     </ToolTip.Tip>
                                     <TextBlock Text="Expires after" VerticalAlignment="Center" />
-                                    <TimePicker UseSeconds="True" SelectedTime="{Binding SelectedTimerViewModel.ExpireAfter, Mode=TwoWay}" />
+                                    <TimePicker
+                                        UseSeconds="True"
+                                        SelectedTime="{Binding SelectedTimerViewModel.HideAfter, Mode=TwoWay}" />
                                 </StackPanel>
                                 <StackPanel Orientation="Vertical" Margin="5" Spacing="5">
                                     <ToolTip.Tip>
@@ -139,9 +141,8 @@
                                     </StackPanel>
                                 </StackPanel>
                             </StackPanel>
-                        </StackPanel>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal" Spacing="5">
                         <Button Width="120" Height="30"
                                 HorizontalContentAlignment="Center"
                                 VerticalContentAlignment="Center"

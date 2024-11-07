@@ -7,8 +7,44 @@ using System.Linq;
 using D2Helper.Models;
 using D2Helper.ViewModels;
 using FluentAvalonia.Core;
+using LibVLCSharp.Shared;
 
 namespace D2Helper.Services;
+
+public class TimerAudioQueueService : BackgroundWorker
+{
+    LibVLC LibVlc { get; } = new();
+
+    public Queue<string> AudioQueue { get; } = new();
+
+    public void Add(string audioFile)
+    {
+        // Ensure no duplicate added
+        if (!AudioQueue.Contains(audioFile))
+        {
+            AudioQueue.Enqueue(audioFile);
+        }
+    }
+
+    protected override void OnDoWork(DoWorkEventArgs e)
+    {
+        while (!CancellationPending)
+        {
+            if (AudioQueue.Count > 0)
+            {
+                var audioFile = AudioQueue.Dequeue();
+
+                using var media = new Media(LibVlc, audioFile, FromType.FromLocation);
+                {
+                    using var player = new MediaPlayer(media);
+                    {
+                        player.Play();
+                    }
+                }
+            }
+        }
+    }
+}
 
 public class TimerService
 {
@@ -55,7 +91,7 @@ public class TimerService
 
     readonly HashSet<string> _ignoredProperties = new()
     {
-        nameof(DotaTimerViewModel.Remaining),
+        nameof(DotaTimerViewModel.TimeRemaining),
         nameof(DotaTimerViewModel.IsAlerting),
         nameof(DotaTimerViewModel.IsExpired),
         nameof(DotaTimerViewModel.IsVisible),
@@ -79,10 +115,10 @@ public class TimerService
             Speech = x.Speech,
             AudioFile = x.AudioFile,
 
-            Every = x.Every,
+            Time = x.Time,
             RemindAt = x.RemindAt,
-            ExpireAfter = x.ExpireAfter,
-            StartsAfter = x.StartsAfter
+            HideAfter = x.HideAfter,
+            ShowAfter = x.ShowAfter
         }));
 
         _settingsService.SaveSettings();
@@ -96,9 +132,9 @@ public class TimerService
         Timers.Add(new DotaTimerViewModel(new DotaTimer()
         {
             Name = "Roshan",
-            Every = TimeSpan.FromMinutes(11),
+            Time = TimeSpan.FromMinutes(11),
             RemindAt = TimeSpan.FromMinutes(1),
-            ExpireAfter = TimeSpan.FromMinutes(60),
+            HideAfter = TimeSpan.FromMinutes(60),
             IsManualReset = true,
             IsMuted = false,
             IsInterval = true,
@@ -109,9 +145,9 @@ public class TimerService
         Timers.Add(new DotaTimerViewModel(new DotaTimer()
         {
             Name = "Tormentor Radiant",
-            Every = TimeSpan.FromMinutes(10),
+            Time = TimeSpan.FromMinutes(10),
             RemindAt = TimeSpan.FromMinutes(1),
-            ExpireAfter = TimeSpan.FromMinutes(35),
+            HideAfter = TimeSpan.FromMinutes(35),
             IsMuted = false,
             IsManualReset = true,
             IsInterval = true,
@@ -122,9 +158,9 @@ public class TimerService
         Timers.Add(new DotaTimerViewModel(new DotaTimer()
         {
             Name = "Tormentor Dire",
-            Every = TimeSpan.FromMinutes(10),
+            Time = TimeSpan.FromMinutes(10),
             RemindAt = TimeSpan.FromMinutes(1),
-            ExpireAfter = TimeSpan.FromMinutes(35),
+            HideAfter = TimeSpan.FromMinutes(35),
             IsEnabled = true,
             IsMuted = false,
             IsManualReset = true,
@@ -135,9 +171,9 @@ public class TimerService
         Timers.Add(new DotaTimerViewModel(new DotaTimer()
         {
             Name = "Power Rune",
-            Every = TimeSpan.FromMinutes(2),
+            Time = TimeSpan.FromMinutes(2),
             RemindAt = TimeSpan.FromMinutes(0.25),
-            ExpireAfter = TimeSpan.FromMinutes(20),
+            HideAfter = TimeSpan.FromMinutes(20),
             IsMuted = false,
             IsManualReset = false,
             IsInterval = true,
@@ -148,9 +184,9 @@ public class TimerService
         Timers.Add(new DotaTimerViewModel(new DotaTimer()
         {
             Name = "Bounty Rune",
-            Every = TimeSpan.FromMinutes(3),
+            Time = TimeSpan.FromMinutes(3),
             RemindAt = TimeSpan.FromSeconds(20),
-            ExpireAfter = TimeSpan.FromMinutes(30),
+            HideAfter = TimeSpan.FromMinutes(30),
             IsMuted = false,
             IsManualReset = false,
             IsInterval = true,
@@ -161,9 +197,9 @@ public class TimerService
         Timers.Add(new DotaTimerViewModel(new DotaTimer()
         {
             Name = "Wisdom Rune",
-            Every = TimeSpan.FromMinutes(7),
+            Time = TimeSpan.FromMinutes(7),
             RemindAt = TimeSpan.FromSeconds(45),
-            ExpireAfter = TimeSpan.FromMinutes(30),
+            HideAfter = TimeSpan.FromMinutes(30),
             IsMuted = false,
             IsInterval = true,
             IsManualReset = false,
@@ -174,10 +210,10 @@ public class TimerService
         Timers.Add(new DotaTimerViewModel(new DotaTimer()
         {
             Name = "Stack Camp",
-            Every = TimeSpan.FromMinutes(1),
+            Time = TimeSpan.FromMinutes(1),
             RemindAt = TimeSpan.FromSeconds(15),
-            ExpireAfter = TimeSpan.FromMinutes(30),
-            StartsAfter = TimeSpan.FromMinutes(2),
+            HideAfter = TimeSpan.FromMinutes(30),
+            ShowAfter = TimeSpan.FromMinutes(2),
             IsMuted = false,
             IsManualReset = false,
             IsInterval = true,
@@ -188,9 +224,9 @@ public class TimerService
         Timers.Add(new DotaTimerViewModel(new DotaTimer()
         {
             Name = "Pull (15s)",
-            Every = TimeSpan.FromSeconds(15),
+            Time = TimeSpan.FromSeconds(15),
             RemindAt = TimeSpan.FromSeconds(5),
-            ExpireAfter = TimeSpan.FromMinutes(20),
+            HideAfter = TimeSpan.FromMinutes(20),
             IsEnabled = true,
             IsInterval = false,
             IsMuted = false,
@@ -201,9 +237,9 @@ public class TimerService
         Timers.Add(new DotaTimerViewModel(new DotaTimer()
         {
             Name = "Pull (45s)",
-            Every = TimeSpan.FromSeconds(45),
+            Time = TimeSpan.FromSeconds(45),
             RemindAt = TimeSpan.FromSeconds(5),
-            ExpireAfter = TimeSpan.FromMinutes(20),
+            HideAfter = TimeSpan.FromMinutes(20),
             IsEnabled = true,
             IsMuted = false,
             IsInterval = false,

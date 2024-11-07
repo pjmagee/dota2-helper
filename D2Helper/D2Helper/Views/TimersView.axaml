@@ -74,7 +74,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock x:Name="Remaining" IsHitTestVisible="False"
-                                       Text="{Binding Remaining}"
+                                       Text="{Binding TimeRemaining}"
                                        IsVisible="{Binding !IsResetRequired}"
                                        HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </DataTemplate>
