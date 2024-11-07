@@ -8,6 +8,9 @@
 
     <ItemGroup>
         <AvaloniaResource Include="Assets\**"/>
+        <Content Include="audio\*.*">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>       
     </ItemGroup>
 
     <ItemGroup>
@@ -18,20 +21,10 @@
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
         <PackageReference Include="FluentIcons.Avalonia.Fluent" Version="1.1.263" />
-        <PackageReference Include="LibVLCSharp.Avalonia" Version="3.9.0" />
+        <PackageReference Include="LibVLCSharp" Version="3.9.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.1" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />        
     </ItemGroup>
-
-    <ItemGroup>
-      <UpToDateCheckInput Remove="Controls\TimePicker2.axaml" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Update="Views\TimersView.axaml.cs">
-        <DependentUpon>TimersView.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-    </ItemGroup>
+    
 </Project>

@@ -7,7 +7,7 @@ namespace D2Helper.ViewModels;
 /// <summary>
 /// Dota2 Timer configuration
 /// </summary>
-public class DotaTimerViewModel : ViewModelBase
+public class DotaTimerViewModel : ViewModelBase, IComparable<DotaTimerViewModel>
 {
     DotaTimer _timer;
 
@@ -32,6 +32,9 @@ public class DotaTimerViewModel : ViewModelBase
     // The timer has gone beyond the disable after time
     bool _isExpired;
 
+    // The order in the list
+    int _sortOrder;
+
     string _name;
     string? _speech;
 
@@ -45,10 +48,22 @@ public class DotaTimerViewModel : ViewModelBase
     // The timer is currently visible
     bool _isVisible;
 
+    public int CompareTo(DotaTimerViewModel? other)
+    {
+        if (other == null) return 1;
+        return SortOrder.CompareTo(other.SortOrder);
+    }
+
     public string Name
     {
         get => _name;
         set => SetProperty(ref _name, value);
+    }
+
+    public int SortOrder
+    {
+        get => _sortOrder;
+        set => SetProperty(ref _sortOrder, value);
     }
 
     public string? Speech
@@ -108,9 +123,25 @@ public class DotaTimerViewModel : ViewModelBase
 
     public IRelayCommand ResetCommand { get; }
 
+    // public IRelayCommand MoveUpCommand { get; }
+    //
+    // public IRelayCommand MoveDownCommand { get; }
+
     private DotaTimerViewModel()
     {
         ResetCommand = new RelayCommand(ResetTimer);
+        // MoveUpCommand = new RelayCommand(MoveUp);
+        // MoveDownCommand = new RelayCommand(MoveDown);
+    }
+
+    void MoveUp()
+    {
+        SortOrder -= 1;
+    }
+
+    void MoveDown()
+    {
+        SortOrder += 1;
     }
 
     void ResetTimer()

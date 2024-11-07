@@ -8,8 +8,7 @@
     xmlns:models="clr-namespace:D2Helper.Models"
     xmlns:design="clr-namespace:D2Helper.Design"
     mc:Ignorable="d"
-    Width="700" Height="560"
-    d:DesignWidth="700" d:DesignHeight="560"
+    d:DesignHeight="600" d:DesignWidth="800"
     d:DataContext="{x:Type vm:SettingsViewModel}"
     x:Class="D2Helper.Views.SettingsView"
     x:Name="SettingsUserControl"
@@ -30,14 +29,14 @@
             <TabItem Header="Timers">
                 <StackPanel Orientation="Vertical" Margin="0 10" Spacing="5">
                     <StackPanel Orientation="Horizontal" Spacing="5">
-                        <DataGrid ItemsSource="{Binding Timers}"
+                        <DataGrid ItemsSource="{Binding Timers, Mode=OneWay}"
                                   GridLinesVisibility="All"
                                   BorderBrush="Black"
+                                  CanUserSortColumns="False"
                                   BorderThickness="0.5"
                                   MaxHeight="400"
                                   SelectedItem="{Binding SelectedTimerViewModel}"
                                   SelectionMode="Single"
-                                  RowDetailsVisibilityMode="VisibleWhenSelected"
                                   HorizontalScrollBarVisibility="Auto">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
@@ -56,19 +55,51 @@
                                 <DataGridTemplateColumn>
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <Button Width="30" Height="30"
-                                                    HorizontalContentAlignment="Center"
-                                                    VerticalContentAlignment="Center"
-                                                    Padding="2"
-                                                    Command="{Binding $parent[DataGrid].((vm:SettingsViewModel)DataContext).DeleteCommand}"
-                                                    CommandParameter="{Binding}">
-                                                <Button.Content>
-                                                    <fluent:SymbolIcon Symbol="Delete" />
-                                                </Button.Content>
-                                            </Button>
+                                           <StackPanel Orientation="Horizontal">
+                                               <Button Width="30" Height="30"
+                                                       HorizontalContentAlignment="Center"
+                                                       VerticalContentAlignment="Center"
+                                                       Padding="2"
+                                                       Command="{Binding $parent[DataGrid].((vm:SettingsViewModel)DataContext).DeleteCommand}"
+                                                       CommandParameter="{Binding}">
+                                                   <Button.Content>
+                                                       <fluent:SymbolIcon Symbol="Delete" />
+                                                   </Button.Content>
+                                               </Button>
+                                           </StackPanel>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
+                                <!-- <DataGridTemplateColumn> -->
+                                <!--     <DataGridTemplateColumn.CellTemplate> -->
+                                <!--         <DataTemplate> -->
+                                <!--            <StackPanel Orientation="Horizontal"> -->
+                                <!--                 ~1~ Move up @1@ -->
+                                <!--                 <Button Width="30" Height="30" -->
+                                <!--                         HorizontalContentAlignment="Center" -->
+                                <!--                         VerticalContentAlignment="Center" -->
+                                <!--                         Padding="2" -->
+                                <!--                         Command="{Binding $parent[DataGrid].((vm:SettingsViewModel)DataContext).MoveUpCommand}" -->
+                                <!--                         CommandParameter="{Binding}"> -->
+                                <!--                     <Button.Content> -->
+                                <!--                          <fluent:SymbolIcon Symbol="ArrowUp" /> -->
+                                <!--                     </Button.Content> -->
+                                <!--                 </Button> -->
+                                <!--                  ~1~ Move down @1@ -->
+                                <!--                 <Button Width="30" Height="30" -->
+                                <!--                         HorizontalContentAlignment="Center" -->
+                                <!--                         VerticalContentAlignment="Center" -->
+                                <!--                         Padding="2" -->
+                                <!--                         Command="{Binding $parent[DataGrid].((vm:SettingsViewModel)DataContext).MoveDownCommand}" -->
+                                <!--                         CommandParameter="{Binding}"> -->
+                                <!--                     <Button.Content> -->
+                                <!--                         <fluent:SymbolIcon Symbol="ArrowDown" /> -->
+                                <!--                     </Button.Content> -->
+                                <!--                 </Button> -->
+                                <!--            </StackPanel> -->
+                                <!--         </DataTemplate> -->
+                                <!--     </DataGridTemplateColumn.CellTemplate> -->
+                                <!-- </DataGridTemplateColumn> -->
                             </DataGrid.Columns>
                         </DataGrid>
                           <StackPanel Orientation="Vertical" Margin="0">
@@ -114,9 +145,14 @@
                                     </ToolTip.Tip>
                                     <TextBlock Text="Audio file" />
                                     <TextBox IsReadOnly="True" Text="{Binding SelectedTimerViewModel.AudioFile, Mode=OneWay}" />
-                                    <Button Content="Browse"
-                                            Command="{Binding SelectFileCommand}"
-                                            CommandParameter="{Binding ElementName=SettingsUserControl }" />
+                                    <StackPanel Orientation="Horizontal" Spacing="5">
+                                        <Button Content="Browse"
+                                                Command="{Binding SelectFileCommand}"
+                                                CommandParameter="{Binding ElementName=SettingsUserControl }" />
+                                        <Button Content="Play"
+                                                Command="{Binding PlayAudioFileCommand}"
+                                                CommandParameter="{Binding ElementName=SettingsUserControl }" />
+                                    </StackPanel>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <StackPanel Orientation="Vertical" Margin="5">

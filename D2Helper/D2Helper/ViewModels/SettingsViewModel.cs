@@ -1,18 +1,26 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using D2Helper.Models;
 using D2Helper.Services;
 using D2Helper.Views;
+using FluentAvalonia.UI.Data;
 
 namespace D2Helper.ViewModels;
 
-public class SettingsViewModel : ViewModelBase
+using System;
+using System.Collections.ObjectModel;
+using System.Linq;
+
+public class SettingsViewModel : ViewModelBase, INotifyPropertyChanged
 {
     readonly TimerService _timerService;
+    readonly TimerAudioQueueService _audioQueueService;
     readonly IStrategyProvider _strategyProvider;
     readonly SettingsService _settingsService;
 
@@ -24,8 +32,14 @@ public class SettingsViewModel : ViewModelBase
     bool _demoMuted;
 
     public ObservableCollection<DotaTimerViewModel> Timers => _timerService.Timers;
-
     public RelayCommand<DotaTimerViewModel> DeleteCommand { get; }
+
+    public RelayCommand<DotaTimerViewModel> MoveUpCommand { get; }
+
+    public RelayCommand<DotaTimerViewModel> MoveDownCommand { get; }
+
+
+
     public RelayCommand<SettingsView> SelectFileCommand { get; }
 
     public DotaTimerViewModel SelectedTimerViewModel
@@ -77,7 +91,7 @@ public class SettingsViewModel : ViewModelBase
     public string InstallPath
     {
         get => _installPath;
-        set { SetProperty(ref _installPath, value); }
+        set => SetProperty(ref _installPath, value);
     }
 
     public bool DemoMuted
@@ -93,10 +107,17 @@ public class SettingsViewModel : ViewModelBase
         }
     }
 
+    public IRelayCommand PlayAudioFileCommand { get; }
 
-    public SettingsViewModel(TimerService timerService, IStrategyProvider strategyProvider, SettingsService settingsService)
+
+    public SettingsViewModel(
+        TimerService timerService,
+        TimerAudioQueueService audioQueueService,
+        IStrategyProvider strategyProvider,
+        SettingsService settingsService)
     {
         _timerService = timerService;
+        _audioQueueService = audioQueueService;
         _strategyProvider = strategyProvider;
         _settingsService = settingsService;
 
@@ -105,6 +126,7 @@ public class SettingsViewModel : ViewModelBase
         InstallCommand = new RelayCommand(Install);
         UninstallCommand = new RelayCommand(Uninstall);
         TimerModeCommand = new RelayCommand<TimerStrategy>(SetStrategy);
+        PlayAudioFileCommand = new RelayCommand(PlayAudioFile);
         TimerModes =
         [
             new()
@@ -128,6 +150,45 @@ public class SettingsViewModel : ViewModelBase
         _selectedTimerViewModel = _timerService.Timers[0];
         _volume = _settingsService.Settings.Volume;
         _demoMuted = _settingsService.Settings.DemoMuted;
+
+        MoveUpCommand = new RelayCommand<DotaTimerViewModel>(MoveUp);
+        MoveDownCommand = new RelayCommand<DotaTimerViewModel>(MoveDown);
+    }
+
+    void MoveUp(DotaTimerViewModel? obj)
+    {
+        if (obj is not null)
+        {
+            var index = _timerService.Timers.IndexOf(obj);
+            if (index > 0)
+            {
+                Timers[index].SortOrder = index - 1;
+                Timers.Move(index, index - 1);
+                OnPropertyChanged(nameof(Timers));
+            }
+        }
+    }
+
+    void MoveDown(DotaTimerViewModel? obj)
+    {
+        if (obj is not null)
+        {
+            var index = Timers.IndexOf(obj);
+            if (index < Timers.Count - 1)
+            {
+                Timers[index].SortOrder = index + 1;
+                Timers.Move(index, index + 1);
+                OnPropertyChanged(nameof(Timers));
+            }
+        }
+    }
+
+    void PlayAudioFile()
+    {
+        if (string.IsNullOrWhiteSpace(SelectedTimerViewModel.AudioFile) is false)
+        {
+            _audioQueueService.Queue(SelectedTimerViewModel.AudioFile);
+        }
     }
 
     void SetStrategy(TimerStrategy? option)

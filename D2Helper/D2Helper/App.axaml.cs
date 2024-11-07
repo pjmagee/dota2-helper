@@ -36,6 +36,7 @@ public partial class App : Application
             .AddSingleton<Dota2ConfigurationService>()
             .AddSingleton<LongLivedHttpListener>()
             .AddSingleton<TimerService>()
+            .AddSingleton<TimerAudioQueueService>()
             .AddSingleton<TimersViewModel>()
             .AddSingleton<SettingsViewModel>();
 
