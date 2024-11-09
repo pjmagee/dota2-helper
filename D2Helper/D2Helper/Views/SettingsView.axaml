@@ -5,8 +5,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:D2Helper.ViewModels"
     xmlns:fluent="clr-namespace:FluentIcons.Avalonia.Fluent;assembly=FluentIcons.Avalonia.Fluent"
-    xmlns:models="clr-namespace:D2Helper.Models"
     xmlns:design="clr-namespace:D2Helper.Design"
+    xmlns:timers="clr-namespace:D2Helper.Features.Timers"
+    xmlns:audio="clr-namespace:D2Helper.Features.Audio"
     mc:Ignorable="d"
     d:DesignHeight="600" d:DesignWidth="800"
     d:DataContext="{x:Type vm:SettingsViewModel}"
@@ -16,6 +17,9 @@
     <Design.DataContext>
         <design:DesignSettingsViewModel />
     </Design.DataContext>
+    <UserControl.Resources>
+        <audio:AudioFilePathConverter x:Key="AudioFilePathConverter" />
+    </UserControl.Resources>
     <StackPanel Orientation="Vertical" Spacing="5" Margin="5" HorizontalAlignment="Left">
         <StackPanel Orientation="Horizontal" Margin="5" Width="280" Spacing="10" HorizontalAlignment="Left">
             <TextBlock Text="Volume" VerticalAlignment="Center" Margin="0" />
@@ -55,18 +59,18 @@
                                 <DataGridTemplateColumn>
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                           <StackPanel Orientation="Horizontal">
-                                               <Button Width="30" Height="30"
-                                                       HorizontalContentAlignment="Center"
-                                                       VerticalContentAlignment="Center"
-                                                       Padding="2"
-                                                       Command="{Binding $parent[DataGrid].((vm:SettingsViewModel)DataContext).DeleteCommand}"
-                                                       CommandParameter="{Binding}">
-                                                   <Button.Content>
-                                                       <fluent:SymbolIcon Symbol="Delete" />
-                                                   </Button.Content>
-                                               </Button>
-                                           </StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Button Width="30" Height="30"
+                                                        HorizontalContentAlignment="Center"
+                                                        VerticalContentAlignment="Center"
+                                                        Padding="2"
+                                                        Command="{Binding $parent[DataGrid].((vm:SettingsViewModel)DataContext).DeleteCommand}"
+                                                        CommandParameter="{Binding}">
+                                                    <Button.Content>
+                                                        <fluent:SymbolIcon Symbol="Delete" />
+                                                    </Button.Content>
+                                                </Button>
+                                            </StackPanel>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
@@ -102,81 +106,84 @@
                                 <!-- </DataGridTemplateColumn> -->
                             </DataGrid.Columns>
                         </DataGrid>
-                          <StackPanel Orientation="Vertical" Margin="0">
-                                <StackPanel Orientation="Vertical" Margin="5">
-                                    <TextBlock Text="Name" VerticalAlignment="Center" />
-                                    <TextBox Text="{Binding SelectedTimerViewModel.Name, Mode=TwoWay}" />
-                                </StackPanel>
-                                <!-- <StackPanel Orientation="Vertical" Margin="5"> -->
-                                <!--     <ToolTip.Tip> -->
-                                <!--         The text that will be spoken when the timer triggers. -->
-                                <!--     </ToolTip.Tip> -->
-                                <!--     <TextBlock Text="Speech" VerticalAlignment="Center" /> -->
-                                <!--     <TextBox Text="{Binding SelectedTimerViewModel.Speech, Mode=TwoWay}" /> -->
-                                <!-- </StackPanel> -->
-                                <StackPanel Orientation="Vertical" Margin="5">
-                                    <ToolTip.Tip>
-                                        If the timer is an interval timer, this is the time between each trigger.
-                                        If the timer is not an interval timer, when game seconds or minutes = this time, the timer will trigger.
-                                    </ToolTip.Tip>
-                                    <TextBlock Text="Time" VerticalAlignment="Center" />
-                                    <TimePicker UseSeconds="True" SelectedTime="{Binding SelectedTimerViewModel.Time, Mode=TwoWay}" />
-                                </StackPanel>
-                                <StackPanel Orientation="Vertical" Margin="5">
-                                    <ToolTip.Tip>
-                                        When the timer will become active and begin to trigger based on the game time
-                                    </ToolTip.Tip>
-                                    <TextBlock Text="Starts at" VerticalAlignment="Center" />
-                                    <TimePicker UseSeconds="True" SelectedTime="{Binding SelectedTimerViewModel.ShowAfter, Mode=TwoWay}" />
-                                </StackPanel>
-                                <StackPanel Orientation="Vertical" Margin="5">
-                                    <ToolTip.Tip>
-                                        When the timer will disable itself, and no longer trigger based on the game.
-                                        For example, pulling or stacking camps becomes less meaningful after a certain time.
-                                    </ToolTip.Tip>
-                                    <TextBlock Text="Expires after" VerticalAlignment="Center" />
-                                    <TimePicker
-                                        UseSeconds="True"
-                                        SelectedTime="{Binding SelectedTimerViewModel.HideAfter, Mode=TwoWay}" />
-                                </StackPanel>
-                                <StackPanel Orientation="Vertical" Margin="5" Spacing="5">
-                                    <ToolTip.Tip>
-                                        The audio file that will be played when the timer triggers if Text to Speech is disabled.
-                                    </ToolTip.Tip>
-                                    <TextBlock Text="Audio file" />
-                                    <TextBox IsReadOnly="True" Text="{Binding SelectedTimerViewModel.AudioFile, Mode=OneWay}" />
-                                    <StackPanel Orientation="Horizontal" Spacing="5">
-                                        <Button Content="Browse"
-                                                Command="{Binding SelectFileCommand}"
-                                                CommandParameter="{Binding ElementName=SettingsUserControl }" />
-                                        <Button Content="Play"
-                                                Command="{Binding PlayAudioFileCommand}"
-                                                CommandParameter="{Binding ElementName=SettingsUserControl }" />
-                                    </StackPanel>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <StackPanel Orientation="Vertical" Margin="5">
-                                        <TextBlock Text="Enabled" VerticalAlignment="Center" />
-                                        <CheckBox IsChecked="{Binding SelectedTimerViewModel.IsEnabled, Mode=TwoWay}" />
-                                    </StackPanel>
-                                    <StackPanel Orientation="Vertical" Margin="5">
-                                        <TextBlock Text="Muted" VerticalAlignment="Center" />
-                                        <CheckBox IsChecked="{Binding SelectedTimerViewModel.IsMuted, Mode=TwoWay}" />
-                                    </StackPanel>
-                                    <StackPanel Orientation="Vertical" Margin="5">
-                                        <TextBlock Text="Interval" VerticalAlignment="Center" />
-                                        <CheckBox IsChecked="{Binding SelectedTimerViewModel.IsInterval, Mode=TwoWay}" />
-                                    </StackPanel>
-                                    <StackPanel Orientation="Vertical" Margin="5">
-                                        <ToolTip.Tip>
-                                            Requires manual reset after each trigger.
-                                            This is useful for timers that are not based on a set interval. e.g Roshan or Tormentor respawn times.
-                                        </ToolTip.Tip>
-                                        <TextBlock Text="Manual" VerticalAlignment="Center" />
-                                        <CheckBox IsChecked="{Binding SelectedTimerViewModel.IsManualReset, Mode=TwoWay}" />
-                                    </StackPanel>
+                        <StackPanel Orientation="Vertical" Margin="0">
+                            <StackPanel Orientation="Vertical" Margin="5">
+                                <TextBlock Text="Name" VerticalAlignment="Center" />
+                                <TextBox Text="{Binding SelectedTimerViewModel.Name, Mode=TwoWay}" />
+                            </StackPanel>
+                            <!-- <StackPanel Orientation="Vertical" Margin="5"> -->
+                            <!--     <ToolTip.Tip> -->
+                            <!--         The text that will be spoken when the timer triggers. -->
+                            <!--     </ToolTip.Tip> -->
+                            <!--     <TextBlock Text="Speech" VerticalAlignment="Center" /> -->
+                            <!--     <TextBox Text="{Binding SelectedTimerViewModel.Speech, Mode=TwoWay}" /> -->
+                            <!-- </StackPanel> -->
+                            <StackPanel Orientation="Vertical" Margin="5">
+                                <ToolTip.Tip>
+                                    If the timer is an interval timer, this is the time between each trigger.
+                                    If the timer is not an interval timer, when game seconds or minutes = this time, the timer will trigger.
+                                </ToolTip.Tip>
+                                <TextBlock Text="Time" VerticalAlignment="Center" />
+                                <TimePicker UseSeconds="True"
+                                            SelectedTime="{Binding SelectedTimerViewModel.Time, Mode=TwoWay}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical" Margin="5">
+                                <ToolTip.Tip>
+                                    When the timer will become active and begin to trigger based on the game time
+                                </ToolTip.Tip>
+                                <TextBlock Text="Starts at" VerticalAlignment="Center" />
+                                <TimePicker UseSeconds="True"
+                                            SelectedTime="{Binding SelectedTimerViewModel.ShowAfter, Mode=TwoWay}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical" Margin="5">
+                                <ToolTip.Tip>
+                                    When the timer will disable itself, and no longer trigger based on the game.
+                                    For example, pulling or stacking camps becomes less meaningful after a certain time.
+                                </ToolTip.Tip>
+                                <TextBlock Text="Expires after" VerticalAlignment="Center" />
+                                <TimePicker
+                                    UseSeconds="True"
+                                    SelectedTime="{Binding SelectedTimerViewModel.HideAfter, Mode=TwoWay}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical" Margin="5" Spacing="5">
+                                <ToolTip.Tip>
+                                    The audio file that will be played when the timer triggers if Text to Speech is disabled.
+                                </ToolTip.Tip>
+                                <TextBlock Text="Audio file" />
+                                <TextBox IsReadOnly="True"
+                                         Text="{Binding SelectedTimerViewModel.AudioFile, Mode=OneWay, Converter={StaticResource AudioFilePathConverter}}" />
+                                <StackPanel Orientation="Horizontal" Spacing="5">
+                                    <Button Content="Browse"
+                                            Command="{Binding SelectFileCommand}"
+                                            CommandParameter="{Binding ElementName=SettingsUserControl }" />
+                                    <Button Content="Play"
+                                            Command="{Binding PlayAudioFileCommand}"
+                                            CommandParameter="{Binding ElementName=SettingsUserControl }" />
                                 </StackPanel>
                             </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Vertical" Margin="5">
+                                    <TextBlock Text="Enabled" VerticalAlignment="Center" />
+                                    <CheckBox IsChecked="{Binding SelectedTimerViewModel.IsEnabled, Mode=TwoWay}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Vertical" Margin="5">
+                                    <TextBlock Text="Muted" VerticalAlignment="Center" />
+                                    <CheckBox IsChecked="{Binding SelectedTimerViewModel.IsMuted, Mode=TwoWay}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Vertical" Margin="5">
+                                    <TextBlock Text="Interval" VerticalAlignment="Center" />
+                                    <CheckBox IsChecked="{Binding SelectedTimerViewModel.IsInterval, Mode=TwoWay}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Vertical" Margin="5">
+                                    <ToolTip.Tip>
+                                        Requires manual reset after each trigger.
+                                        This is useful for timers that are not based on a set interval. e.g Roshan or Tormentor respawn times.
+                                    </ToolTip.Tip>
+                                    <TextBlock Text="Manual" VerticalAlignment="Center" />
+                                    <CheckBox IsChecked="{Binding SelectedTimerViewModel.IsManualReset, Mode=TwoWay}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Spacing="5">
                         <Button Width="120" Height="30"
@@ -218,7 +225,7 @@
                                   ItemsSource="{Binding TimerModes, Mode=OneTime}"
                                   Width="150">
                             <ComboBox.ItemTemplate>
-                                <DataTemplate DataType="models:TimerStrategy">
+                                <DataTemplate DataType="timers:TimerStrategy">
                                     <TextBlock Text="{Binding Name}" />
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>

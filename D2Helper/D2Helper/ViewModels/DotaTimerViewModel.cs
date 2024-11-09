@@ -1,6 +1,6 @@
 using System;
 using CommunityToolkit.Mvvm.Input;
-using D2Helper.Models;
+using D2Helper.Features.Timers;
 
 namespace D2Helper.ViewModels;
 

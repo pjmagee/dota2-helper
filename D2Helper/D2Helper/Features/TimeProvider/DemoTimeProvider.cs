@@ -2,11 +2,11 @@ using System;
 using System.ComponentModel;
 using System.Threading;
 
-namespace D2Helper.Services;
+namespace D2Helper.Features.TimeProvider;
 
-public class DemoGameTimeProvider : BackgroundWorker, IGameTimeProvider
+public class DemoTimeProvider : BackgroundWorker, IGameTimeProvider
 {
-    public DemoGameTimeProvider()
+    public DemoTimeProvider()
     {
         RunWorkerAsync();
     }

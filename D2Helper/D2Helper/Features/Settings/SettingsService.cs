@@ -1,13 +1,12 @@
 using System.IO;
 using System.Text.Json;
-using D2Helper.Models;
 using Microsoft.Extensions.Configuration;
 
-namespace D2Helper.Services;
+namespace D2Helper.Features.Settings;
 
 public class SettingsService
 {
-    private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions { WriteIndented = true };
+    readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
 
     public Settings Settings { get; protected set; }
 

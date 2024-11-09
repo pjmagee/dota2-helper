@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using D2Helper.Models;
-using D2Helper.Services;
+using D2Helper.Features.Settings;
+using D2Helper.Features.Timers;
 
 namespace D2Helper.Design;
 
@@ -49,7 +49,7 @@ public class DesignSettingsService : SettingsService
                 },
             },
             Volume = 50,
-            Mode = GameStateStrategy.Auto,
+            Mode = TimeProviderStrategy.Auto,
             DemoMuted = true
         };
     }

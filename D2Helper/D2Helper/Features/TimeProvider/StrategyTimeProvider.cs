@@ -3,31 +3,31 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using D2Helper.Models;
+using D2Helper.Features.Timers;
 
-namespace D2Helper.Services;
+namespace D2Helper.Features.TimeProvider;
 
-public class DynamicProvider : BackgroundWorker, IGameTimeProvider, IStrategyProvider
+public class StrategyTimeProvider : BackgroundWorker, IGameTimeProvider, ITimeProviderStrategy
 {
-    public DynamicProvider(RealGameTimeProvider gameTimeProvider, DemoGameTimeProvider demoGameTimeProvider)
+    public StrategyTimeProvider(GameTimeProvider gameTimeProvider, DemoTimeProvider demoTimeProvider)
     {
         _gameTimeProvider = gameTimeProvider;
-        _demoGameTimeProvider = demoGameTimeProvider;
+        _demoTimeProvider = demoTimeProvider;
 
         RunWorkerAsync();
     }
 
-    public GameStateStrategy Strategy
+    public TimeProviderStrategy Strategy
     {
-        get => _strategy ?? GameStateStrategy.Auto;
+        get => _strategy ?? TimeProviderStrategy.Auto;
         set
         {
             _strategy = value;
             _current = _strategy switch
             {
-                GameStateStrategy.Real => _gameTimeProvider,
-                GameStateStrategy.Demo => _demoGameTimeProvider,
-                GameStateStrategy.Auto => null,
+                TimeProviderStrategy.Real => _gameTimeProvider,
+                TimeProviderStrategy.Demo => _demoTimeProvider,
+                TimeProviderStrategy.Auto => null,
                 _ => _current
             };
         }
@@ -35,15 +35,15 @@ public class DynamicProvider : BackgroundWorker, IGameTimeProvider, IStrategyPro
 
     Process? _dota2;
     IGameTimeProvider? _current;
-    GameStateStrategy? _strategy;
-    readonly RealGameTimeProvider _gameTimeProvider;
-    readonly DemoGameTimeProvider _demoGameTimeProvider;
+    TimeProviderStrategy? _strategy;
+    readonly GameTimeProvider _gameTimeProvider;
+    readonly DemoTimeProvider _demoTimeProvider;
 
     protected override void OnDoWork(DoWorkEventArgs e)
     {
         while (!CancellationPending)
         {
-            if (Strategy is GameStateStrategy.Auto)
+            if (Strategy is TimeProviderStrategy.Auto)
             {
                 if (_dota2 == null || _dota2.HasExited)
                 {
@@ -53,13 +53,13 @@ public class DynamicProvider : BackgroundWorker, IGameTimeProvider, IStrategyPro
                     {
                         _dota2.Exited += (sender, args) =>
                         {
-                            Strategy = GameStateStrategy.Demo;
+                            Strategy = TimeProviderStrategy.Demo;
                             _dota2 = null;
                         };
                     }
                 }
 
-                Strategy = _dota2 != null ? GameStateStrategy.Real : GameStateStrategy.Demo;
+                Strategy = _dota2 != null ? TimeProviderStrategy.Real : TimeProviderStrategy.Demo;
             }
 
             Thread.Sleep(2000);

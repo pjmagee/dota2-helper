@@ -9,7 +9,6 @@
              x:Class="D2Helper.Views.TimersView"
              d:DataContext="{x:Type vm:TimersViewModel}"
              xmlns:icons="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
-             xmlns:models="clr-namespace:D2Helper.Models"
              xmlns:design="clr-namespace:D2Helper.Design"
              x:DataType="vm:TimersViewModel">
     <Design.DataContext>

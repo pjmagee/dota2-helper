@@ -3,8 +3,8 @@ using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
-using D2Helper.Models;
-using D2Helper.Services;
+using D2Helper.Features.TimeProvider;
+using D2Helper.Features.Timers;
 using D2Helper.Views;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,20 +13,20 @@ namespace D2Helper.ViewModels;
 public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
 {
     readonly TimerService _timerService;
-    readonly IStrategyProvider _strategyProvider;
+    readonly ITimeProviderStrategy _timeProviderProviderStrategy;
     readonly IGameTimeProvider _gameTimeProvider;
     readonly ITimer? _timer = null;
     TimeSpan _time;
 
-    SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
+    readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
     public TimersViewModel(
         TimerService timerService,
-        IStrategyProvider strategyProvider,
+        ITimeProviderStrategy timeProviderProviderStrategy,
         IGameTimeProvider gameTimeProvider)
     {
         _timerService = timerService;
-        _strategyProvider = strategyProvider;
+        _timeProviderProviderStrategy = timeProviderProviderStrategy;
         _gameTimeProvider = gameTimeProvider;
 
         OpenSettingsCommand = new RelayCommand(() =>

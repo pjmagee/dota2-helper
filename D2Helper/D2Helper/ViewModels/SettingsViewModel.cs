@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using Avalonia.Collections;
+﻿using System.ComponentModel;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
-using D2Helper.Models;
-using D2Helper.Services;
+using D2Helper.Features.Audio;
+using D2Helper.Features.Settings;
+using D2Helper.Features.TimeProvider;
+using D2Helper.Features.Timers;
 using D2Helper.Views;
-using FluentAvalonia.UI.Data;
 
 namespace D2Helper.ViewModels;
 
@@ -20,8 +17,8 @@ using System.Linq;
 public class SettingsViewModel : ViewModelBase, INotifyPropertyChanged
 {
     readonly TimerService _timerService;
-    readonly TimerAudioQueueService _audioQueueService;
-    readonly IStrategyProvider _strategyProvider;
+    readonly AudioService _audioService;
+    readonly ITimeProviderStrategy _timeProviderStrategy;
     readonly SettingsService _settingsService;
 
     DotaTimerViewModel _selectedTimerViewModel;
@@ -112,13 +109,13 @@ public class SettingsViewModel : ViewModelBase, INotifyPropertyChanged
 
     public SettingsViewModel(
         TimerService timerService,
-        TimerAudioQueueService audioQueueService,
-        IStrategyProvider strategyProvider,
+        AudioService audioService,
+        ITimeProviderStrategy timeProviderStrategy,
         SettingsService settingsService)
     {
         _timerService = timerService;
-        _audioQueueService = audioQueueService;
-        _strategyProvider = strategyProvider;
+        _audioService = audioService;
+        _timeProviderStrategy = timeProviderStrategy;
         _settingsService = settingsService;
 
         DeleteCommand = new RelayCommand<DotaTimerViewModel>(DeleteTimer);
@@ -132,17 +129,17 @@ public class SettingsViewModel : ViewModelBase, INotifyPropertyChanged
             new()
             {
                 Name = "Real",
-                Strategy = GameStateStrategy.Real
+                Strategy = TimeProviderStrategy.Real
             },
             new()
             {
                 Name = "Demo",
-                Strategy = GameStateStrategy.Demo
+                Strategy = TimeProviderStrategy.Demo
             },
             new()
             {
                 Name = "Auto",
-                Strategy = GameStateStrategy.Auto
+                Strategy = TimeProviderStrategy.Auto
             },
         ];
 
@@ -187,7 +184,7 @@ public class SettingsViewModel : ViewModelBase, INotifyPropertyChanged
     {
         if (string.IsNullOrWhiteSpace(SelectedTimerViewModel.AudioFile) is false)
         {
-            _audioQueueService.Queue(SelectedTimerViewModel.AudioFile);
+            _audioService.Queue(SelectedTimerViewModel.AudioFile);
         }
     }
 
@@ -195,7 +192,7 @@ public class SettingsViewModel : ViewModelBase, INotifyPropertyChanged
     {
         if (option is { Strategy: var strategy })
         {
-            _strategyProvider.Strategy = strategy;
+            _timeProviderStrategy.Strategy = strategy;
         }
     }
 

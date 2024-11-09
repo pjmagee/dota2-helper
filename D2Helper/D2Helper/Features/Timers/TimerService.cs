@@ -4,10 +4,10 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using D2Helper.Models;
+using D2Helper.Features.Settings;
 using D2Helper.ViewModels;
 
-namespace D2Helper.Services;
+namespace D2Helper.Features.Timers;
 
 public class TimerService
 {

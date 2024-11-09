@@ -1,14 +1,16 @@
 using System;
-using System.IO;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
-using D2Helper.Models;
-using D2Helper.Services;
+using D2Helper.Features.Audio;
+using D2Helper.Features.Gsi;
+using D2Helper.Features.Http;
+using D2Helper.Features.Settings;
+using D2Helper.Features.TimeProvider;
+using D2Helper.Features.Timers;
 using D2Helper.ViewModels;
 using D2Helper.Views;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace D2Helper;
@@ -17,7 +19,7 @@ public partial class App : Application
 {
     public static IServiceProvider ServiceProvider => _serviceProvider ?? throw new InvalidOperationException("Service provider is not initialized");
 
-    private static IServiceProvider? _serviceProvider;
+    static IServiceProvider? _serviceProvider;
 
     public override void Initialize()
     {
@@ -27,16 +29,17 @@ public partial class App : Application
     public override void OnFrameworkInitializationCompleted()
     {
         var services = new ServiceCollection()
-            .AddSingleton<DynamicProvider>()
+            .AddSingleton<StrategyTimeProvider>()
             .AddSingleton<SettingsService>()
-            .AddSingleton<IStrategyProvider>(sp => sp.GetRequiredService<DynamicProvider>())
-            .AddSingleton<IGameTimeProvider>(sp => sp.GetRequiredService<DynamicProvider>())
-            .AddSingleton<DemoGameTimeProvider>()
-            .AddSingleton<RealGameTimeProvider>()
-            .AddSingleton<Dota2ConfigurationService>()
-            .AddSingleton<LongLivedHttpListener>()
+            .AddSingleton<ITimeProviderStrategy>(sp => sp.GetRequiredService<StrategyTimeProvider>())
+            .AddSingleton<IGameTimeProvider>(sp => sp.GetRequiredService<StrategyTimeProvider>())
+            .AddSingleton<DemoTimeProvider>()
+            .AddSingleton<GameTimeProvider>()
+            .AddSingleton<GsiConfigWatcher>()
+            .AddSingleton<GsiConfigService>()
+            .AddSingleton<LocalListener>()
             .AddSingleton<TimerService>()
-            .AddSingleton<TimerAudioQueueService>()
+            .AddSingleton<AudioService>()
             .AddSingleton<TimersViewModel>()
             .AddSingleton<SettingsViewModel>();
 

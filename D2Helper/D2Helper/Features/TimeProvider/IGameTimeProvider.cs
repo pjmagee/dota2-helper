@@ -1,6 +1,6 @@
 using System;
 
-namespace D2Helper.Services;
+namespace D2Helper.Features.TimeProvider;
 
 public interface IGameTimeProvider
 {

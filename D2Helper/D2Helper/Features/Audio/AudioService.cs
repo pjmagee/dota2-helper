@@ -3,16 +3,16 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using LibVLCSharp.Shared;
 
-namespace D2Helper.Services;
+namespace D2Helper.Features.Audio;
 
-public class TimerAudioQueueService : BackgroundWorker
+public class AudioService : BackgroundWorker
 {
     LibVLC LibVlc { get; } = new();
     readonly MediaPlayer _mediaPlayer;
 
     Queue<string> AudioQueue { get; } = new();
 
-    public TimerAudioQueueService()
+    public AudioService()
     {
         RunWorkerAsync();
         _mediaPlayer = new MediaPlayer(LibVlc);

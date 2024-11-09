@@ -1,7 +1,7 @@
 using System;
 using System.Text.Json.Serialization;
 
-namespace D2Helper.Models;
+namespace D2Helper.Features.Timers;
 
 public class DotaTimer
 {

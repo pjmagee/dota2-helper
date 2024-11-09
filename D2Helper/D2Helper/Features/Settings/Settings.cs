@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using D2Helper.Features.Timers;
 
-namespace D2Helper.Models;
+namespace D2Helper.Features.Settings;
 
 [JsonSerializable(typeof(Settings))]
 public class Settings
@@ -13,7 +14,7 @@ public class Settings
     public double Volume { get; set; } = 50;
 
     [JsonPropertyName("Mode"), JsonConverter(typeof(JsonStringEnumConverter))]
-    public GameStateStrategy Mode { get; set; } = GameStateStrategy.Auto;
+    public TimeProviderStrategy Mode { get; set; } = TimeProviderStrategy.Auto;
 
     [JsonPropertyName("DemoMuted")]
     public bool DemoMuted { get; set; } = true;
