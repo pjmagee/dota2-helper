@@ -12,6 +12,7 @@ using D2Helper.Features.Timers;
 using D2Helper.ViewModels;
 using D2Helper.Views;
 using Microsoft.Extensions.DependencyInjection;
+using TimeProvider = D2Helper.Features.TimeProvider.TimeProvider;
 
 namespace D2Helper;
 
@@ -29,13 +30,13 @@ public partial class App : Application
     public override void OnFrameworkInitializationCompleted()
     {
         var services = new ServiceCollection()
-            .AddSingleton<StrategyTimeProvider>()
+            .AddSingleton<TimeProvider>()
             .AddSingleton<SettingsService>()
-            .AddSingleton<ITimeProviderStrategy>(sp => sp.GetRequiredService<StrategyTimeProvider>())
-            .AddSingleton<IGameTimeProvider>(sp => sp.GetRequiredService<StrategyTimeProvider>())
-            .AddSingleton<DemoTimeProvider>()
-            .AddSingleton<GameTimeProvider>()
+            .AddSingleton<ITimeProvider>(sp => sp.GetRequiredService<TimeProvider>())
+            .AddSingleton<DemoProvider>()
+            .AddSingleton<RealProvider>()
             .AddSingleton<GsiConfigWatcher>()
+            .AddSingleton<TimerAudioService>()
             .AddSingleton<GsiConfigService>()
             .AddSingleton<LocalListener>()
             .AddSingleton<TimerService>()

@@ -1,18 +1,6 @@
-using System;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Linq;
 using Avalonia.Threading;
 
 namespace D2Helper.ViewModels;
-
-using System;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
 
 using System;
 using System.Collections.ObjectModel;

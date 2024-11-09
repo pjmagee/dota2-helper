@@ -1,6 +1,10 @@
 using System;
 using CommunityToolkit.Mvvm.Input;
+using D2Helper.Features.Audio;
+using D2Helper.Features.Settings;
+using D2Helper.Features.TimeProvider;
 using D2Helper.Features.Timers;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace D2Helper.ViewModels;
 
@@ -47,6 +51,7 @@ public class DotaTimerViewModel : ViewModelBase, IComparable<DotaTimerViewModel>
 
     // The timer is currently visible
     bool _isVisible;
+
 
     public int CompareTo(DotaTimerViewModel? other)
     {
@@ -217,6 +222,8 @@ public class DotaTimerViewModel : ViewModelBase, IComparable<DotaTimerViewModel>
         set => SetProperty(ref _audioFile, value);
     }
 
+    public bool IsSoundPlayed { get; set; }
+
     public void Update(TimeSpan gameTime)
     {
         if (IsResetRequired || IsExpired)
@@ -228,9 +235,25 @@ public class DotaTimerViewModel : ViewModelBase, IComparable<DotaTimerViewModel>
             TimeRemaining = IsInterval ? CalculateIntervalRemaining(gameTime) : CalculateTimeUntilNextOccurrence(gameTime, Time.Seconds);
         }
 
+        IsAlerting = TimeRemaining <= RemindAt.GetValueOrDefault(TimeSpan.Zero);
         IsResetRequired = CalculateIsResetRequired(gameTime);
         IsExpired = CalculateIsExpired(gameTime);
         IsVisible = CalculateIsVisible(gameTime);
+
+        // 1. Handle when timer is 'active' and needs to have audio file played
+        // 2. Handle resetting the sound played flag
+        // 3. sound should only play once, when active
+
+        if (IsAlerting && !IsMuted && !IsSoundPlayed && IsEnabled && IsVisible && !IsExpired && !IsResetRequired && !string.IsNullOrWhiteSpace(AudioFile))
+        {
+            IsSoundPlayed = true;
+            App.ServiceProvider.GetRequiredService<TimerAudioService>().Play(AudioFile);
+        }
+
+        if (!IsAlerting)
+        {
+            IsSoundPlayed = false;
+        }
     }
 
     bool CalculateIsResetRequired(TimeSpan gameTime)

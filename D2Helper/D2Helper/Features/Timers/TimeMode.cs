@@ -1,6 +1,6 @@
 namespace D2Helper.Features.Timers;
 
-public enum TimeProviderStrategy
+public enum TimeMode
 {
     Real = 0,
     Demo = 1,

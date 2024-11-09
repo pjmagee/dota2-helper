@@ -14,7 +14,7 @@ public class Settings
     public double Volume { get; set; } = 50;
 
     [JsonPropertyName("Mode"), JsonConverter(typeof(JsonStringEnumConverter))]
-    public TimeProviderStrategy Mode { get; set; } = TimeProviderStrategy.Auto;
+    public TimeMode Mode { get; set; } = TimeMode.Auto;
 
     [JsonPropertyName("DemoMuted")]
     public bool DemoMuted { get; set; } = true;

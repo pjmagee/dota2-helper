@@ -145,6 +145,14 @@
                                     UseSeconds="True"
                                     SelectedTime="{Binding SelectedTimerViewModel.HideAfter, Mode=TwoWay}" />
                             </StackPanel>
+                            <StackPanel Orientation="Vertical" Margin="5">
+                                <ToolTip.Tip>
+                                    When the timer will play the audio file
+                                </ToolTip.Tip>
+                                <TextBlock Text="Reminder before" VerticalAlignment="Center" />
+                                <TimePicker UseSeconds="True"
+                                            SelectedTime="{Binding SelectedTimerViewModel.RemindAt, Mode=TwoWay}" />
+                            </StackPanel>
                             <StackPanel Orientation="Vertical" Margin="5" Spacing="5">
                                 <ToolTip.Tip>
                                     The audio file that will be played when the timer triggers if Text to Speech is disabled.

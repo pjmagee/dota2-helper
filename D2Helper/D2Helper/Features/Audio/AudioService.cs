@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using D2Helper.Features.Settings;
+using D2Helper.Features.TimeProvider;
+using D2Helper.Features.Timers;
 using LibVLCSharp.Shared;
 
 namespace D2Helper.Features.Audio;
@@ -14,11 +17,11 @@ public class AudioService : BackgroundWorker
 
     public AudioService()
     {
-        RunWorkerAsync();
         _mediaPlayer = new MediaPlayer(LibVlc);
+        RunWorkerAsync();
     }
 
-    public void Queue(string audioFile)
+    public void Play(string audioFile)
     {
         if (!string.IsNullOrWhiteSpace(audioFile) && !AudioQueue.Contains(audioFile))
         {

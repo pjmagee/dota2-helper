@@ -7,12 +7,14 @@ namespace D2Helper.Design;
 public class DesignTimersViewModel : TimersViewModel
 {
 
-    public DesignTimersViewModel(TimerService timerService, StrategyTimeProvider strategyTimeProvider) : base(timerService, strategyTimeProvider, strategyTimeProvider)
+    public DesignTimersViewModel(TimerService timerService, TimeProvider timeProvider) : base(timerService, timeProvider)
     {
 
     }
 
-    private DesignTimersViewModel(DesignSettingsService settingsService) : this(new TimerService(settingsService), new StrategyTimeProvider(new GameTimeProvider(), new DemoTimeProvider()))
+    private DesignTimersViewModel(DesignSettingsService settingsService) : this(
+        new TimerService(settingsService),
+        new TimeProvider(settingsService, new RealProvider(), new DemoProvider()))
     {
 
     }

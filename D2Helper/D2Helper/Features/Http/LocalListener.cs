@@ -5,24 +5,28 @@ using System.Text.Json;
 using D2Helper.Features.Gsi;
 using D2Helper.Features.Http.Serialisation;
 using D2Helper.Features.TimeProvider;
+using D2Helper.ViewModels;
 
 namespace D2Helper.Features.Http;
 
 public class LocalListener : BackgroundWorker
 {
-    readonly GameTimeProvider _gameTimeProvider;
+    readonly RealProvider _realProvider;
     readonly GsiConfigWatcher _configWatcher;
     readonly GsiConfigService _configurationService;
+    readonly SettingsViewModel _settingsViewModel;
 
     HttpListener? _listener;
 
     public LocalListener(
-        GameTimeProvider gameTimeProvider,
+        RealProvider realProvider,
         GsiConfigWatcher configWatcher,
-        GsiConfigService configurationService)
+        GsiConfigService configurationService,
+        SettingsViewModel settingsViewModel)
     {
-        _gameTimeProvider = gameTimeProvider;
+        _realProvider = realProvider;
         _configurationService = configurationService;
+        _settingsViewModel = settingsViewModel;
         _configWatcher = configWatcher;
         _configWatcher.Changed += OnFileSystemWatcherOnChanged;
 
@@ -51,24 +55,29 @@ public class LocalListener : BackgroundWorker
         _listener.Prefixes.Add(_configurationService.GetUri().ToString());
         _listener.Start();
 
-        while (!CancellationPending && _listener is not null)
+        while (!CancellationPending)
         {
             try
             {
-                var context = _listener.GetContext();
-                var request = context.Request;
-                var response = context.Response;
+                _settingsViewModel.IsListening = _listener?.IsListening ?? false;
 
-                if (request.HttpMethod == "POST")
+                if (_listener is not null && _listener.IsListening)
                 {
-                    using var reader = new StreamReader(request.InputStream);
-                    var json = reader.ReadToEnd();
-                    var gameState = JsonSerializer.Deserialize<GameState>(json)!;
-                    _gameTimeProvider.Time = gameState.GameTime();
-                }
+                    var context = _listener.GetContext();
+                    var request = context.Request;
+                    var response = context.Response;
 
-                response.StatusCode = (int)HttpStatusCode.OK;
-                response.Close();
+                    if (request.HttpMethod == "POST")
+                    {
+                        using var reader = new StreamReader(request.InputStream);
+                        var json = reader.ReadToEnd();
+                        var gameState = JsonSerializer.Deserialize<GameState>(json)!;
+                        _realProvider.Time = gameState.GameTime();
+                    }
+
+                    response.StatusCode = (int)HttpStatusCode.OK;
+                    response.Close();
+                }
             }
             catch
             {

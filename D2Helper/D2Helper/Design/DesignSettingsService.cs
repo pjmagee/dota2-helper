@@ -49,7 +49,7 @@ public class DesignSettingsService : SettingsService
                 },
             },
             Volume = 50,
-            Mode = TimeProviderStrategy.Auto,
+            Mode = TimeMode.Auto,
             DemoMuted = true
         };
     }

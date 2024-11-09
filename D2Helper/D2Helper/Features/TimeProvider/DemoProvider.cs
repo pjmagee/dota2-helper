@@ -4,9 +4,12 @@ using System.Threading;
 
 namespace D2Helper.Features.TimeProvider;
 
-public class DemoTimeProvider : BackgroundWorker, IGameTimeProvider
+public class DemoProvider : BackgroundWorker, ITimeProvider
 {
-    public DemoTimeProvider()
+    public ProviderType ProviderType => ProviderType.Demo;
+    public TimeSpan Time { get; private set; }
+
+    public DemoProvider()
     {
         RunWorkerAsync();
     }
@@ -19,6 +22,4 @@ public class DemoTimeProvider : BackgroundWorker, IGameTimeProvider
             Thread.Sleep(1000);
         }
     }
-
-    public TimeSpan Time { get; private set; }
 }

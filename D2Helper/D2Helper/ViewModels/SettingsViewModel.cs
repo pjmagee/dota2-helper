@@ -14,11 +14,10 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-public class SettingsViewModel : ViewModelBase, INotifyPropertyChanged
+public class SettingsViewModel : ViewModelBase
 {
     readonly TimerService _timerService;
     readonly AudioService _audioService;
-    readonly ITimeProviderStrategy _timeProviderStrategy;
     readonly SettingsService _settingsService;
 
     DotaTimerViewModel _selectedTimerViewModel;
@@ -27,6 +26,7 @@ public class SettingsViewModel : ViewModelBase, INotifyPropertyChanged
     string _status;
     string _installPath;
     bool _demoMuted;
+    bool _isListening;
 
     public ObservableCollection<DotaTimerViewModel> Timers => _timerService.Timers;
     public RelayCommand<DotaTimerViewModel> DeleteCommand { get; }
@@ -53,7 +53,7 @@ public class SettingsViewModel : ViewModelBase, INotifyPropertyChanged
             if (SetProperty(ref _selectedTimerMode, value))
             {
                 TimerModeCommand.Execute(value);
-                _settingsService.Settings.Mode = value.Strategy;
+                _settingsService.Settings.Mode = value.Mode;
                 _settingsService.UpdateSettings(_settingsService.Settings);
             }
 
@@ -106,16 +106,20 @@ public class SettingsViewModel : ViewModelBase, INotifyPropertyChanged
 
     public IRelayCommand PlayAudioFileCommand { get; }
 
+    public bool IsListening
+    {
+        get => _isListening;
+        set => SetProperty(ref _isListening, value);
+    }
+
 
     public SettingsViewModel(
         TimerService timerService,
         AudioService audioService,
-        ITimeProviderStrategy timeProviderStrategy,
         SettingsService settingsService)
     {
         _timerService = timerService;
         _audioService = audioService;
-        _timeProviderStrategy = timeProviderStrategy;
         _settingsService = settingsService;
 
         DeleteCommand = new RelayCommand<DotaTimerViewModel>(DeleteTimer);
@@ -129,21 +133,21 @@ public class SettingsViewModel : ViewModelBase, INotifyPropertyChanged
             new()
             {
                 Name = "Real",
-                Strategy = TimeProviderStrategy.Real
+                Mode = TimeMode.Real
             },
             new()
             {
                 Name = "Demo",
-                Strategy = TimeProviderStrategy.Demo
+                Mode = TimeMode.Demo
             },
             new()
             {
                 Name = "Auto",
-                Strategy = TimeProviderStrategy.Auto
+                Mode = TimeMode.Auto
             },
         ];
 
-        _selectedTimerMode = TimerModes.FirstOrDefault(tm => _settingsService.Settings.Mode == tm.Strategy) ?? TimerModes[^1];
+        _selectedTimerMode = TimerModes.FirstOrDefault(tm => _settingsService.Settings.Mode == tm.Mode) ?? TimerModes[^1];
         _selectedTimerViewModel = _timerService.Timers[0];
         _volume = _settingsService.Settings.Volume;
         _demoMuted = _settingsService.Settings.DemoMuted;
@@ -184,15 +188,16 @@ public class SettingsViewModel : ViewModelBase, INotifyPropertyChanged
     {
         if (string.IsNullOrWhiteSpace(SelectedTimerViewModel.AudioFile) is false)
         {
-            _audioService.Queue(SelectedTimerViewModel.AudioFile);
+            _audioService.Play(SelectedTimerViewModel.AudioFile);
         }
     }
 
     void SetStrategy(TimerStrategy? option)
     {
-        if (option is { Strategy: var strategy })
+        if (option is { Mode: var strategy })
         {
-            _timeProviderStrategy.Strategy = strategy;
+            _settingsService.Settings.Mode = strategy;
+            _settingsService.UpdateSettings(_settingsService.Settings);
         }
     }
 

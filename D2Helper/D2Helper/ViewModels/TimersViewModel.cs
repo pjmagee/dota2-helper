@@ -7,31 +7,29 @@ using D2Helper.Features.TimeProvider;
 using D2Helper.Features.Timers;
 using D2Helper.Views;
 using Microsoft.Extensions.DependencyInjection;
+using TimeProvider = System.TimeProvider;
 
 namespace D2Helper.ViewModels;
 
 public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
 {
     readonly TimerService _timerService;
-    readonly ITimeProviderStrategy _timeProviderProviderStrategy;
-    readonly IGameTimeProvider _gameTimeProvider;
+    readonly ITimeProvider _timeProvider;
     readonly ITimer? _timer = null;
     TimeSpan _time;
 
-    readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
+    readonly SemaphoreSlim _semaphore = new(1, 1);
 
     public TimersViewModel(
         TimerService timerService,
-        ITimeProviderStrategy timeProviderProviderStrategy,
-        IGameTimeProvider gameTimeProvider)
+        ITimeProvider timeProvider)
     {
         _timerService = timerService;
-        _timeProviderProviderStrategy = timeProviderProviderStrategy;
-        _gameTimeProvider = gameTimeProvider;
+        _timeProvider = timeProvider;
 
         OpenSettingsCommand = new RelayCommand(() =>
         {
-            var settings = new SettingsWindow()
+            var settings = new SettingsWindow
             {
                 DataContext = App.ServiceProvider.GetRequiredService<SettingsViewModel>(),
             };
@@ -52,7 +50,7 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
         {
             try
             {
-                Time = _gameTimeProvider.Time;
+                Time = _timeProvider.Time;
 
                 foreach (var timer in Timers)
                 {
