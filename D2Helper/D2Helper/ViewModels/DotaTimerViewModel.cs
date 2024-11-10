@@ -132,7 +132,7 @@ public class DotaTimerViewModel : ViewModelBase, IComparable<DotaTimerViewModel>
     //
     // public IRelayCommand MoveDownCommand { get; }
 
-    private DotaTimerViewModel()
+    DotaTimerViewModel()
     {
         ResetCommand = new RelayCommand(ResetTimer);
         // MoveUpCommand = new RelayCommand(MoveUp);

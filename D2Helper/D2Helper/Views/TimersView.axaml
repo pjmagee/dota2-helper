@@ -5,7 +5,7 @@
              xmlns:vm="clr-namespace:D2Helper.ViewModels"
              mc:Ignorable="d"
              d:DesignHeight="300"
-             d:DesignWidth="260"
+             d:DesignWidth="280"
              x:Class="D2Helper.Views.TimersView"
              d:DataContext="{x:Type vm:TimersViewModel}"
              xmlns:icons="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"

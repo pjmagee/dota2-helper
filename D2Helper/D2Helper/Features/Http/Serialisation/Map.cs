@@ -29,5 +29,5 @@ public class Map
     public int DireScore { get; set; } = 3;
 
     [JsonPropertyName("game_state")]
-    public string GameState { get; set; } = "DOTA_GAMERULES_STATE_GAME_IN_PROGRESS";
+    public string GameState { get; set; }
 }

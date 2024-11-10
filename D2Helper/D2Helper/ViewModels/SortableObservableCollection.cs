@@ -10,14 +10,14 @@ using System.Linq;
 
 public class SortableObservableCollection<T> : ObservableCollection<T> where T : INotifyPropertyChanged, IComparable<T>
 {
-    private bool _suppressCollectionChanged;
+    bool _suppressCollectionChanged;
 
     public SortableObservableCollection()
     {
         CollectionChanged += OnCollectionChanged;
     }
 
-    private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
         if (_suppressCollectionChanged) return;
 
@@ -37,7 +37,7 @@ public class SortableObservableCollection<T> : ObservableCollection<T> where T :
         }
     }
 
-    private void Item_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    void Item_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(DotaTimerViewModel.SortOrder))
         {
@@ -45,7 +45,7 @@ public class SortableObservableCollection<T> : ObservableCollection<T> where T :
         }
     }
 
-    private void QueueSort()
+    void QueueSort()
     {
         Dispatcher.UIThread.InvokeAsync(Sort);
     }

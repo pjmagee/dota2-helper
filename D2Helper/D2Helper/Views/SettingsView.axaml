@@ -165,7 +165,7 @@
                                             Command="{Binding SelectFileCommand}"
                                             CommandParameter="{Binding ElementName=SettingsUserControl }" />
                                     <Button Content="Play"
-                                            Command="{Binding PlayAudioFileCommand}"
+                                            Command="{Binding PlayAudioCommand}"
                                             CommandParameter="{Binding ElementName=SettingsUserControl }" />
                                 </StackPanel>
                             </StackPanel>
@@ -243,16 +243,16 @@
                         <CheckBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center"
                                   IsChecked="{Binding DemoMuted, Mode=TwoWay}" />
 
-                        <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Status</Label>
-                        <TextBlock Grid.Row="2" Grid.Column="1"
-                                   VerticalAlignment="Center"
-                                   Text="{Binding Status}" TextWrapping="Wrap" />
-
-                        <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Location</Label>
-                        <TextBlock Grid.Row="3" Grid.Column="1"
-                                   VerticalAlignment="Center"
-                                   Text="{Binding InstallPath}"
-                                   TextWrapping="WrapWithOverflow" />
+                        <!-- <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Status</Label> -->
+                        <!-- <TextBlock Grid.Row="2" Grid.Column="1" -->
+                        <!--            VerticalAlignment="Center" -->
+                        <!--            Text="{Binding Status}" TextWrapping="Wrap" /> -->
+                        <!-- -->
+                        <!-- <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Location</Label> -->
+                        <!-- <TextBlock Grid.Row="3" Grid.Column="1" -->
+                        <!--            VerticalAlignment="Center" -->
+                        <!--            Text="{Binding InstallPath}" -->
+                        <!--            TextWrapping="WrapWithOverflow" /> -->
                     </Grid>
 
                     <StackPanel Margin="5" Orientation="Vertical" Spacing="5">
@@ -271,7 +271,7 @@
                                 HorizontalContentAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 Padding="2"
-                                Command="{Binding InstallCommand}">
+                                Command="{Binding OpenFolderCommand}">
                             <Button.Content>
                                 <StackPanel Orientation="Horizontal" Spacing="2">
                                     <TextBlock Text="Open Folder" VerticalAlignment="Center" />

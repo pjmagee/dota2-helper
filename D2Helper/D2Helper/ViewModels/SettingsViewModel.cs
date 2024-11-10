@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using D2Helper.Features.Audio;
+using D2Helper.Features.Gsi;
 using D2Helper.Features.Settings;
 using D2Helper.Features.TimeProvider;
 using D2Helper.Features.Timers;
@@ -16,28 +17,31 @@ using System.Linq;
 
 public class SettingsViewModel : ViewModelBase
 {
-    readonly TimerService _timerService;
-    readonly AudioService _audioService;
-    readonly SettingsService _settingsService;
-
-    DotaTimerViewModel _selectedTimerViewModel;
-    TimerStrategy _selectedTimerMode;
     double _volume;
     string _status;
     string _installPath;
     bool _demoMuted;
     bool _isListening;
 
+    readonly TimerService _timerService;
+    readonly AudioService _audioService;
+    readonly SettingsService _settingsService;
+    readonly GsiConfigService _gsiConfigService;
+
+    DotaTimerViewModel _selectedTimerViewModel;
+    TimerStrategy _selectedTimerMode;
+
     public ObservableCollection<DotaTimerViewModel> Timers => _timerService.Timers;
-    public RelayCommand<DotaTimerViewModel> DeleteCommand { get; }
-
-    public RelayCommand<DotaTimerViewModel> MoveUpCommand { get; }
-
-    public RelayCommand<DotaTimerViewModel> MoveDownCommand { get; }
-
-
-
-    public RelayCommand<SettingsView> SelectFileCommand { get; }
+    public ObservableCollection<TimerStrategy> TimerModes { get; set; }
+    public IRelayCommand<DotaTimerViewModel> DeleteCommand { get; }
+    public IRelayCommand<DotaTimerViewModel> MoveUpCommand { get; }
+    public IRelayCommand<DotaTimerViewModel> MoveDownCommand { get; }
+    public IRelayCommand<SettingsView> SelectFileCommand { get; }
+    public IRelayCommand InstallCommand { get; }
+    public IRelayCommand UninstallCommand { get; }
+    public IRelayCommand OpenFolderCommand { get; set; }
+    public IRelayCommand SetModeCommand { get; }
+    public IRelayCommand PlayAudioCommand { get; }
 
     public DotaTimerViewModel SelectedTimerViewModel
     {
@@ -52,11 +56,10 @@ public class SettingsViewModel : ViewModelBase
         {
             if (SetProperty(ref _selectedTimerMode, value))
             {
-                TimerModeCommand.Execute(value);
+                SetModeCommand.Execute(value);
                 _settingsService.Settings.Mode = value.Mode;
                 _settingsService.UpdateSettings(_settingsService.Settings);
             }
-
         }
     }
 
@@ -72,12 +75,6 @@ public class SettingsViewModel : ViewModelBase
             }
         }
     }
-
-    public ObservableCollection<TimerStrategy> TimerModes { get; set; }
-
-    public IRelayCommand InstallCommand { get; }
-    public IRelayCommand UninstallCommand { get; }
-    public IRelayCommand TimerModeCommand { get; }
 
     public string Status
     {
@@ -104,63 +101,57 @@ public class SettingsViewModel : ViewModelBase
         }
     }
 
-    public IRelayCommand PlayAudioFileCommand { get; }
-
     public bool IsListening
     {
         get => _isListening;
         set => SetProperty(ref _isListening, value);
     }
 
-
     public SettingsViewModel(
         TimerService timerService,
         AudioService audioService,
-        SettingsService settingsService)
+        SettingsService settingsService,
+        GsiConfigService gsiConfigService)
     {
         _timerService = timerService;
         _audioService = audioService;
         _settingsService = settingsService;
+        _gsiConfigService = gsiConfigService;
 
         DeleteCommand = new RelayCommand<DotaTimerViewModel>(DeleteTimer);
         SelectFileCommand = new RelayCommand<SettingsView>(SelectFile);
         InstallCommand = new RelayCommand(Install);
         UninstallCommand = new RelayCommand(Uninstall);
-        TimerModeCommand = new RelayCommand<TimerStrategy>(SetStrategy);
-        PlayAudioFileCommand = new RelayCommand(PlayAudioFile);
+        OpenFolderCommand = new RelayCommand(OpenFolder);
+        SetModeCommand = new RelayCommand<TimerStrategy>(SetMode);
+        PlayAudioCommand = new RelayCommand(PlayAudio);
+        MoveUpCommand = new RelayCommand<DotaTimerViewModel>(MoveUp);
+        MoveDownCommand = new RelayCommand<DotaTimerViewModel>(MoveDown);
+
         TimerModes =
         [
-            new()
-            {
-                Name = "Real",
-                Mode = TimeMode.Real
-            },
-            new()
-            {
-                Name = "Demo",
-                Mode = TimeMode.Demo
-            },
-            new()
-            {
-                Name = "Auto",
-                Mode = TimeMode.Auto
-            },
+            new() { Name = "Real", Mode = TimeMode.Real },
+            new() { Name = "Demo", Mode = TimeMode.Demo },
+            new() { Name = "Auto", Mode = TimeMode.Auto },
         ];
 
         _selectedTimerMode = TimerModes.FirstOrDefault(tm => _settingsService.Settings.Mode == tm.Mode) ?? TimerModes[^1];
         _selectedTimerViewModel = _timerService.Timers[0];
         _volume = _settingsService.Settings.Volume;
         _demoMuted = _settingsService.Settings.DemoMuted;
-
-        MoveUpCommand = new RelayCommand<DotaTimerViewModel>(MoveUp);
-        MoveDownCommand = new RelayCommand<DotaTimerViewModel>(MoveDown);
     }
 
-    void MoveUp(DotaTimerViewModel? obj)
+    void OpenFolder()
     {
-        if (obj is not null)
+        _gsiConfigService.OpenGsiFolder();
+    }
+
+
+    void MoveUp(DotaTimerViewModel? timerVm)
+    {
+        if (timerVm is not null)
         {
-            var index = _timerService.Timers.IndexOf(obj);
+            var index = _timerService.Timers.IndexOf(timerVm);
             if (index > 0)
             {
                 Timers[index].SortOrder = index - 1;
@@ -170,11 +161,11 @@ public class SettingsViewModel : ViewModelBase
         }
     }
 
-    void MoveDown(DotaTimerViewModel? obj)
+    void MoveDown(DotaTimerViewModel? timerVm)
     {
-        if (obj is not null)
+        if (timerVm is not null)
         {
-            var index = Timers.IndexOf(obj);
+            var index = Timers.IndexOf(timerVm);
             if (index < Timers.Count - 1)
             {
                 Timers[index].SortOrder = index + 1;
@@ -184,7 +175,7 @@ public class SettingsViewModel : ViewModelBase
         }
     }
 
-    void PlayAudioFile()
+    void PlayAudio()
     {
         if (string.IsNullOrWhiteSpace(SelectedTimerViewModel.AudioFile) is false)
         {
@@ -192,7 +183,7 @@ public class SettingsViewModel : ViewModelBase
         }
     }
 
-    void SetStrategy(TimerStrategy? option)
+    void SetMode(TimerStrategy? option)
     {
         if (option is { Mode: var strategy })
         {
@@ -201,15 +192,9 @@ public class SettingsViewModel : ViewModelBase
         }
     }
 
-    void Install()
-    {
-        // TODO: install gsi config into dota2 installation gsi folder
-    }
+    void Install() => _gsiConfigService.Install();
 
-    void Uninstall()
-    {
-        // TODO: uninstall gsi config from dota2 installation gsi folder
-    }
+    void Uninstall() => _gsiConfigService.Uninstall();
 
     async void SelectFile(SettingsView? view)
     {

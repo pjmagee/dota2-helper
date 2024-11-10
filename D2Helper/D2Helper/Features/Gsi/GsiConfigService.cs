@@ -13,6 +13,9 @@ public partial class GsiConfigService
 {
     string ConfigFile => Avalonia.Controls.Design.IsDesignMode ? "gamestate_integration_design.cfg" : "gamestate_integration_d2helper.cfg";
 
+    [GeneratedRegex(@"\s*\""path\""\s*\""(.+?)\""", RegexOptions.Compiled)]
+    private static partial Regex LibraryLocations();
+
     public string? ConfigFilePath
     {
         get
@@ -51,28 +54,6 @@ public partial class GsiConfigService
     {
         var portNumber = GetPortNumber();
         return portNumber == null ? new Uri("http://localhost:4001/") : new Uri($"http://localhost:{portNumber}/");
-    }
-
-    public void SetPortNumber(int portNumber)
-    {
-        var gsiPath = GetGameStateIntegrationPath();
-
-        if (gsiPath == null)
-        {
-            return;
-        }
-
-        var gsiCfgPath = Path.Combine(gsiPath, ConfigFile);
-
-        if (!File.Exists(gsiCfgPath))
-        {
-            return;
-        }
-
-        var rawContents = File.ReadAllText(gsiCfgPath);
-        var newConfigFileContent = Regex.Replace(rawContents, @"""uri""\s*""http://localhost:\d+/""", $@"""uri"" ""http://localhost:{portNumber}/""");
-
-        File.WriteAllText(gsiCfgPath, newConfigFileContent);
     }
 
     public bool IsIntegrationInstalled()
@@ -155,34 +136,30 @@ public partial class GsiConfigService
         return libraryPaths.Where(Directory.Exists).ToArray();
     }
 
-    public void InstallIntegration()
+    public void Uninstall()
     {
         var gameStateIntegrationPath = GetGameStateIntegrationPath();
+        if (gameStateIntegrationPath == null) return;
+        var configFileFullPath = Path.Combine(gameStateIntegrationPath, ConfigFile);
+        if (File.Exists(configFileFullPath)) File.Delete(configFileFullPath);
+    }
 
-        if (gameStateIntegrationPath == null)
-        {
-            return;
-        }
-
+    public void Install()
+    {
+        var gameStateIntegrationPath = GetGameStateIntegrationPath();
+        if (gameStateIntegrationPath == null) return;
         var configFileFullPath = Path.Combine(gameStateIntegrationPath, ConfigFile);
         var configFileSourcePath = Path.Combine(Directory.GetCurrentDirectory(), ConfigFile);
-
         if (File.Exists(configFileFullPath)) File.Delete(configFileFullPath);
-
         File.Copy(configFileSourcePath, configFileFullPath);
     }
 
-    [GeneratedRegex(@"\s*\""path\""\s*\""(.+?)\""", RegexOptions.Compiled)]
-    private static partial Regex LibraryLocations();
 
-    public void OpenGameStateIntegrationFolder()
+
+    public void OpenGsiFolder()
     {
         var gameStateIntegrationPath = GetGameStateIntegrationPath();
-
-        if (gameStateIntegrationPath == null)
-        {
-            return;
-        }
+        if (gameStateIntegrationPath == null) return;
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {

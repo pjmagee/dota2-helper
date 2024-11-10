@@ -4,9 +4,10 @@ namespace D2Helper.Features.Http.Serialisation;
 
 public static class GameStateExtensions
 {
-    public static TimeSpan GameTime(this GameState state)
+    public static TimeSpan GameTime(this GameState? state)
     {
-        if (state.Map == null) return TimeSpan.Zero;
+        if (state?.Map == null) return TimeSpan.Zero;
+        if(state?.Map?.GameState == null) return TimeSpan.Zero;
 
         return state.Map.GameState switch
         {

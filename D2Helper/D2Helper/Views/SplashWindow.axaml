@@ -1,0 +1,17 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        xmlns:vm="clr-namespace:D2Helper.ViewModels"
+        WindowStartupLocation="CenterScreen"
+        SystemDecorations="None"
+        Topmost="True"
+        x:Class="D2Helper.Views.SplashWindow"
+        Title="SplashScreen"
+        Width="800" Height="450"
+        x:DataType="vm:SplashScreenViewModel">
+    <Border BorderBrush="Black" BorderThickness="2">
+        <Image Source="../Assets/witch_doctor.png" Stretch="UniformToFill" />
+    </Border>
+</Window>

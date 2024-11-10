@@ -1,6 +1,8 @@
+using System;
 using System.ComponentModel;
 using System.IO;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using D2Helper.Features.Gsi;
 using D2Helper.Features.Http.Serialisation;
@@ -28,60 +30,62 @@ public class LocalListener : BackgroundWorker
         _configurationService = configurationService;
         _settingsViewModel = settingsViewModel;
         _configWatcher = configWatcher;
-        _configWatcher.Changed += OnFileSystemWatcherOnChanged;
-
-        RunWorkerAsync();
+        _configWatcher.Changed += GameStateFolderChanged;
     }
 
-    void OnFileSystemWatcherOnChanged(object sender, FileSystemEventArgs args)
+    void GameStateFolderChanged(object sender, FileSystemEventArgs args)
     {
         if (args.FullPath == _configurationService.ConfigFilePath)
         {
-            if (_listener is not null && _listener.IsListening)
-            {
-                _listener.Stop();
-                _listener.Close();
-
-                _listener = new HttpListener();
-                _listener.Prefixes.Add(_configurationService.GetUri().ToString());
-                _listener.Start();
-            }
+            TryCreateOrRenewListener();
         }
     }
 
-    protected override void OnDoWork(DoWorkEventArgs e)
+    void TryCreateOrRenewListener()
     {
-        _listener = new HttpListener();
-        _listener.Prefixes.Add(_configurationService.GetUri().ToString());
-        _listener.Start();
+        if (_listener is not null && _listener.IsListening)
+        {
+            _listener.Stop();
+            _listener.Close();
+
+            CreateAndStartListener();
+        }
+        else if (_listener is null)
+        {
+            CreateAndStartListener();
+        }
+    }
+
+    void CreateAndStartListener()
+    {
+        if (_configurationService.IsIntegrationInstalled())
+        {
+            _listener = new HttpListener();
+            _listener.Prefixes.Add(_configurationService.GetUri().ToString());
+            _listener.Start();
+        }
+    }
+
+    protected override void OnDoWork(DoWorkEventArgs eventArgs)
+    {
+        TryCreateOrRenewListener();
 
         while (!CancellationPending)
         {
             try
             {
-                _settingsViewModel.IsListening = _listener?.IsListening ?? false;
-
                 if (_listener is not null && _listener.IsListening)
                 {
                     var context = _listener.GetContext();
-                    var request = context.Request;
-                    var response = context.Response;
-
-                    if (request.HttpMethod == "POST")
-                    {
-                        using var reader = new StreamReader(request.InputStream);
-                        var json = reader.ReadToEnd();
-                        var gameState = JsonSerializer.Deserialize<GameState>(json)!;
-                        _realProvider.Time = gameState.GameTime();
-                    }
-
-                    response.StatusCode = (int)HttpStatusCode.OK;
-                    response.Close();
+                    var gameState = JsonSerializer.Deserialize<GameState>(context.Request.InputStream)!;
+                    _realProvider.Time = gameState.GameTime();
+                    context.Response.StatusCode = (int)HttpStatusCode.OK;
+                    context.Response.Close();
                 }
             }
-            catch
+            catch (Exception e)
             {
-                // ignored
+                System.Diagnostics.Debug.WriteLine(e.Message);
             }
         }
     }
