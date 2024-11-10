@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
@@ -21,7 +22,6 @@ public class SettingsViewModel : ViewModelBase
     string _status;
     string _installPath;
     bool _demoMuted;
-    bool _isListening;
 
     readonly TimerService _timerService;
     readonly AudioService _audioService;
@@ -34,8 +34,6 @@ public class SettingsViewModel : ViewModelBase
     public ObservableCollection<DotaTimerViewModel> Timers => _timerService.Timers;
     public ObservableCollection<TimerStrategy> TimerModes { get; set; }
     public IRelayCommand<DotaTimerViewModel> DeleteCommand { get; }
-    public IRelayCommand<DotaTimerViewModel> MoveUpCommand { get; }
-    public IRelayCommand<DotaTimerViewModel> MoveDownCommand { get; }
     public IRelayCommand<SettingsView> SelectFileCommand { get; }
     public IRelayCommand InstallCommand { get; }
     public IRelayCommand UninstallCommand { get; }
@@ -101,12 +99,6 @@ public class SettingsViewModel : ViewModelBase
         }
     }
 
-    public bool IsListening
-    {
-        get => _isListening;
-        set => SetProperty(ref _isListening, value);
-    }
-
     public SettingsViewModel(
         TimerService timerService,
         AudioService audioService,
@@ -125,8 +117,6 @@ public class SettingsViewModel : ViewModelBase
         OpenFolderCommand = new RelayCommand(OpenFolder);
         SetModeCommand = new RelayCommand<TimerStrategy>(SetMode);
         PlayAudioCommand = new RelayCommand(PlayAudio);
-        MoveUpCommand = new RelayCommand<DotaTimerViewModel>(MoveUp);
-        MoveDownCommand = new RelayCommand<DotaTimerViewModel>(MoveDown);
 
         TimerModes =
         [
@@ -139,40 +129,12 @@ public class SettingsViewModel : ViewModelBase
         _selectedTimerViewModel = _timerService.Timers[0];
         _volume = _settingsService.Settings.Volume;
         _demoMuted = _settingsService.Settings.DemoMuted;
+
     }
 
     void OpenFolder()
     {
         _gsiConfigService.OpenGsiFolder();
-    }
-
-
-    void MoveUp(DotaTimerViewModel? timerVm)
-    {
-        if (timerVm is not null)
-        {
-            var index = _timerService.Timers.IndexOf(timerVm);
-            if (index > 0)
-            {
-                Timers[index].SortOrder = index - 1;
-                Timers.Move(index, index - 1);
-                OnPropertyChanged(nameof(Timers));
-            }
-        }
-    }
-
-    void MoveDown(DotaTimerViewModel? timerVm)
-    {
-        if (timerVm is not null)
-        {
-            var index = Timers.IndexOf(timerVm);
-            if (index < Timers.Count - 1)
-            {
-                Timers[index].SortOrder = index + 1;
-                Timers.Move(index, index + 1);
-                OnPropertyChanged(nameof(Timers));
-            }
-        }
     }
 
     void PlayAudio()

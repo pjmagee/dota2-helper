@@ -2,16 +2,25 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         xmlns:vm="clr-namespace:D2Helper.ViewModels"
         WindowStartupLocation="CenterScreen"
+        xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+        xmlns:ie="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
         SystemDecorations="None"
         Topmost="True"
         x:Class="D2Helper.Views.SplashWindow"
         Title="SplashScreen"
-        Width="800" Height="450"
+        Icon="/Assets/d2helper.ico"
+        Width="800" Height="402"
         x:DataType="vm:SplashScreenViewModel">
     <Border BorderBrush="Black" BorderThickness="2">
-        <Image Source="../Assets/witch_doctor.png" Stretch="UniformToFill" />
+        <Image
+            Source="../Assets/witch_doctor.png" Stretch="Uniform">
+            <i:Interaction.Behaviors>
+                <ie:EventTriggerBehavior EventName="PointerPressed">
+                    <ie:InvokeCommandAction Command="{Binding ContinueCommand}" />
+                </ie:EventTriggerBehavior>
+            </i:Interaction.Behaviors>
+        </Image>
     </Border>
 </Window>

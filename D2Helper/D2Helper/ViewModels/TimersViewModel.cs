@@ -2,6 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia;
 using CommunityToolkit.Mvvm.Input;
 using D2Helper.Features.TimeProvider;
 using D2Helper.Features.Timers;
@@ -17,6 +18,9 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
     readonly ITimeProvider _timeProvider;
     readonly ITimer? _timer = null;
     TimeSpan _time;
+
+    public PixelPoint TopLeft { get; set; } = new(10, 10);
+
 
     readonly SemaphoreSlim _semaphore = new(1, 1);
 
@@ -54,10 +58,7 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
 
                 foreach (var timer in Timers)
                 {
-                    if (timer.IsEnabled)
-                    {
-                        timer.Update(Time);
-                    }
+                    timer.Update(Time);
                 }
             }
             finally

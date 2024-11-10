@@ -3,16 +3,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:D2Helper.Views"
-        xmlns:viewModels="clr-namespace:D2Helper.ViewModels"
         xmlns:design="clr-namespace:D2Helper.Design"
+        xmlns:viewModels="clr-namespace:D2Helper.ViewModels"
         mc:Ignorable="d" d:DesignWidth="280" d:DesignHeight="250"
         x:Class="D2Helper.Views.TimersWindow"
-        SizeToContent="Manual"
-        MinWidth="250"
-        MinHeight="200"
-        Width="280"
-        Height="250"
-        Icon="/Assets/avalonia-logo.ico"
+        x:DataType="viewModels:TimersViewModel"
+        SizeToContent="WidthAndHeight"
+        MinWidth="250" MinHeight="200"
+        Width="280" Height="250"
+        Icon="/Assets/d2helper.ico"
         ExtendClientAreaChromeHints="NoChrome"
         ExtendClientAreaTitleBarHeightHint="0"
         ExtendClientAreaToDecorationsHint="False"
@@ -22,10 +21,9 @@
         PointerPressed="InputElement_OnPointerPressed"
         PointerReleased="InputElement_OnPointerReleased"
         SystemDecorations="BorderOnly"
-        CornerRadius="15"
-        Title="Timers">
-        <Design.DataContext>
-                <design:DesignTimersViewModel />
-        </Design.DataContext>
-        <views:TimersView />
+        CornerRadius="15" Title="Timers">
+    <Design.DataContext>
+        <design:DesignTimersViewModel />
+    </Design.DataContext>
+    <views:TimersView />
 </Window>

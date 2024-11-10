@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -66,9 +67,9 @@ public partial class App : Application
             desktop.MainWindow = splash;
             splash.Show();
 
-            await Task.Delay(5000);
-
-
+            await Task.WhenAny(
+                Task.Delay(5000),
+                Task.Delay(Timeout.Infinite, ((SplashScreenViewModel)splash.DataContext).CancellationToken));
 
             BindingPlugins.DataValidators.RemoveAt(0);
 

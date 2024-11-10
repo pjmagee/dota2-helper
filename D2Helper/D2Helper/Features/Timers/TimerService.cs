@@ -69,15 +69,12 @@ public class TimerService
         _settingsService.Settings.Timers.AddRange(Timers.Select(x => new DotaTimer
                 {
                     Name = x.Name,
-
                     IsMuted = x.IsMuted,
                     IsManualReset = x.IsManualReset,
                     IsInterval = x.IsInterval,
                     IsEnabled = x.IsEnabled,
-
                     Speech = x.Speech,
                     AudioFile = x.AudioFile,
-
                     Time = x.Time,
                     RemindAt = x.RemindAt,
                     HideAfter = x.HideAfter,
@@ -103,7 +100,7 @@ public class TimerService
                     IsManualReset = true,
                     IsMuted = false,
                     IsInterval = true,
-                    IsEnabled = false,
+                    IsEnabled = false
                 }
             )
         );
@@ -148,7 +145,7 @@ public class TimerService
                     IsMuted = false,
                     IsManualReset = false,
                     IsInterval = true,
-                    IsEnabled = true,
+                    IsEnabled = true
                 }
             )
         );
@@ -163,7 +160,7 @@ public class TimerService
                     IsMuted = false,
                     IsManualReset = false,
                     IsInterval = true,
-                    IsEnabled = true,
+                    IsEnabled = true
                 }
             )
         );
@@ -178,7 +175,7 @@ public class TimerService
                     IsMuted = false,
                     IsInterval = true,
                     IsManualReset = false,
-                    IsEnabled = true,
+                    IsEnabled = true
                 }
             )
         );
@@ -194,7 +191,7 @@ public class TimerService
                     IsMuted = false,
                     IsManualReset = false,
                     IsInterval = true,
-                    IsEnabled = true,
+                    IsEnabled = true
                 }
             )
         );
@@ -209,7 +206,7 @@ public class TimerService
                     IsEnabled = true,
                     IsInterval = false,
                     IsMuted = false,
-                    IsManualReset = false,
+                    IsManualReset = false
                 }
             )
         );

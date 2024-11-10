@@ -6,9 +6,13 @@ namespace D2Helper.Views;
 
 public partial class TimersWindow : Window
 {
+
+
     public TimersWindow()
     {
         InitializeComponent();
+
+        this.Position = new PixelPoint(10, 10);
     }
 
     private bool _mouseDownForWindowMoving = false;

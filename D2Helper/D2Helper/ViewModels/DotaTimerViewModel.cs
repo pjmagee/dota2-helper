@@ -11,7 +11,7 @@ namespace D2Helper.ViewModels;
 /// <summary>
 /// Dota2 Timer configuration
 /// </summary>
-public class DotaTimerViewModel : ViewModelBase, IComparable<DotaTimerViewModel>
+public class DotaTimerViewModel : ViewModelBase
 {
     DotaTimer _timer;
 
@@ -52,23 +52,10 @@ public class DotaTimerViewModel : ViewModelBase, IComparable<DotaTimerViewModel>
     // The timer is currently visible
     bool _isVisible;
 
-
-    public int CompareTo(DotaTimerViewModel? other)
-    {
-        if (other == null) return 1;
-        return SortOrder.CompareTo(other.SortOrder);
-    }
-
     public string Name
     {
         get => _name;
         set => SetProperty(ref _name, value);
-    }
-
-    public int SortOrder
-    {
-        get => _sortOrder;
-        set => SetProperty(ref _sortOrder, value);
     }
 
     public string? Speech
@@ -128,25 +115,9 @@ public class DotaTimerViewModel : ViewModelBase, IComparable<DotaTimerViewModel>
 
     public IRelayCommand ResetCommand { get; }
 
-    // public IRelayCommand MoveUpCommand { get; }
-    //
-    // public IRelayCommand MoveDownCommand { get; }
-
     DotaTimerViewModel()
     {
         ResetCommand = new RelayCommand(ResetTimer);
-        // MoveUpCommand = new RelayCommand(MoveUp);
-        // MoveDownCommand = new RelayCommand(MoveDown);
-    }
-
-    void MoveUp()
-    {
-        SortOrder -= 1;
-    }
-
-    void MoveDown()
-    {
-        SortOrder += 1;
     }
 
     void ResetTimer()
@@ -226,6 +197,12 @@ public class DotaTimerViewModel : ViewModelBase, IComparable<DotaTimerViewModel>
 
     public void Update(TimeSpan gameTime)
     {
+        if (!IsEnabled)
+        {
+            IsVisible = false;
+            return;
+        }
+
         if (IsResetRequired || IsExpired)
         {
 
@@ -239,10 +216,6 @@ public class DotaTimerViewModel : ViewModelBase, IComparable<DotaTimerViewModel>
         IsResetRequired = CalculateIsResetRequired(gameTime);
         IsExpired = CalculateIsExpired(gameTime);
         IsVisible = CalculateIsVisible(gameTime);
-
-        // 1. Handle when timer is 'active' and needs to have audio file played
-        // 2. Handle resetting the sound played flag
-        // 3. sound should only play once, when active
 
         if (IsAlerting && !IsMuted && !IsSoundPlayed && IsEnabled && IsVisible && !IsExpired && !IsResetRequired && !string.IsNullOrWhiteSpace(AudioFile))
         {

@@ -18,6 +18,8 @@
         <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.2.0" />
         <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.0" />
         <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.0" />
+        <PackageReference Include="Avalonia.Xaml.Interactions" Version="11.2.0" />
+        <PackageReference Include="Avalonia.Xaml.Interactions.Events" Version="11.2.0" />
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
         <PackageReference Include="FluentIcons.Avalonia.Fluent" Version="1.1.263" />
