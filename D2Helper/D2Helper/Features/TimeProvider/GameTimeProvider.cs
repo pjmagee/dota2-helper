@@ -8,7 +8,7 @@ using D2Helper.Features.Timers;
 
 namespace D2Helper.Features.TimeProvider;
 
-public class TimeProvider : BackgroundWorker, ITimeProvider
+public class GameTimeProvider : BackgroundWorker, ITimeProvider
 {
     public ProviderType ProviderType => _current?.ProviderType ?? ProviderType.Real;
     public TimeSpan Time => _current?.Time ?? TimeSpan.Zero;
@@ -19,7 +19,7 @@ public class TimeProvider : BackgroundWorker, ITimeProvider
     readonly RealProvider _realProvider;
     readonly DemoProvider _demoProvider;
 
-    public TimeProvider(SettingsService settingsService, RealProvider realProvider, DemoProvider demoProvider)
+    public GameTimeProvider(SettingsService settingsService, RealProvider realProvider, DemoProvider demoProvider)
     {
         _settingsService = settingsService;
         _realProvider = realProvider;
