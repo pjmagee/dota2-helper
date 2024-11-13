@@ -5,7 +5,6 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
-using D2Helper.Design;
 using D2Helper.Features.Audio;
 using D2Helper.Features.Gsi;
 using D2Helper.Features.Http;
@@ -15,7 +14,6 @@ using D2Helper.Features.Timers;
 using D2Helper.ViewModels;
 using D2Helper.Views;
 using Microsoft.Extensions.DependencyInjection;
-using TimeProvider = D2Helper.Features.TimeProvider.TimeProvider;
 
 namespace D2Helper;
 
@@ -33,10 +31,10 @@ public partial class App : Application
     public override async void OnFrameworkInitializationCompleted()
     {
         var services = new ServiceCollection()
-            .AddSingleton<TimeProvider>()
+            .AddSingleton<GameTimeProvider>()
             .AddSingleton<SettingsService>()
-            .AddSingleton<ITimeProvider>(sp => sp.GetRequiredService<TimeProvider>())
 
+            .AddSingleton<ITimeProvider>(sp => sp.GetRequiredService<GameTimeProvider>())
             .AddSingleton<DemoProvider>()
             .AddSingleton<RealProvider>()
 
@@ -54,6 +52,7 @@ public partial class App : Application
 
         _serviceProvider = services.BuildServiceProvider();
 
+        var dota2ConfigService = ServiceProvider.GetRequiredService<GsiConfigService>();
         var localListener = ServiceProvider.GetRequiredService<LocalListener>();
         localListener.RunWorkerAsync();
 
@@ -66,6 +65,8 @@ public partial class App : Application
 
             desktop.MainWindow = splash;
             splash.Show();
+
+            dota2ConfigService.TryInstall();
 
             await Task.WhenAny(
                 Task.Delay(5000),

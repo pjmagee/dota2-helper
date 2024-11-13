@@ -7,7 +7,7 @@ namespace D2Helper.Features.TimeProvider;
 public class DemoProvider : BackgroundWorker, ITimeProvider
 {
     public ProviderType ProviderType => ProviderType.Demo;
-    public TimeSpan Time { get; private set; }
+    public TimeSpan Time { get; private set; } = TimeSpan.FromSeconds(-30);
 
     public DemoProvider()
     {

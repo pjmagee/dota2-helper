@@ -56,6 +56,20 @@ public partial class GsiConfigService
         return portNumber == null ? new Uri("http://localhost:4001/") : new Uri($"http://localhost:{portNumber}/");
     }
 
+    public bool TryInstall()
+    {
+        if (IsIntegrationInstalled()) return true;
+
+        var dota2FolderPath = GetDota2InstallationPath();
+        if (dota2FolderPath == null) return false;
+
+        var gameStateIntegrationPath = Path.Combine(dota2FolderPath, "game", "dota", "cfg", "gamestate_integration");
+        if (!Directory.Exists(gameStateIntegrationPath)) Directory.CreateDirectory(gameStateIntegrationPath);
+
+        Install();
+        return true;
+    }
+
     public bool IsIntegrationInstalled()
     {
         var gameStateIntegrationPath = GetGameStateIntegrationPath();
@@ -153,8 +167,6 @@ public partial class GsiConfigService
         if (File.Exists(configFileFullPath)) File.Delete(configFileFullPath);
         File.Copy(configFileSourcePath, configFileFullPath);
     }
-
-
 
     public void OpenGsiFolder()
     {

@@ -212,7 +212,7 @@ public class DotaTimerViewModel : ViewModelBase
             TimeRemaining = IsInterval ? CalculateIntervalRemaining(gameTime) : CalculateTimeUntilNextOccurrence(gameTime, Time.Seconds);
         }
 
-        IsAlerting = TimeRemaining <= RemindAt.GetValueOrDefault(TimeSpan.Zero);
+        IsAlerting = TimeRemaining.Add(TimeSpan.FromSeconds(1)) <= RemindAt.GetValueOrDefault(TimeSpan.FromSeconds(1));
         IsResetRequired = CalculateIsResetRequired(gameTime);
         IsExpired = CalculateIsExpired(gameTime);
         IsVisible = CalculateIsVisible(gameTime);

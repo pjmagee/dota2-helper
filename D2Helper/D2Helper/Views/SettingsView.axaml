@@ -192,7 +192,7 @@
                     </StackPanel>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="Integration" IsSelected="True">
+            <TabItem Header="Integration">
 
                 <StackPanel Margin="0 10" Orientation="Vertical">
 
@@ -251,6 +251,88 @@
                         </Button>
                     </StackPanel>
                 </StackPanel>
+            </TabItem>
+            <TabItem Header="Guide">
+                <ScrollViewer
+                    VerticalScrollBarVisibility="Visible"
+                    HorizontalScrollBarVisibility="Visible">
+                    <StackPanel Orientation="Vertical"
+                                Margin="0 10"
+                                Spacing="5">
+
+                        <!-- GSI -->
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                            <TextBlock Margin="0 5" FontSize="18" FontWeight="Bold">
+                                What is Game State Integration?
+                            </TextBlock>
+                            <TextBlock TextWrapping="Wrap" Width="750">
+                                Game State Integration (GSI), is a feature in Dota 2 that allows external applications to read the game state.
+                                This application uses GSI to provide helpful information and reminders for some in-game events.
+                            </TextBlock>
+                        </StackPanel>
+
+                        <!-- Install / Uninstall -->
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                            <TextBlock Margin="0 5" FontSize="18" FontWeight="Bold">
+                                Configuration Installation
+                            </TextBlock>
+                            <TextBlock TextWrapping="Wrap" Width="750">
+                                When the application is started, it will check if the GSI file is installed and automatically install it if it is not.
+                                You can also install it from the Integration Tab, clicking the Install GSI button will copy the necessary file to the Dota 2 game folder.
+                                To remove the file, click the Uninstall GSI button or delete the file manually.
+                                <Bold>The application will not work without this file.</Bold>
+                            </TextBlock>
+                        </StackPanel>
+
+                        <!-- Launching Dota 2 -->
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                            <TextBlock Margin="0 5" FontSize="18" FontWeight="Bold">
+                                Launching Dota 2
+                            </TextBlock>
+                            <TextBlock TextWrapping="Wrap" Width="750">
+                                To use the application, you must launch Dota2 with a custom launch option.
+                                The application will not work if Dota 2 is already running when the application is started without this option.
+                                To do this, right-click Dota 2 in your Steam library, click Properties, and add <Bold>-gamestateintegration</Bold> to the Launch Options.
+                            </TextBlock>
+                        </StackPanel>
+
+                        <!-- Timers -->
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                            <TextBlock Margin="0 5" FontSize="18" FontWeight="Bold">
+                                Timers
+                            </TextBlock>
+                            <TextBlock TextWrapping="Wrap" Width="750">
+                                Timers are used to remind you of in-game events. You can add, remove, and reset timers from the Timers tab.
+                                Timers can be set to trigger at a specific time or at intervals.
+                                You can also set the timer to play an audio file when it triggers.
+                            </TextBlock>
+                        </StackPanel>
+
+                        <!-- Audio -->
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                            <TextBlock Margin="0 5" FontSize="18" FontWeight="Bold">
+                                Audio
+                            </TextBlock>
+                            <TextBlock TextWrapping="Wrap" Width="750">
+                                The application can play audio files when a timer triggers. You can set the audio file for each timer from the Timers tab.
+                                The application will play the audio file when the timer triggers, the default audio files are located in the audio folder.
+                                The audio files were created using Google Text-to-Speech.
+                            </TextBlock>
+                        </StackPanel>
+
+                        <!-- Advanced (Showing/Hiding Timers for relevance) -->
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                            <TextBlock Margin="0 5" FontSize="18" FontWeight="Bold">
+                                Advanced
+                            </TextBlock>
+                            <TextBlock TextWrapping="Wrap" Width="750">
+                                Timers can be set to show and hide based on the game time. This is useful for timers that are only relevant for a certain period.
+                                For example, pulling or stacking camps becomes less meaningful after a certain time.
+                            </TextBlock>
+                        </StackPanel>
+
+                    </StackPanel>
+                </ScrollViewer>
             </TabItem>
         </TabControl>
     </StackPanel>

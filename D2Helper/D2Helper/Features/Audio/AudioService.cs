@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
@@ -37,12 +38,15 @@ public class AudioService : BackgroundWorker
             {
                 try
                 {
-                    using var media = new Media(LibVlc, audioFile, FromType.FromLocation);
+                    var uri = new Uri(audioFile, UriKind.RelativeOrAbsolute);
+                    var fromType = uri.IsAbsoluteUri ? FromType.FromLocation : FromType.FromPath;
+
+                    using(var media = new Media(LibVlc, audioFile, fromType))
                     {
                         _mediaPlayer.Play(media);
                     }
                 }
-                catch
+                catch(Exception)
                 {
 
                 }
