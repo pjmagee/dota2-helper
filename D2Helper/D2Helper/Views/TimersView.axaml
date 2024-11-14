@@ -23,17 +23,7 @@
                     <icons:SymbolIcon Symbol="Settings" />
                 </Button.Content>
             </Button>
-            <TimePicker
-                IsEnabled="False"
-                UseSeconds="True"
-                SelectedTime="{Binding Time}"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center">
-                <!-- reduce width of each time segment -->
-                <TimePicker.Resources>
-                    <x:Double x:Key="TimePickerThemeMinWidth">120</x:Double>
-                </TimePicker.Resources>
-            </TimePicker>
+            <TextBlock Text="{Binding Time}" VerticalAlignment="Center" />
         </StackPanel>
 
         <!-- Timers DataGrid -->

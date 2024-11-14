@@ -15,32 +15,16 @@ public class DotaTimerViewModel : ViewModelBase
 {
     DotaTimer _timer;
 
-    // The timer is currently enabled for usage
     bool _isEnabled;
-
-    // The timer requires manual reset ( e.g. Roshan timer)
     bool _isResetRequired;
-
-    // The timer is currently alerting the player
     bool _isAlerting;
-
-    // The timer requires manual reset ( e.g. Roshan timer)
     bool _isManualReset;
-
-    // The timer is sound muted
     bool _isMuted;
-
-    // The timer is an interval timer ( e.g. every N seconds)
     bool _isInterval;
-
-    // The timer has gone beyond the disable after time
     bool _isExpired;
-
-    // The order in the list
-    int _sortOrder;
+    bool _isVisible;
 
     string _name;
-    string? _speech;
 
     TimeSpan _time;
     TimeSpan _timeRemaining;
@@ -49,19 +33,12 @@ public class DotaTimerViewModel : ViewModelBase
     TimeSpan? _hideAfter;
     string? _audioFile;
 
-    // The timer is currently visible
-    bool _isVisible;
+    TimeSpan _manualResetTime;
 
     public string Name
     {
         get => _name;
         set => SetProperty(ref _name, value);
-    }
-
-    public string? Speech
-    {
-        get => _speech;
-        set => SetProperty(ref _speech, value);
     }
 
     public TimeSpan Time
@@ -124,6 +101,7 @@ public class DotaTimerViewModel : ViewModelBase
     {
         IsResetRequired = false;
         TimeRemaining = Time;
+        _manualResetTime = default;
     }
 
     public DotaTimerViewModel(DotaTimer timer) : this()
@@ -142,7 +120,6 @@ public class DotaTimerViewModel : ViewModelBase
         ShowAfter = timer.ShowAfter;
 
         AudioFile = timer.AudioFile;
-        Speech = timer.Speech;
     }
 
     public TimeSpan TimeRemaining
@@ -212,7 +189,7 @@ public class DotaTimerViewModel : ViewModelBase
             TimeRemaining = IsInterval ? CalculateIntervalRemaining(gameTime) : CalculateTimeUntilNextOccurrence(gameTime, Time.Seconds);
         }
 
-        IsAlerting = TimeRemaining.Add(TimeSpan.FromSeconds(1)) <= RemindAt.GetValueOrDefault(TimeSpan.FromSeconds(1));
+        IsAlerting = TimeRemaining <= RemindAt.GetValueOrDefault(TimeSpan.FromSeconds(1));
         IsResetRequired = CalculateIsResetRequired(gameTime);
         IsExpired = CalculateIsExpired(gameTime);
         IsVisible = CalculateIsVisible(gameTime);
@@ -231,12 +208,7 @@ public class DotaTimerViewModel : ViewModelBase
 
     bool CalculateIsResetRequired(TimeSpan gameTime)
     {
-        if (IsManualReset)
-        {
-            return TimeRemaining.Subtract(TimeSpan.FromSeconds(1)) <= TimeSpan.Zero;
-        }
-
-        return false;
+        return IsManualReset && TimeRemaining <= TimeSpan.Zero && gameTime > TimeSpan.Zero;
     }
 
     bool CalculateIsExpired(TimeSpan gameTime)
@@ -284,6 +256,11 @@ public class DotaTimerViewModel : ViewModelBase
             nextOccurrence += 60; // Move to the next minute if the current time has passed the target second
         }
 
+        if (totalSeconds < 0)
+        {
+            nextOccurrence = ((totalSeconds / 60) * 60) - 60 + targetSecond;
+        }
+
         // Calculate the remaining time until the next occurrence
         int remainingSeconds = nextOccurrence - totalSeconds;
         return TimeSpan.FromSeconds(remainingSeconds);
@@ -291,7 +268,20 @@ public class DotaTimerViewModel : ViewModelBase
 
     TimeSpan GetObjectiveTime(TimeSpan gameTime)
     {
-        return gameTime > ShowAfter.GetValueOrDefault() ? Time : ShowAfter.GetValueOrDefault() + (gameTime < TimeSpan.Zero ? gameTime.Negate() : TimeSpan.Zero);
+        if (IsInterval)
+        {
+            if (gameTime < TimeSpan.Zero)
+            {
+                return Time + gameTime.Negate();
+            }
+
+            if (gameTime > TimeSpan.Zero)
+            {
+                return Time;
+            }
+        }
+
+        return gameTime;
     }
 
     TimeSpan CalculateIntervalRemaining(TimeSpan gameTime)
@@ -299,11 +289,27 @@ public class DotaTimerViewModel : ViewModelBase
         try
         {
             var objectiveTime = GetObjectiveTime(gameTime);
-            return objectiveTime - TimeSpan.FromTicks(gameTime.Ticks % objectiveTime.Ticks);
+
+            if (!IsManualReset)
+            {
+                return objectiveTime - TimeSpan.FromTicks(gameTime.Ticks % objectiveTime.Ticks);
+            }
+
+            if (IsManualReset && !IsResetRequired && _manualResetTime == default)
+            {
+                _manualResetTime = gameTime;
+            }
+
+            if (IsManualReset && IsResetRequired)
+            {
+                return TimeSpan.Zero;
+            }
+
+            return objectiveTime - TimeSpan.FromTicks((gameTime.Ticks - _manualResetTime.Ticks) % objectiveTime.Ticks);
         }
         catch (Exception)
         {
-            return TimeSpan.Zero.Add(TimeSpan.FromSeconds(1));
+            return TimeSpan.Zero;
         }
     }
 }

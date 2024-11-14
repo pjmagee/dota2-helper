@@ -26,7 +26,7 @@ public class Map
     public int RadiantScore { get; set; } = 0;
 
     [JsonPropertyName("dire_score")]
-    public int DireScore { get; set; } = 3;
+    public int DireScore { get; set; } = 0;
 
     [JsonPropertyName("game_state")]
     public string GameState { get; set; }

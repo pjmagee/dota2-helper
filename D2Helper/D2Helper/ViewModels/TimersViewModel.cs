@@ -21,7 +21,6 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
 
     public PixelPoint TopLeft { get; set; } = new(10, 10);
 
-
     readonly SemaphoreSlim _semaphore = new(1, 1);
 
     public TimersViewModel(
@@ -45,7 +44,7 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
             callback: UpdateTimers,
             state: null,
             dueTime: TimeSpan.Zero,
-            period: TimeSpan.FromSeconds(1));
+            period: TimeSpan.FromSeconds(0.250));
     }
 
     async void UpdateTimers(object? state)

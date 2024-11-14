@@ -20,9 +20,6 @@ public class DotaTimer
     [JsonPropertyName("Name")]
     public required string Name { get; set; }
 
-    [JsonPropertyName("Speech")]
-    public string? Speech { get; set; }
-
     [JsonPropertyName("AudioFile")]
     public string? AudioFile { get; set; }
 

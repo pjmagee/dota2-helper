@@ -73,7 +73,6 @@ public class TimerService
                     IsManualReset = x.IsManualReset,
                     IsInterval = x.IsInterval,
                     IsEnabled = x.IsEnabled,
-                    Speech = x.Speech,
                     AudioFile = x.AudioFile,
                     Time = x.Time,
                     RemindAt = x.RemindAt,

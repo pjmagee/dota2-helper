@@ -7,7 +7,7 @@ namespace D2Helper.Features.TimeProvider;
 public class DemoProvider : BackgroundWorker, ITimeProvider
 {
     public ProviderType ProviderType => ProviderType.Demo;
-    public TimeSpan Time { get; private set; } = TimeSpan.FromSeconds(-30);
+    public TimeSpan Time { get; private set; } = TimeSpan.FromSeconds(-90);
 
     public DemoProvider()
     {
@@ -18,8 +18,13 @@ public class DemoProvider : BackgroundWorker, ITimeProvider
     {
         while (!CancellationPending)
         {
+            if (Time > TimeSpan.FromMinutes(60))
+            {
+                Time = TimeSpan.FromSeconds(-90);
+            }
+
             Time += TimeSpan.FromSeconds(1);
-            Thread.Sleep(1000);
+            Thread.Sleep(150);
         }
     }
 }
