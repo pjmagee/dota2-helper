@@ -1,14 +1,11 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "C#: Dota2 Helper Debug",
+            "name": "C#: Dota2Helper Debug",
             "type": "dotnet",
             "request": "launch",
-            "projectPath": "${workspaceFolder}/D2Helper/D2Helper.Desktop/D2Helper.Desktop.csproj"
+            "projectPath": "${workspaceFolder}/Dota2Helper/Dota2Helper.Desktop/Dota2Helper.Desktop.csproj"
         }
     ]
 }

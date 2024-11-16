@@ -1,0 +1,126 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Linq;
+using Dota2Helper.Features.Settings;
+using Dota2Helper.ViewModels;
+
+namespace Dota2Helper.Features.Timers;
+
+public class ProfileService
+{
+    readonly SettingsService _settingsService;
+
+    public ObservableCollection<ProfileViewModel> Profiles { get; } = new();
+
+    public ProfileViewModel? SelectedProfileViewModel { get; set; }
+
+    public ProfileService(SettingsService settingsService)
+    {
+        _settingsService = settingsService;
+
+        Profiles.CollectionChanged -= ProfilesChanged;
+        Profiles.CollectionChanged += ProfilesChanged;
+
+        if (_settingsService.Settings.Profiles.Count == 0)
+        {
+            DefaultTimers();
+        }
+        else
+        {
+            foreach (var profile in _settingsService.Settings.Profiles.ToList())
+            {
+                Profiles.Add(new ProfileViewModel(profile));
+            }
+        }
+    }
+
+    void SaveConfiguration(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        SaveConfiguration();
+    }
+
+    void ProfilesChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        SaveConfiguration();
+
+        if (e.Action == NotifyCollectionChangedAction.Add)
+        {
+            foreach (ProfileViewModel item in e.NewItems)
+            {
+                item.PropertyChanged += SaveConfiguration;
+                item.Timers.CollectionChanged += SaveConfiguration;
+            }
+        }
+        else if (e.Action == NotifyCollectionChangedAction.Remove)
+        {
+            foreach (ProfileViewModel item in e.OldItems)
+            {
+                item.PropertyChanged -= SaveConfiguration;
+                item.Timers.CollectionChanged -= SaveConfiguration;
+            }
+        }
+    }
+
+    void SaveConfiguration(object? sender, PropertyChangedEventArgs e)
+    {
+        if (sender is DotaTimerViewModel timer)
+        {
+            if (_ignoredProperties.Contains(e.PropertyName)) return;
+            SaveConfiguration();
+        }
+    }
+
+    void SaveConfiguration()
+    {
+        var profiles = Profiles.Select(x => new Profile
+            {
+                Name = x.Name,
+                Timers = x.Timers.Select(y => new DotaTimer
+                    {
+                        Name = y.Name,
+                        IsMuted = y.IsMuted,
+                        IsManualReset = y.IsManualReset,
+                        IsInterval = y.IsInterval,
+                        IsEnabled = y.IsEnabled,
+                        AudioFile = y.AudioFile,
+                        Time = y.Time,
+                        RemindAt = y.RemindAt,
+                        HideAfter = y.HideAfter,
+                        ShowAfter = y.ShowAfter
+                    }
+                ).ToList()
+            }
+        ).ToList();
+
+        _settingsService.Settings.Profiles.Clear();
+        _settingsService.Settings.Profiles.AddRange(profiles);
+        _settingsService.SaveSettings();
+    }
+
+    readonly HashSet<string> _ignoredProperties = new()
+    {
+        nameof(DotaTimerViewModel.TimeRemaining),
+        nameof(DotaTimerViewModel.IsAlerting),
+        nameof(DotaTimerViewModel.IsExpired),
+        nameof(DotaTimerViewModel.IsVisible),
+        nameof(DotaTimerViewModel.IsSoundPlayed),
+        nameof(DotaTimerViewModel.IsManualTimerReset),
+        nameof(DotaTimerViewModel.IsResetRequired)
+    };
+
+    public void DefaultTimers()
+    {
+        if (SelectedProfileViewModel is null) return;
+
+        SelectedProfileViewModel.Timers.Clear();
+
+        foreach (var dotaTimer in _settingsService.DefaultTimers)
+        {
+            SelectedProfileViewModel.Timers
+                .Add(new DotaTimerViewModel(dotaTimer));
+        }
+    }
+}

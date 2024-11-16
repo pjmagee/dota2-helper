@@ -1,0 +1,17 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:Dota2Helper"
+             xmlns:dota2Helper="clr-namespace:Dota2Helper"
+             x:Class="Dota2Helper.App"
+             RequestedThemeVariant="Default">
+    <Application.DataTemplates>
+        <dota2Helper:ViewLocator/>
+    </Application.DataTemplates>
+    <Application.Styles>
+        <FluentTheme DensityStyle="Compact" />
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
+    </Application.Styles>
+    <Application.Resources>
+
+    </Application.Resources>
+</Application>
