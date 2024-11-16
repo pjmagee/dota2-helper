@@ -24,7 +24,7 @@ public class DemoProvider : BackgroundWorker, ITimeProvider
             }
 
             Time += TimeSpan.FromSeconds(1);
-            Thread.Sleep(150);
+            Thread.Sleep(500);
         }
     }
 }

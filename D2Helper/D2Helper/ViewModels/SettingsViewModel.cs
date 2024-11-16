@@ -1,12 +1,9 @@
-﻿using System.ComponentModel;
-using Avalonia.Collections;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using D2Helper.Features.Audio;
 using D2Helper.Features.Gsi;
 using D2Helper.Features.Settings;
-using D2Helper.Features.TimeProvider;
 using D2Helper.Features.Timers;
 using D2Helper.Views;
 
@@ -23,17 +20,22 @@ public class SettingsViewModel : ViewModelBase
     string _installPath;
     bool _demoMuted;
 
-    readonly TimerService _timerService;
+    readonly ProfileService _profileService;
     readonly AudioService _audioService;
     readonly SettingsService _settingsService;
     readonly GsiConfigService _gsiConfigService;
 
-    DotaTimerViewModel _selectedTimerViewModel;
+    DotaTimerViewModel? _selectedTimerViewModel;
     TimerStrategy _selectedTimerMode;
+    ProfileViewModel _selectedProfileViewModel;
+    int _selectedProfileIndex;
 
-    public ObservableCollection<DotaTimerViewModel> Timers => _timerService.Timers;
+    public ObservableCollection<ProfileViewModel> Profiles => _profileService.Profiles;
+    public ObservableCollection<DotaTimerViewModel> Timers => SelectedProfileViewModel.Timers;
+
     public ObservableCollection<TimerStrategy> TimerModes { get; set; }
-    public IRelayCommand<DotaTimerViewModel> DeleteCommand { get; }
+    public IRelayCommand<DotaTimerViewModel> DeleteTimerCommand { get; }
+    public IRelayCommand<ProfileViewModel> DeleteProfileCommand { get; }
     public IRelayCommand<SettingsView> SelectFileCommand { get; }
     public IRelayCommand InstallCommand { get; }
     public IRelayCommand UninstallCommand { get; }
@@ -41,7 +43,22 @@ public class SettingsViewModel : ViewModelBase
     public IRelayCommand SetModeCommand { get; }
     public IRelayCommand PlayAudioCommand { get; }
 
-    public DotaTimerViewModel SelectedTimerViewModel
+    public ProfileViewModel? SelectedProfileViewModel
+    {
+        get => _profileService.SelectedProfileViewModel;
+        set
+        {
+            if (value is null) return;
+
+            _profileService.SelectedProfileViewModel = value;
+            _settingsService.UpdateSettings(_settingsService.Settings);
+
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(Timers));
+        }
+    }
+
+    public DotaTimerViewModel? SelectedTimerViewModel
     {
         get => _selectedTimerViewModel;
         set => SetProperty(ref _selectedTimerViewModel, value);
@@ -99,18 +116,36 @@ public class SettingsViewModel : ViewModelBase
         }
     }
 
+    public int SelectedProfileIndex
+    {
+        get => _selectedProfileIndex;
+        set
+        {
+            if (SetProperty(ref _selectedProfileIndex, value))
+            {
+                _settingsService.Settings.SelectedProfileIdx = value;
+                _settingsService.UpdateSettings(_settingsService.Settings);
+            }
+        }
+    }
+
+
     public SettingsViewModel(
-        TimerService timerService,
+        ProfileService profileService,
         AudioService audioService,
         SettingsService settingsService,
         GsiConfigService gsiConfigService)
     {
-        _timerService = timerService;
+        _profileService = profileService;
         _audioService = audioService;
         _settingsService = settingsService;
         _gsiConfigService = gsiConfigService;
 
-        DeleteCommand = new RelayCommand<DotaTimerViewModel>(DeleteTimer);
+        SelectedProfileViewModel = _profileService.Profiles[_settingsService.Settings.SelectedProfileIdx];
+
+        DeleteTimerCommand = new RelayCommand<DotaTimerViewModel>(DeleteTimer);
+        DeleteProfileCommand = new RelayCommand<ProfileViewModel>(DeleteProfile);
+
         SelectFileCommand = new RelayCommand<SettingsView>(SelectFile);
         InstallCommand = new RelayCommand(Install);
         UninstallCommand = new RelayCommand(Uninstall);
@@ -120,16 +155,26 @@ public class SettingsViewModel : ViewModelBase
 
         TimerModes =
         [
-            new() { Name = "Real", Mode = TimeMode.Real },
-            new() { Name = "Demo", Mode = TimeMode.Demo },
-            new() { Name = "Auto", Mode = TimeMode.Auto },
+            new()
+            {
+                Name = "Real",
+                Mode = TimeMode.Real
+            },
+            new()
+            {
+                Name = "Demo",
+                Mode = TimeMode.Demo
+            },
+            new()
+            {
+                Name = "Auto",
+                Mode = TimeMode.Auto
+            },
         ];
 
         _selectedTimerMode = TimerModes.FirstOrDefault(tm => _settingsService.Settings.Mode == tm.Mode) ?? TimerModes[^1];
-        _selectedTimerViewModel = _timerService.Timers[0];
         _volume = _settingsService.Settings.Volume;
         _demoMuted = _settingsService.Settings.DemoMuted;
-
     }
 
     void OpenFolder()
@@ -139,6 +184,8 @@ public class SettingsViewModel : ViewModelBase
 
     void PlayAudio()
     {
+        if(SelectedTimerViewModel is null) return;
+
         if (string.IsNullOrWhiteSpace(SelectedTimerViewModel.AudioFile) is false)
         {
             _audioService.Play(SelectedTimerViewModel.AudioFile);
@@ -188,35 +235,66 @@ public class SettingsViewModel : ViewModelBase
 
             if (files.Count == 1)
             {
-                SelectedTimerViewModel.AudioFile = files[0].Path.ToString();
+                SelectedTimerViewModel!.AudioFile = files[0].Path.ToString();
             }
         }
     }
 
-    public void Reset()
+    public void DefaultTimers()
     {
-        _timerService.Default();
+        _profileService.DefaultTimers();
     }
 
-    public void Add()
+    public void AddProfile()
     {
-        _timerService.Timers.Add(new DotaTimerViewModel(new DotaTimer()
-            {
-                Name = $"Timer {_timerService.Timers.Count + 1}",
-                Time = TimeSpan.FromMinutes(1),
-                IsEnabled = false,
-                IsMuted = false,
-                IsManualReset = false,
-                IsInterval = true
-            }
-        ));
+        var profile = new Profile()
+        {
+            Name = $"Profile {_profileService.Profiles.Count + 1}"
+        };
+
+        var profileViewModel = new ProfileViewModel(profile);
+        _profileService.Profiles.Add(profileViewModel);
+    }
+
+    public void AddTimer()
+    {
+        SelectedProfileViewModel.Timers.Add(new DotaTimerViewModel(new DotaTimer()
+                {
+                    Name = $"Timer {SelectedProfileViewModel.Timers.Count + 1}",
+                    Time = TimeSpan.FromMinutes(1),
+                    IsEnabled = false,
+                    IsMuted = false,
+                    IsManualReset = false,
+                    IsInterval = true
+                }
+            )
+        );
     }
 
     public void DeleteTimer(DotaTimerViewModel? timer)
     {
         if (timer is not null)
         {
-            _timerService.Timers.Remove(timer);
+            foreach (var profile in _profileService.Profiles)
+            {
+                if (profile.Timers.Contains(timer))
+                {
+                    profile.Timers.Remove(timer);
+                }
+            }
+        }
+    }
+
+    public void DeleteProfile(ProfileViewModel? profile)
+    {
+        if (profile is not null)
+        {
+            if (_profileService.Profiles.Count == 1)
+            {
+                return;
+            }
+
+            _profileService.Profiles.Remove(profile);
         }
     }
 }

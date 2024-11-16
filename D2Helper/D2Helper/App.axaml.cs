@@ -41,7 +41,7 @@ public partial class App : Application
             .AddSingleton<GsiConfigWatcher>()
             .AddSingleton<GsiConfigService>()
 
-            .AddSingleton<TimerService>()
+            .AddSingleton<ProfileService>()
             .AddSingleton<AudioService>()
             .AddSingleton<TimerAudioService>()
 

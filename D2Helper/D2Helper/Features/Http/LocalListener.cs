@@ -2,7 +2,6 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using System.Net;
-using System.Net.Http.Headers;
 using System.Text.Json;
 using D2Helper.Features.Gsi;
 using D2Helper.Features.Http.Serialisation;

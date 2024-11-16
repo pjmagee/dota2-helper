@@ -16,15 +16,32 @@
     </Design.DataContext>
     <StackPanel Orientation="Vertical" Margin="2" Spacing="5">
         <!-- Setting and Game time -->
-        <StackPanel Spacing="5" Margin="0"
-                    Orientation="Horizontal">
-            <Button Command="{Binding OpenSettingsCommand}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Button
+                Grid.Column="0"
+                Command="{Binding OpenSettingsCommand}">
                 <Button.Content>
-                    <icons:SymbolIcon Symbol="Settings" />
+                    <icons:SymbolIcon Symbol="Settings" Width="20" />
                 </Button.Content>
             </Button>
-            <TextBlock Text="{Binding Time}" VerticalAlignment="Center" />
-        </StackPanel>
+
+            <TextBlock
+                Grid.Column="1"
+                HorizontalAlignment="Center"
+                Text="{Binding Time}"
+                VerticalAlignment="Center" />
+
+            <Button
+                Grid.Column="2"
+                HorizontalAlignment="Right"
+                Command="{Binding CloseAppCommand}" Content="✕" />
+        </Grid>
 
         <!-- Timers DataGrid -->
         <DataGrid
@@ -35,7 +52,7 @@
             CanUserResizeColumns="False"
             CanUserSortColumns="False"
             GridLinesVisibility="Horizontal"
-            ItemsSource="{Binding Timers}">
+            ItemsSource="{Binding SettingsViewModel.SelectedProfileViewModel.Timers}">
             <DataGrid.Resources>
                 <!-- Could not find a way to make row not hit test while maintain button hit test -->
                 <SolidColorBrush x:Key="DataGridRowSelectedBackgroundBrush" Color="Transparent" />
@@ -64,7 +81,6 @@
                         <DataTemplate>
                             <TextBlock x:Name="Remaining" IsHitTestVisible="False"
                                        Text="{Binding TimeRemaining}"
-                                       IsVisible="{Binding IsVisible}"
                                        HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

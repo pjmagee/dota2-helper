@@ -2,9 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
-using D2Helper.Features.Settings;
-using D2Helper.Features.TimeProvider;
-using D2Helper.Features.Timers;
 using LibVLCSharp.Shared;
 
 namespace D2Helper.Features.Audio;

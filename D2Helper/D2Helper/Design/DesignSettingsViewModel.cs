@@ -8,8 +8,9 @@ namespace D2Helper.Design;
 
 public class DesignSettingsViewModel : SettingsViewModel
 {
-    DesignSettingsViewModel(SettingsService settingsService) : base(new TimerService(settingsService), new AudioService(), settingsService, new GsiConfigService())
+    DesignSettingsViewModel(SettingsService settingsService) : base(new ProfileService(settingsService), new AudioService(), settingsService, new GsiConfigService())
     {
+        SelectedProfileViewModel = Profiles[0];
         SelectedTimerViewModel = Timers[0];
         SelectedTimerMode = TimerModes[^1];
         Volume = 50;

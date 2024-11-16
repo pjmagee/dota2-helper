@@ -9,47 +9,95 @@ using D2Helper.ViewModels;
 
 namespace D2Helper.Features.Timers;
 
-public class TimerService
+public class ProfileService
 {
     readonly SettingsService _settingsService;
-    public ObservableCollection<DotaTimerViewModel> Timers { get; } = new();
 
-    public TimerService(SettingsService settingsService)
+    public ObservableCollection<ProfileViewModel> Profiles { get; } = new();
+
+    public ProfileViewModel SelectedProfileViewModel { get; set; }
+
+    public ProfileService(SettingsService settingsService)
     {
         _settingsService = settingsService;
 
-        Timers.CollectionChanged -= TimersChanged;
-        Timers.CollectionChanged += TimersChanged;
+        Profiles.CollectionChanged -= ProfilesChanged;
+        Profiles.CollectionChanged += ProfilesChanged;
 
-        if (_settingsService.Settings.Timers.Count == 0)
+        if (_settingsService.Settings.Profiles.Count == 0)
         {
-            Default();
+            DefaultTimers();
         }
         else
         {
-            foreach (var timer in _settingsService.Settings.Timers)
+            foreach (var profile in _settingsService.Settings.Profiles.ToList())
             {
-                Timers.Add(new DotaTimerViewModel(timer));
+                Profiles.Add(new ProfileViewModel(profile));
             }
         }
     }
 
-    void TimersChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    void SaveConfiguration(object? sender, NotifyCollectionChangedEventArgs e)
     {
+        SaveConfiguration();
+    }
+
+    void ProfilesChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        SaveConfiguration();
+
         if (e.Action == NotifyCollectionChangedAction.Add)
         {
-            foreach (DotaTimerViewModel item in e.NewItems)
+            foreach (ProfileViewModel item in e.NewItems)
             {
-                item.PropertyChanged += TimerChanged;
+                item.PropertyChanged += SaveConfiguration;
+                item.Timers.CollectionChanged += SaveConfiguration;
             }
         }
         else if (e.Action == NotifyCollectionChangedAction.Remove)
         {
-            foreach (DotaTimerViewModel item in e.OldItems)
+            foreach (ProfileViewModel item in e.OldItems)
             {
-                item.PropertyChanged -= TimerChanged;
+                item.PropertyChanged -= SaveConfiguration;
+                item.Timers.CollectionChanged -= SaveConfiguration;
             }
         }
+    }
+
+    void SaveConfiguration(object? sender, PropertyChangedEventArgs e)
+    {
+        if (sender is DotaTimerViewModel timer)
+        {
+            if (_ignoredProperties.Contains(e.PropertyName)) return;
+            SaveConfiguration();
+        }
+    }
+
+    void SaveConfiguration()
+    {
+        var profiles = Profiles.Select(x => new Profile
+            {
+                Name = x.Name,
+                Timers = x.Timers.Select(y => new DotaTimer
+                    {
+                        Name = y.Name,
+                        IsMuted = y.IsMuted,
+                        IsManualReset = y.IsManualReset,
+                        IsInterval = y.IsInterval,
+                        IsEnabled = y.IsEnabled,
+                        AudioFile = y.AudioFile,
+                        Time = y.Time,
+                        RemindAt = y.RemindAt,
+                        HideAfter = y.HideAfter,
+                        ShowAfter = y.ShowAfter
+                    }
+                ).ToList()
+            }
+        ).ToList();
+
+        _settingsService.Settings.Profiles.Clear();
+        _settingsService.Settings.Profiles.AddRange(profiles);
+        _settingsService.SaveSettings();
     }
 
     readonly HashSet<string> _ignoredProperties = new()
@@ -61,36 +109,10 @@ public class TimerService
         nameof(DotaTimerViewModel.IsResetRequired)
     };
 
-    void TimerChanged(object? sender, PropertyChangedEventArgs e)
+    public void DefaultTimers()
     {
-        if (_ignoredProperties.Contains(e.PropertyName)) return;
-
-        _settingsService.Settings.Timers.Clear();
-        _settingsService.Settings.Timers.AddRange(Timers.Select(x => new DotaTimer
-                {
-                    Name = x.Name,
-                    IsMuted = x.IsMuted,
-                    IsManualReset = x.IsManualReset,
-                    IsInterval = x.IsInterval,
-                    IsEnabled = x.IsEnabled,
-                    AudioFile = x.AudioFile,
-                    Time = x.Time,
-                    RemindAt = x.RemindAt,
-                    HideAfter = x.HideAfter,
-                    ShowAfter = x.ShowAfter
-                }
-            )
-        );
-
-        _settingsService.SaveSettings();
-    }
-
-    public void Default()
-    {
-        Timers.Clear();
-
-        // Roshan Spawn
-        Timers.Add(new DotaTimerViewModel(new DotaTimer
+        SelectedProfileViewModel.Timers.Clear();
+        SelectedProfileViewModel.Timers.Add(new DotaTimerViewModel(new DotaTimer
                 {
                     Name = "Roshan",
                     Time = TimeSpan.FromMinutes(11),
@@ -104,8 +126,7 @@ public class TimerService
             )
         );
 
-        // Tormentor Radiant
-        Timers.Add(new DotaTimerViewModel(new DotaTimer
+        SelectedProfileViewModel.Timers.Add(new DotaTimerViewModel(new DotaTimer
                 {
                     Name = "Tormentor Radiant",
                     Time = TimeSpan.FromMinutes(10),
@@ -120,7 +141,7 @@ public class TimerService
         );
 
         // Tormentor Dire
-        Timers.Add(new DotaTimerViewModel(new DotaTimer
+        SelectedProfileViewModel.Timers.Add(new DotaTimerViewModel(new DotaTimer
                 {
                     Name = "Tormentor Dire",
                     Time = TimeSpan.FromMinutes(10),
@@ -135,7 +156,7 @@ public class TimerService
         );
 
         // Powerup Rune
-        Timers.Add(new DotaTimerViewModel(new DotaTimer
+        SelectedProfileViewModel.Timers.Add(new DotaTimerViewModel(new DotaTimer
                 {
                     Name = "Power Rune",
                     Time = TimeSpan.FromMinutes(2),
@@ -150,7 +171,7 @@ public class TimerService
         );
 
         // Bounty Rune
-        Timers.Add(new DotaTimerViewModel(new DotaTimer
+        SelectedProfileViewModel.Timers.Add(new DotaTimerViewModel(new DotaTimer
                 {
                     Name = "Bounty Rune",
                     Time = TimeSpan.FromMinutes(3),
@@ -165,7 +186,7 @@ public class TimerService
         );
 
         // Wisdom Rune
-        Timers.Add(new DotaTimerViewModel(new DotaTimer
+        SelectedProfileViewModel.Timers.Add(new DotaTimerViewModel(new DotaTimer
                 {
                     Name = "Wisdom Rune",
                     Time = TimeSpan.FromMinutes(7),
@@ -180,7 +201,7 @@ public class TimerService
         );
 
         // Stack Camp
-        Timers.Add(new DotaTimerViewModel(new DotaTimer
+        SelectedProfileViewModel.Timers.Add(new DotaTimerViewModel(new DotaTimer
                 {
                     Name = "Stack Camp",
                     Time = TimeSpan.FromMinutes(1),
@@ -196,7 +217,7 @@ public class TimerService
         );
 
         // Pull (15s)
-        Timers.Add(new DotaTimerViewModel(new DotaTimer
+        SelectedProfileViewModel.Timers.Add(new DotaTimerViewModel(new DotaTimer
                 {
                     Name = "Pull (15s)",
                     Time = TimeSpan.FromSeconds(15),
@@ -211,7 +232,7 @@ public class TimerService
         );
 
         // Pull (45s)
-        Timers.Add(new DotaTimerViewModel(new DotaTimer
+        SelectedProfileViewModel.Timers.Add(new DotaTimerViewModel(new DotaTimer
                 {
                     Name = "Pull (45s)",
                     Time = TimeSpan.FromSeconds(45),

@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "D2Helper", "D2Helper\D2Help
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "D2Helper.Desktop", "D2Helper\D2Helper.Desktop\D2Helper.Desktop.csproj", "{C7BC1569-929B-4439-9ED7-ECF0D36AC38F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "D2Helper.Tests", "D2Helper.Tests\D2Helper.Tests.csproj", "{1E9A5972-6269-417E-8F62-F2D037553A73}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{C7BC1569-929B-4439-9ED7-ECF0D36AC38F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C7BC1569-929B-4439-9ED7-ECF0D36AC38F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C7BC1569-929B-4439-9ED7-ECF0D36AC38F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E9A5972-6269-417E-8F62-F2D037553A73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E9A5972-6269-417E-8F62-F2D037553A73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E9A5972-6269-417E-8F62-F2D037553A73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E9A5972-6269-417E-8F62-F2D037553A73}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

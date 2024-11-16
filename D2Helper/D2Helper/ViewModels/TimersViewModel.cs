@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.Input;
 using D2Helper.Features.TimeProvider;
 using D2Helper.Features.Timers;
@@ -14,20 +15,19 @@ namespace D2Helper.ViewModels;
 
 public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
 {
-    readonly TimerService _timerService;
     readonly ITimeProvider _timeProvider;
     readonly ITimer? _timer = null;
     TimeSpan _time;
+
+    public SettingsViewModel SettingsViewModel { get; }
 
     public PixelPoint TopLeft { get; set; } = new(10, 10);
 
     readonly SemaphoreSlim _semaphore = new(1, 1);
 
-    public TimersViewModel(
-        TimerService timerService,
-        ITimeProvider timeProvider)
+    public TimersViewModel(SettingsViewModel settingsViewModel, ITimeProvider timeProvider)
     {
-        _timerService = timerService;
+        SettingsViewModel = settingsViewModel;
         _timeProvider = timeProvider;
 
         OpenSettingsCommand = new RelayCommand(() =>
@@ -38,6 +38,14 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
             };
 
             settings.Show();
+        });
+
+        CloseAppCommand = new RelayCommand(() =>
+        {
+            if(Application.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                desktop.Shutdown();
+            }
         });
 
         _timer = TimeProvider.System.CreateTimer(
@@ -55,7 +63,7 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
             {
                 Time = _timeProvider.Time;
 
-                foreach (var timer in Timers)
+                foreach (var timer in SettingsViewModel.SelectedProfileViewModel.Timers)
                 {
                     timer.Update(Time);
                 }
@@ -67,7 +75,6 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
         }
     }
 
-    public ObservableCollection<DotaTimerViewModel> Timers => _timerService.Timers;
     public IRelayCommand OpenSettingsCommand { get; }
 
     public TimeSpan Time
@@ -75,6 +82,8 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
         get => _time;
         set => SetProperty(ref _time, value);
     }
+
+    public IRelayCommand CloseAppCommand { get; }
 
     public void Dispose()
     {
