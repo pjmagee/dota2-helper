@@ -3,27 +3,25 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Platform.Storage;
 using Avalonia.Styling;
-using Avalonia.Themes.Fluent;
 using CommunityToolkit.Mvvm.Input;
 using Dota2Helper.Features.Audio;
 using Dota2Helper.Features.Gsi;
 using Dota2Helper.Features.Settings;
 using Dota2Helper.Features.Timers;
 using Dota2Helper.Views;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Dota2Helper.ViewModels;
 
 public class SettingsViewModel : ViewModelBase
 {
     double _volume;
-    string _status;
-    string _installPath;
     bool _demoMuted;
 
     readonly ProfileService _profileService;
-    readonly AudioService _audioService;
+    readonly IAudioService _audioService;
+    readonly ViewModelFactory _viewModelFactory;
     readonly SettingsService _settingsService;
     readonly GsiConfigService _gsiConfigService;
 
@@ -104,18 +102,6 @@ public class SettingsViewModel : ViewModelBase
         }
     }
 
-    // public string Status
-    // {
-    //     get => _status;
-    //     set => SetProperty(ref _status, value);
-    // }
-    //
-    // public string InstallPath
-    // {
-    //     get => _installPath;
-    //     set => SetProperty(ref _installPath, value);
-    // }
-
     public bool DemoMuted
     {
         get => _demoMuted;
@@ -151,12 +137,16 @@ public class SettingsViewModel : ViewModelBase
 
     public SettingsViewModel(
         ProfileService profileService,
-        AudioService audioService,
+        [FromKeyedServices(nameof(AudioService))]
+        IAudioService audioService,
+        ViewModelFactory viewModelFactory,
         SettingsService settingsService,
         GsiConfigService gsiConfigService)
     {
         _profileService = profileService;
         _audioService = audioService;
+        _viewModelFactory = viewModelFactory;
+
         _settingsService = settingsService;
         _gsiConfigService = gsiConfigService;
 
@@ -206,36 +196,22 @@ public class SettingsViewModel : ViewModelBase
 
     async void SelectFile(SettingsView? view)
     {
-        if (view is not null)
+        try
         {
-            var topLevel = TopLevel.GetTopLevel(view);
-
-            var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions()
-                {
-                    Title = "Select audio file",
-                    AllowMultiple = false,
-                    FileTypeFilter =
-                    [
-                        new FilePickerFileType("Audio files")
-                        {
-                            Patterns = new[]
-                            {
-                                "*.mp3",
-                                "*.wav"
-                            },
-                            MimeTypes = new[]
-                            {
-                                "audio/*"
-                            }
-                        },
-                    ],
-                }
-            );
-
-            if (files.Count == 1)
+            if (view is not null)
             {
-                SelectedTimerViewModel!.AudioFile = files[0].Path.ToString();
+                var topLevel = TopLevel.GetTopLevel(view)!;
+                var files = await topLevel.StorageProvider.OpenFilePickerAsync(new AudioFilePickerOptions());
+
+                if (files.Count == 1)
+                {
+                    SelectedTimerViewModel!.AudioFile = files[0].Path.ToString();
+                }
             }
+        }
+        catch (Exception e)
+        {
+
         }
     }
 
@@ -246,28 +222,25 @@ public class SettingsViewModel : ViewModelBase
 
     public void AddProfile()
     {
-        var profile = new Profile()
+        _profileService.Profiles.Add(_viewModelFactory.Create(new Profile
         {
             Name = $"Profile {_profileService.Profiles.Count + 1}"
-        };
-
-        var profileViewModel = new ProfileViewModel(profile);
-        _profileService.Profiles.Add(profileViewModel);
+        }));
     }
 
     public void AddTimer()
     {
-        SelectedProfileViewModel.Timers.Add(new DotaTimerViewModel(new DotaTimer()
-                {
-                    Name = $"Timer {SelectedProfileViewModel.Timers.Count + 1}",
-                    Time = TimeSpan.FromMinutes(1),
-                    IsEnabled = false,
-                    IsMuted = false,
-                    IsManualReset = false,
-                    IsInterval = true
-                }
-            )
-        );
+        var dotaTimer = new DotaTimer
+        {
+            Name = $"Timer {SelectedProfileViewModel.Timers.Count + 1}",
+            Time = TimeSpan.FromMinutes(1),
+            IsEnabled = false,
+            IsMuted = false,
+            IsManualReset = false,
+            IsInterval = true
+        };
+
+        SelectedProfileViewModel.Timers.Add(_viewModelFactory.Create(dotaTimer));
     }
 
     public void DeleteTimer(DotaTimerViewModel? timer)

@@ -20,7 +20,7 @@
         PointerMoved="InputElement_OnPointerMoved"
         PointerPressed="InputElement_OnPointerPressed"
         PointerReleased="InputElement_OnPointerReleased"
-        SystemDecorations="BorderOnly"
+        SystemDecorations="None"
         CornerRadius="15" Title="Timers">
     <Design.DataContext>
         <design:DesignTimersViewModel />

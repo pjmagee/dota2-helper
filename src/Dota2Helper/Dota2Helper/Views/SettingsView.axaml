@@ -148,13 +148,6 @@
                             <TextBlock Text="Name" VerticalAlignment="Center" />
                             <TextBox Text="{Binding SelectedTimerViewModel.Name, Mode=TwoWay}" />
                         </StackPanel>
-                        <!-- <StackPanel Orientation="Vertical" Margin="5"> -->
-                        <!--     <ToolTip.Tip> -->
-                        <!--         The text that will be spoken when the timer triggers. -->
-                        <!--     </ToolTip.Tip> -->
-                        <!--     <TextBlock Text="Speech" VerticalAlignment="Center" /> -->
-                        <!--     <TextBox Text="{Binding SelectedTimerViewModel.Speech, Mode=TwoWay}" /> -->
-                        <!-- </StackPanel> -->
                         <StackPanel Orientation="Vertical" Margin="5">
                             <ToolTip.Tip>
                                 If the timer is an interval timer, this is the time between each trigger.
@@ -332,8 +325,9 @@
                             What is Game State Integration?
                         </TextBlock>
                         <TextBlock TextWrapping="Wrap" Width="750">
-                            Game State Integration (GSI), is a feature in Dota 2 that allows external applications to read the game state.
+                            Game State Integration (GSI), is a feature in DOTA 2 that allows external applications to read the game state.
                             This application uses GSI to provide helpful information and reminders for some in-game events.
+                            This application <Bold>ONLY</Bold> uses the game time, it does not read any other information from the game.
                         </TextBlock>
                     </StackPanel>
 

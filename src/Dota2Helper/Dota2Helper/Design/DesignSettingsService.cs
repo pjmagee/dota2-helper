@@ -12,8 +12,8 @@ public class DesignSettingsService : SettingsService
         Settings = new Settings
         {
             SelectedProfileIdx = 0,
-            Profiles = new List<Profile>
-            {
+            Profiles =
+            [
                 new()
                 {
                     Name = "Profile 1",
@@ -53,8 +53,8 @@ public class DesignSettingsService : SettingsService
                             IsInterval = false
                         },
                     }
-                }
-            },
+                },
+            ],
             Volume = 50,
             Mode = TimeMode.Auto,
             DemoMuted = true

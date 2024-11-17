@@ -2,19 +2,27 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using Dota2Helper.Features.Settings;
 using LibVLCSharp.Shared;
 
 namespace Dota2Helper.Features.Audio;
 
-public class AudioService : BackgroundWorker
+public interface IAudioService
 {
+    void Play(string audioFile);
+}
+
+public class AudioService : BackgroundWorker, IAudioService
+{
+    readonly SettingsService _settingsService;
     LibVLC LibVlc { get; } = new();
     readonly MediaPlayer _mediaPlayer;
 
     Queue<string> AudioQueue { get; } = new();
 
-    public AudioService()
+    public AudioService(SettingsService settingsService)
     {
+        _settingsService = settingsService;
         _mediaPlayer = new MediaPlayer(LibVlc);
         RunWorkerAsync();
     }
@@ -40,6 +48,7 @@ public class AudioService : BackgroundWorker
 
                     using(var media = new Media(LibVlc, audioFile, fromType))
                     {
+                        _mediaPlayer.Volume = (int) _settingsService.Settings.Volume;
                         _mediaPlayer.Play(media);
                     }
                 }

@@ -1,3 +1,4 @@
+using Dota2Helper.Features.Audio;
 using Dota2Helper.Features.Settings;
 using Dota2Helper.Features.Timers;
 using Dota2Helper.ViewModels;
@@ -20,7 +21,7 @@ public class DotaTimerViewModelTests
             Name = "Test Timer Manual Reset",
             IsMuted = false,
             AudioFile = null
-        });
+        }, new FakeTimerAudioService());
 
         // Act
         TimeSpan time = TimeSpan.FromSeconds(0);

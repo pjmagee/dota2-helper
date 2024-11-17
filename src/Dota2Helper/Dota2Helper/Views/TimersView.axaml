@@ -23,9 +23,9 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <Button
-                Grid.Column="0"
-                Command="{Binding OpenSettingsCommand}">
+            <Button x:Name="SettingsButton"
+                    Grid.Column="0"
+                    Command="{Binding OpenSettingsCommand}">
                 <Button.Content>
                     <icons:SymbolIcon Symbol="Settings" Width="20" />
                 </Button.Content>
@@ -36,11 +36,19 @@
                 HorizontalAlignment="Center"
                 Text="{Binding Time}"
                 VerticalAlignment="Center" />
-
             <Button
                 Grid.Column="2"
                 HorizontalAlignment="Right"
-                Command="{Binding CloseAppCommand}" Content="✕" />
+                ToolTip.Tip="Exit Dota2 Helper"
+                Width="{Binding ElementName=SettingsButton, Path=Width}"
+                Height="{Binding ElementName=SettingsButton, Path=Height}"
+                Command="{Binding CloseAppCommand}" Content="✖">
+                <Button.Styles>
+                    <Style Selector="Button:pointerover /template/ ContentPresenter">
+                        <Setter Property="Background" Value="DarkRed" />
+                    </Style>
+                </Button.Styles>
+            </Button>
         </Grid>
 
         <!-- Timers DataGrid -->

@@ -5,6 +5,11 @@ namespace Dota2Helper.Views;
 
 public partial class SettingsWindow : Window
 {
+    public SettingsWindow()
+    {
+        InitializeComponent();
+    }
+
     public SettingsWindow(SettingsViewModel settingsViewModel)
     {
         InitializeComponent();

@@ -13,7 +13,9 @@ namespace Dota2Helper.ViewModels;
 public class DotaTimerViewModel : ViewModelBase
 {
     DotaTimer _timer;
-    TimerAudioService _audioService;
+    readonly IAudioService _audioService;
+
+    string _name;
 
     bool _isEnabled;
     bool _isResetRequired;
@@ -24,8 +26,6 @@ public class DotaTimerViewModel : ViewModelBase
     bool _isExpired;
     bool _isVisible;
 
-    string _name;
-
     TimeSpan _time;
     TimeSpan _timeRemaining;
     TimeSpan? _showAfter;
@@ -34,6 +34,31 @@ public class DotaTimerViewModel : ViewModelBase
     string? _audioFile;
 
     TimeSpan? _manualResetTime;
+
+    public DotaTimerViewModel(DotaTimer timer, IAudioService audioService)
+    {
+        _audioService = audioService;
+        _timer = timer;
+        _name = timer.Name;
+
+        Name = timer.Name;
+        Time = timer.Time;
+
+        IsManualReset = timer.IsManualReset;
+        IsInterval = timer.IsInterval;
+        IsEnabled = timer.IsEnabled;
+
+        RemindAt = timer.RemindAt;
+        HideAfter = timer.HideAfter;
+        ShowAfter = timer.ShowAfter;
+
+        AudioFile = timer.AudioFile;
+
+        _manualResetTime = null;
+
+        ResetCommand = new RelayCommand(ResetTimer);
+    }
+
 
     public bool IsManualTimerReset => IsManualReset && _manualResetTime == default(TimeSpan);
     public bool IsFirstManualTimer => IsManualReset && _manualResetTime == null;
@@ -95,35 +120,10 @@ public class DotaTimerViewModel : ViewModelBase
 
     public IRelayCommand ResetCommand { get; }
 
-    DotaTimerViewModel()
-    {
-        ResetCommand = new RelayCommand(ResetTimer);
-    }
-
     void ResetTimer()
     {
         _manualResetTime = default(TimeSpan);
         IsResetRequired = false;
-    }
-
-    public DotaTimerViewModel(DotaTimer timer) : this()
-    {
-        _timer = timer;
-
-        Name = timer.Name;
-        Time = timer.Time;
-
-        IsManualReset = timer.IsManualReset;
-        IsInterval = timer.IsInterval;
-        IsEnabled = timer.IsEnabled;
-
-        RemindAt = timer.RemindAt;
-        HideAfter = timer.HideAfter;
-        ShowAfter = timer.ShowAfter;
-
-        AudioFile = timer.AudioFile;
-
-        _manualResetTime = null;
     }
 
     public TimeSpan TimeRemaining
@@ -255,7 +255,7 @@ public class DotaTimerViewModel : ViewModelBase
     {
         if (IsEnabled is not true) return false;
 
-        if(ShowAfter is null && HideAfter is null)
+        if (ShowAfter is null && HideAfter is null)
         {
             return true;
         }

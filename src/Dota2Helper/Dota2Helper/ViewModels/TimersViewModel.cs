@@ -14,12 +14,10 @@ namespace Dota2Helper.ViewModels;
 public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
 {
     readonly ITimeProvider _timeProvider;
-    readonly ITimer? _timer = null;
+    readonly ITimer? _timer;
     TimeSpan _time;
 
     public SettingsViewModel SettingsViewModel { get; }
-
-    public PixelPoint TopLeft { get; set; } = new(10, 10);
 
     readonly SemaphoreSlim _semaphore = new(1, 1);
 
@@ -28,21 +26,8 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
         SettingsViewModel = settingsViewModel;
         _timeProvider = timeProvider;
 
-        OpenSettingsCommand = new RelayCommand(() =>
-            {
-                var settingsWindow = App.ServiceProvider.GetRequiredService<SettingsWindow>();
-                settingsWindow.Show();
-            }
-        );
-
-        CloseAppCommand = new RelayCommand(() =>
-            {
-                if (Application.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-                {
-                    desktop.Shutdown();
-                }
-            }
-        );
+        OpenSettingsCommand = new RelayCommand(OpenSettings);
+        CloseAppCommand = new RelayCommand(CloseApplication);
 
         _timer = TimeProvider.System.CreateTimer(
             callback: UpdateTimers,
@@ -50,6 +35,20 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
             dueTime: TimeSpan.Zero,
             period: TimeSpan.FromSeconds(0.500)
         );
+    }
+
+    void OpenSettings()
+    {
+        var settingsWindow = App.ServiceProvider.GetRequiredService<SettingsWindow>();
+        settingsWindow.Show();
+    }
+
+    static void CloseApplication()
+    {
+        if (Application.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            desktop.Shutdown();
+        }
     }
 
     async void UpdateTimers(object? state)

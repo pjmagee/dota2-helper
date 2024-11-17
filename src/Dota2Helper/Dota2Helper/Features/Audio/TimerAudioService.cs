@@ -6,7 +6,7 @@ namespace Dota2Helper.Features.Audio;
 public class TimerAudioService(
     ITimeProvider timeProvider,
     SettingsService settingsService,
-    AudioService audioService)
+    AudioService audioService) : IAudioService
 {
     public void Play(string audioFile)
     {

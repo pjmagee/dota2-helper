@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using Dota2Helper.Features.Audio;
 using Dota2Helper.Features.Settings;
 using Dota2Helper.ViewModels;
 
@@ -12,12 +13,13 @@ namespace Dota2Helper.Features.Timers;
 public class ProfileService
 {
     readonly SettingsService _settingsService;
+    readonly IAudioService _audioService;
 
     public ObservableCollection<ProfileViewModel> Profiles { get; } = new();
 
     public ProfileViewModel? SelectedProfileViewModel { get; set; }
 
-    public ProfileService(SettingsService settingsService)
+    public ProfileService(SettingsService settingsService, ViewModelFactory factory)
     {
         _settingsService = settingsService;
 
@@ -32,7 +34,7 @@ public class ProfileService
         {
             foreach (var profile in _settingsService.Settings.Profiles.ToList())
             {
-                Profiles.Add(new ProfileViewModel(profile));
+                Profiles.Add(factory.Create(profile));
             }
         }
     }
@@ -48,7 +50,7 @@ public class ProfileService
 
         if (e.Action == NotifyCollectionChangedAction.Add)
         {
-            foreach (ProfileViewModel item in e.NewItems)
+            foreach (ProfileViewModel item in e.NewItems ?? Array.Empty<ProfileViewModel>())
             {
                 item.PropertyChanged += SaveConfiguration;
                 item.Timers.CollectionChanged += SaveConfiguration;
@@ -56,7 +58,7 @@ public class ProfileService
         }
         else if (e.Action == NotifyCollectionChangedAction.Remove)
         {
-            foreach (ProfileViewModel item in e.OldItems)
+            foreach (ProfileViewModel item in e.OldItems ?? Array.Empty<ProfileViewModel>())
             {
                 item.PropertyChanged -= SaveConfiguration;
                 item.Timers.CollectionChanged -= SaveConfiguration;
@@ -66,7 +68,7 @@ public class ProfileService
 
     void SaveConfiguration(object? sender, PropertyChangedEventArgs e)
     {
-        if (sender is DotaTimerViewModel timer)
+        if (sender is DotaTimerViewModel timer && !string.IsNullOrWhiteSpace(e.PropertyName))
         {
             if (_ignoredProperties.Contains(e.PropertyName)) return;
             SaveConfiguration();
@@ -120,7 +122,7 @@ public class ProfileService
         foreach (var dotaTimer in _settingsService.DefaultTimers)
         {
             SelectedProfileViewModel.Timers
-                .Add(new DotaTimerViewModel(dotaTimer));
+                .Add(new DotaTimerViewModel(dotaTimer, _audioService));
         }
     }
 }

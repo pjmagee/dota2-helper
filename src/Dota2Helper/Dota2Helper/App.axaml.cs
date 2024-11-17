@@ -17,6 +17,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Dota2Helper;
 
+public class ViewModelFactory([FromKeyedServices(nameof(TimerAudioService))] IAudioService audioService)
+{
+    public DotaTimerViewModel Create(DotaTimer timer) => new(timer, audioService);
+    public ProfileViewModel Create(Profile profile) => new ProfileViewModel(profile, this);
+}
+
 public partial class App : Application
 {
     public static IServiceProvider ServiceProvider => _serviceProvider ?? throw new InvalidOperationException("Service provider is not initialized");
@@ -33,20 +39,18 @@ public partial class App : Application
         var services = new ServiceCollection()
             .AddSingleton<GameTimeProvider>()
             .AddSingleton<SettingsService>()
-
             .AddSingleton<ITimeProvider>(sp => sp.GetRequiredService<GameTimeProvider>())
             .AddSingleton<DemoProvider>()
+            .AddSingleton<ViewModelFactory>()
+            .AddKeyedSingleton<IAudioService, AudioService>(nameof(AudioService))
+            .AddKeyedSingleton<IAudioService, TimerAudioService>(nameof(TimerAudioService))
             .AddSingleton<RealProvider>()
-
             .AddSingleton<GsiConfigWatcher>()
             .AddSingleton<GsiConfigService>()
-
             .AddSingleton<ProfileService>()
             .AddSingleton<AudioService>()
             .AddSingleton<TimerAudioService>()
-
             .AddSingleton<SettingsWindow>()
-
             .AddSingleton<LocalListener>()
             .AddSingleton<SplashScreenViewModel>()
             .AddSingleton<TimersViewModel>()
@@ -72,7 +76,8 @@ public partial class App : Application
 
             await Task.WhenAny(
                 Task.Delay(5000),
-                Task.Delay(Timeout.Infinite, ((SplashScreenViewModel)splash.DataContext).CancellationToken));
+                Task.Delay(Timeout.Infinite, ((SplashScreenViewModel)splash.DataContext).CancellationToken)
+            );
 
             BindingPlugins.DataValidators.RemoveAt(0);
 
