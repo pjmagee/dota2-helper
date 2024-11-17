@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
+using Avalonia.Styling;
+using Avalonia.Themes.Fluent;
 using CommunityToolkit.Mvvm.Input;
 using Dota2Helper.Features.Audio;
 using Dota2Helper.Features.Gsi;
@@ -26,12 +29,11 @@ public class SettingsViewModel : ViewModelBase
 
     DotaTimerViewModel? _selectedTimerViewModel;
     TimerStrategy? _selectedTimerMode;
-    ProfileViewModel? _selectedProfileViewModel;
     int _selectedProfileIndex;
+    ThemeVariant _themeVariant = ThemeVariant.Default;
 
     public ObservableCollection<ProfileViewModel> Profiles => _profileService.Profiles;
     public ObservableCollection<DotaTimerViewModel>? Timers => SelectedProfileViewModel?.Timers;
-
     public ObservableCollection<TimerStrategy> TimerModes { get; set; }
     public IRelayCommand<DotaTimerViewModel> DeleteTimerCommand { get; }
     public IRelayCommand<ProfileViewModel> DeleteProfileCommand { get; }
@@ -41,6 +43,18 @@ public class SettingsViewModel : ViewModelBase
     public IRelayCommand OpenFolderCommand { get; set; }
     public IRelayCommand SetModeCommand { get; }
     public IRelayCommand PlayAudioCommand { get; }
+
+    public ThemeVariant ThemeVariant
+    {
+        get => _themeVariant;
+        set
+        {
+            if (SetProperty(ref _themeVariant, value))
+            {
+                Application.Current!.RequestedThemeVariant = _themeVariant;
+            }
+        }
+    }
 
     public ProfileViewModel? SelectedProfileViewModel
     {
@@ -128,6 +142,13 @@ public class SettingsViewModel : ViewModelBase
         }
     }
 
+    public ObservableCollection<ThemeVariant> ThemeVariants { get; } =
+    [
+        ThemeVariant.Default,
+        ThemeVariant.Dark,
+        ThemeVariant.Light,
+    ];
+
     public SettingsViewModel(
         ProfileService profileService,
         AudioService audioService,
@@ -149,9 +170,7 @@ public class SettingsViewModel : ViewModelBase
         OpenFolderCommand = new RelayCommand(OpenFolder);
         SetModeCommand = new RelayCommand<TimerStrategy>(SetMode);
         PlayAudioCommand = new RelayCommand(PlayAudio);
-
-        TimerModes = new(TimerStrategy.Modes);
-
+        TimerModes = new ObservableCollection<TimerStrategy>(TimerStrategy.Modes);
         _selectedTimerMode = TimerModes.FirstOrDefault(tm => _settingsService.Settings.Mode == tm.Mode) ?? TimerModes[^1];
         _volume = _settingsService.Settings.Volume;
         _demoMuted = _settingsService.Settings.DemoMuted;

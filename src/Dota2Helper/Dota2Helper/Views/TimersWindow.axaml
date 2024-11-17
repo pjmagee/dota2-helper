@@ -5,7 +5,6 @@
         xmlns:views="clr-namespace:Dota2Helper.Views"
         xmlns:viewModels="clr-namespace:Dota2Helper.ViewModels"
         xmlns:design="clr-namespace:Dota2Helper.Design"
-        xmlns:views1="clr-namespace:Dota2Helper.Views"
         mc:Ignorable="d" d:DesignWidth="280" d:DesignHeight="250"
         x:Class="Dota2Helper.Views.TimersWindow"
         x:DataType="viewModels:TimersViewModel"
@@ -16,7 +15,7 @@
         ExtendClientAreaChromeHints="NoChrome"
         ExtendClientAreaTitleBarHeightHint="0"
         ExtendClientAreaToDecorationsHint="False"
-        Opacity="0.65"
+        Opacity="0.80"
         Topmost="True"
         PointerMoved="InputElement_OnPointerMoved"
         PointerPressed="InputElement_OnPointerPressed"
@@ -26,5 +25,6 @@
     <Design.DataContext>
         <design:DesignTimersViewModel />
     </Design.DataContext>
-    <views1:TimersView />
+    <!-- bind opacity to Window opacity -->
+    <views:TimersView Opacity="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Opacity}" />
 </Window>

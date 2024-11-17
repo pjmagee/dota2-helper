@@ -45,7 +45,7 @@ public partial class App : Application
             .AddSingleton<AudioService>()
             .AddSingleton<TimerAudioService>()
 
-            .AddTransient<SettingsWindow>()
+            .AddSingleton<SettingsWindow>()
 
             .AddSingleton<LocalListener>()
             .AddSingleton<SplashScreenViewModel>()

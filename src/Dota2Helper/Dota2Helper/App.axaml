@@ -8,7 +8,19 @@
         <dota2Helper:ViewLocator/>
     </Application.DataTemplates>
     <Application.Styles>
-        <FluentTheme DensityStyle="Compact" />
+        <FluentTheme DensityStyle="Compact">
+            <FluentTheme.Palettes>
+                <!-- Radiant Side 'Light' theme -->
+                <ColorPaletteResources x:Key="Light"
+                                       Accent="#79C84C"
+                                       RegionColor="#E3F3DC"
+                                       ErrorText="#FF5656" />
+                <!-- Dire Side 'Dark' theme -->
+                <ColorPaletteResources x:Key="Dark"
+                                       Accent="#C0392B"
+                                       RegionColor="#2D1A1A" ErrorText="#E74C3C" />
+            </FluentTheme.Palettes>
+        </FluentTheme>
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
     </Application.Styles>
     <Application.Resources>

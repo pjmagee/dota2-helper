@@ -44,15 +44,16 @@
         </Grid>
 
         <!-- Timers DataGrid -->
-        <DataGrid
-            IsReadOnly="True"
-            HeadersVisibility="None"
-            RowHeight="22"
-            CanUserReorderColumns="False"
-            CanUserResizeColumns="False"
-            CanUserSortColumns="False"
-            GridLinesVisibility="Horizontal"
-            ItemsSource="{Binding SettingsViewModel.SelectedProfileViewModel.Timers}">
+        <!-- bind opacity to Window opacity -->
+        <DataGrid Opacity="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Opacity}"
+                  IsReadOnly="True"
+                  HeadersVisibility="None"
+                  RowHeight="22"
+                  CanUserReorderColumns="False"
+                  CanUserResizeColumns="False"
+                  CanUserSortColumns="False"
+                  GridLinesVisibility="Horizontal"
+                  ItemsSource="{Binding SettingsViewModel.SelectedProfileViewModel.Timers}">
             <DataGrid.Resources>
                 <!-- Could not find a way to make row not hit test while maintain button hit test -->
                 <SolidColorBrush x:Key="DataGridRowSelectedBackgroundBrush" Color="Transparent" />

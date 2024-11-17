@@ -37,5 +37,7 @@ public class DotaTimerViewModelTests
         Assert.IsTrue(timer.TimeRemaining == timer.Time);
 
         timer.ResetCommand.Execute(null);
+
+        Assert.IsFalse(timer.IsResetRequired);
     }
 }
