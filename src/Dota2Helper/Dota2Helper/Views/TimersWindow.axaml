@@ -21,10 +21,9 @@
         PointerPressed="InputElement_OnPointerPressed"
         PointerReleased="InputElement_OnPointerReleased"
         SystemDecorations="None"
-        CornerRadius="15" Title="Timers">
+        CornerRadius="15">
     <Design.DataContext>
         <design:DesignTimersViewModel />
     </Design.DataContext>
-    <!-- bind opacity to Window opacity -->
     <views:TimersView Opacity="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Opacity}" />
 </Window>

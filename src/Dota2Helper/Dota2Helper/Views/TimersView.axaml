@@ -51,8 +51,6 @@
             </Button>
         </Grid>
 
-        <!-- Timers DataGrid -->
-        <!-- bind opacity to Window opacity -->
         <DataGrid Opacity="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Opacity}"
                   IsReadOnly="True"
                   HeadersVisibility="None"

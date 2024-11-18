@@ -10,10 +10,7 @@ public class DesignSettingsViewModel : SettingsViewModel
 {
     DesignSettingsViewModel(SettingsService settingsService) : base(new DesignProfileService(), new AudioService(settingsService), new ViewModelFactory(new FakeTimerAudioService()), settingsService, new GsiConfigService())
     {
-        SelectedProfileViewModel = Profiles[0];
-        SelectedTimerViewModel = Timers[0];
-        SelectedTimerMode = TimerModes[^1];
-        Volume = 50;
+
     }
 
     public DesignSettingsViewModel() : this(new DesignSettingsService())

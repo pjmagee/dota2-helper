@@ -17,12 +17,6 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Dota2Helper;
 
-public class ViewModelFactory([FromKeyedServices(nameof(TimerAudioService))] IAudioService audioService)
-{
-    public DotaTimerViewModel Create(DotaTimer timer) => new(timer, audioService);
-    public ProfileViewModel Create(Profile profile) => new ProfileViewModel(profile, this);
-}
-
 public partial class App : Application
 {
     public static IServiceProvider ServiceProvider => _serviceProvider ?? throw new InvalidOperationException("Service provider is not initialized");

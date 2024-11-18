@@ -5,12 +5,12 @@ namespace Dota2Helper.Design;
 
 public class DesignTimersViewModel : TimersViewModel
 {
-    DesignTimersViewModel(SettingsViewModel settingsViewModel, GameTimeProvider timeProvider) : base(settingsViewModel, timeProvider)
+    DesignTimersViewModel(GameTimeProvider timeProvider) : base(new DesignSettingsViewModel(), timeProvider)
     {
 
     }
 
-    DesignTimersViewModel(DesignSettingsService settingsService) : this(new DesignSettingsViewModel(), new GameTimeProvider(settingsService, new RealProvider(), new DemoProvider()))
+    DesignTimersViewModel(DesignSettingsService settingsService) : this(new GameTimeProvider(settingsService, new RealProvider(), new DemoProvider()))
     {
 
     }

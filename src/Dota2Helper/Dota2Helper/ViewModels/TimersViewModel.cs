@@ -1,10 +1,13 @@
 using System;
+using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.Input;
+using Dota2Helper.Features.Settings;
 using Dota2Helper.Features.TimeProvider;
+using Dota2Helper.Features.Timers;
 using Dota2Helper.Views;
 using Microsoft.Extensions.DependencyInjection;
 using TimeProvider = System.TimeProvider;
@@ -13,17 +16,18 @@ namespace Dota2Helper.ViewModels;
 
 public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
 {
+    readonly SettingsViewModel _settingsViewModel;
     readonly ITimeProvider _timeProvider;
     readonly ITimer? _timer;
     TimeSpan _time;
 
-    public SettingsViewModel SettingsViewModel { get; }
+    public SettingsViewModel SettingsViewModel => _settingsViewModel;
 
     readonly SemaphoreSlim _semaphore = new(1, 1);
 
     public TimersViewModel(SettingsViewModel settingsViewModel, ITimeProvider timeProvider)
     {
-        SettingsViewModel = settingsViewModel;
+        _settingsViewModel = settingsViewModel;
         _timeProvider = timeProvider;
 
         OpenSettingsCommand = new RelayCommand(OpenSettings);
@@ -59,7 +63,7 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
             {
                 Time = _timeProvider.Time;
 
-                foreach (var timer in SettingsViewModel.SelectedProfileViewModel.Timers)
+                foreach (var timer in _settingsViewModel.SelectedProfileViewModel.Timers)
                 {
                     timer.Update(Time);
                 }

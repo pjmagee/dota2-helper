@@ -13,15 +13,22 @@ namespace Dota2Helper.Features.Timers;
 public class ProfileService
 {
     readonly SettingsService _settingsService;
-    readonly IAudioService _audioService;
+    readonly ViewModelFactory _factory;
+
+    ProfileViewModel _selectedProfileViewModel;
+
+    public ProfileViewModel SelectedProfileViewModel
+    {
+        get => _selectedProfileViewModel;
+        set => _selectedProfileViewModel = value;
+    }
 
     public ObservableCollection<ProfileViewModel> Profiles { get; } = new();
-
-    public ProfileViewModel? SelectedProfileViewModel { get; set; }
 
     public ProfileService(SettingsService settingsService, ViewModelFactory factory)
     {
         _settingsService = settingsService;
+        _factory = factory;
 
         Profiles.CollectionChanged -= ProfilesChanged;
         Profiles.CollectionChanged += ProfilesChanged;
@@ -102,8 +109,8 @@ public class ProfileService
         _settingsService.SaveSettings();
     }
 
-    readonly HashSet<string> _ignoredProperties = new()
-    {
+    readonly HashSet<string> _ignoredProperties =
+    [
         nameof(DotaTimerViewModel.TimeRemaining),
         nameof(DotaTimerViewModel.IsAlerting),
         nameof(DotaTimerViewModel.IsExpired),
@@ -111,18 +118,18 @@ public class ProfileService
         nameof(DotaTimerViewModel.IsSoundPlayed),
         nameof(DotaTimerViewModel.IsManualTimerReset),
         nameof(DotaTimerViewModel.IsResetRequired)
-    };
+    ];
+
+
+
 
     public void DefaultTimers()
     {
-        if (SelectedProfileViewModel is null) return;
-
         SelectedProfileViewModel.Timers.Clear();
 
         foreach (var dotaTimer in _settingsService.DefaultTimers)
         {
-            SelectedProfileViewModel.Timers
-                .Add(new DotaTimerViewModel(dotaTimer, _audioService));
+            SelectedProfileViewModel.Timers.Add(_factory.Create(dotaTimer));
         }
     }
 }

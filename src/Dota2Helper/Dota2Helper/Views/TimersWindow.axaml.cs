@@ -10,7 +10,7 @@ public partial class TimersWindow : Window
     {
         InitializeComponent();
 
-        this.Position = new PixelPoint(10, 10);
+        Position = new PixelPoint(10, 10);
     }
 
     bool _mouseDownForWindowMoving = false;
@@ -21,8 +21,9 @@ public partial class TimersWindow : Window
         if (!_mouseDownForWindowMoving) return;
 
         PointerPoint currentPoint = e.GetCurrentPoint(this);
-        Position = new PixelPoint(Position.X + (int)(currentPoint.Position.X - _originalPoint.Position.X),
-            Position.Y + (int)(currentPoint.Position.Y - _originalPoint.Position.Y));
+        Position = new PixelPoint(
+            x: Position.X + (int)(currentPoint.Position.X - _originalPoint.Position.X),
+            y: Position.Y + (int)(currentPoint.Position.Y - _originalPoint.Position.Y));
     }
 
     void InputElement_OnPointerPressed(object? sender, PointerPressedEventArgs e)

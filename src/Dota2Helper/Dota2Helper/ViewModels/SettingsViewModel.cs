@@ -16,22 +16,22 @@ namespace Dota2Helper.ViewModels;
 
 public class SettingsViewModel : ViewModelBase
 {
-    double _volume;
-    bool _demoMuted;
-
     readonly ProfileService _profileService;
     readonly IAudioService _audioService;
     readonly ViewModelFactory _viewModelFactory;
     readonly SettingsService _settingsService;
     readonly GsiConfigService _gsiConfigService;
 
-    DotaTimerViewModel? _selectedTimerViewModel;
-    TimerStrategy? _selectedTimerMode;
+    double _volume;
+    bool _demoMuted;
     int _selectedProfileIndex;
+
+    DotaTimerViewModel? _selectedTimerViewModel;
+    ProfileViewModel _selectedProfileViewModel;
+    TimerStrategy? _selectedTimerMode;
     ThemeVariant _themeVariant = ThemeVariant.Default;
 
     public ObservableCollection<ProfileViewModel> Profiles => _profileService.Profiles;
-    public ObservableCollection<DotaTimerViewModel>? Timers => SelectedProfileViewModel?.Timers;
     public ObservableCollection<TimerStrategy> TimerModes { get; set; }
     public IRelayCommand<DotaTimerViewModel> DeleteTimerCommand { get; }
     public IRelayCommand<ProfileViewModel> DeleteProfileCommand { get; }
@@ -54,18 +54,13 @@ public class SettingsViewModel : ViewModelBase
         }
     }
 
-    public ProfileViewModel? SelectedProfileViewModel
+    public ProfileViewModel SelectedProfileViewModel
     {
         get => _profileService.SelectedProfileViewModel;
         set
         {
-            if (value is null) return;
-
             _profileService.SelectedProfileViewModel = value;
-            _settingsService.UpdateSettings(_settingsService.Settings);
-
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(Timers));
+            SetProperty(ref _selectedProfileViewModel, value);
         }
     }
 
@@ -77,7 +72,7 @@ public class SettingsViewModel : ViewModelBase
 
     public TimerStrategy SelectedTimerMode
     {
-        get => _selectedTimerMode;
+        get => _selectedTimerMode ?? TimerModes[^1];
         set
         {
             if (SetProperty(ref _selectedTimerMode, value))
@@ -150,8 +145,6 @@ public class SettingsViewModel : ViewModelBase
         _settingsService = settingsService;
         _gsiConfigService = gsiConfigService;
 
-        SelectedProfileViewModel = _profileService.Profiles[_settingsService.Settings.SelectedProfileIdx];
-
         DeleteTimerCommand = new RelayCommand<DotaTimerViewModel>(DeleteTimer);
         DeleteProfileCommand = new RelayCommand<ProfileViewModel>(DeleteProfile);
         SelectFileCommand = new RelayCommand<SettingsView>(SelectFile);
@@ -161,6 +154,8 @@ public class SettingsViewModel : ViewModelBase
         SetModeCommand = new RelayCommand<TimerStrategy>(SetMode);
         PlayAudioCommand = new RelayCommand(PlayAudio);
         TimerModes = new ObservableCollection<TimerStrategy>(TimerStrategy.Modes);
+        SelectedProfileViewModel = _profileService.Profiles[_settingsService.Settings.SelectedProfileIdx];
+
         _selectedTimerMode = TimerModes.FirstOrDefault(tm => _settingsService.Settings.Mode == tm.Mode) ?? TimerModes[^1];
         _volume = _settingsService.Settings.Volume;
         _demoMuted = _settingsService.Settings.DemoMuted;
@@ -173,9 +168,7 @@ public class SettingsViewModel : ViewModelBase
 
     void PlayAudio()
     {
-        if (SelectedTimerViewModel is null) return;
-
-        if (string.IsNullOrWhiteSpace(SelectedTimerViewModel.AudioFile) is false)
+        if (string.IsNullOrWhiteSpace(SelectedTimerViewModel?.AudioFile) is false)
         {
             _audioService.Play(SelectedTimerViewModel.AudioFile);
         }
@@ -209,7 +202,7 @@ public class SettingsViewModel : ViewModelBase
                 }
             }
         }
-        catch (Exception e)
+        catch (Exception)
         {
 
         }

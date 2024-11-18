@@ -17,8 +17,8 @@ public class SettingsService
     {
         var configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: true)
-            .AddJsonFile("appsettings.timers.default.json", optional: true)
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .AddJsonFile("appsettings.timers.default.json", optional: true, reloadOnChange: true)
             .Build();
 
         Settings = configuration.Get<Settings>()!;
@@ -27,6 +27,9 @@ public class SettingsService
 
     public void SaveSettings()
     {
+        if(Avalonia.Controls.Design.IsDesignMode)
+            return;
+
         var json = JsonSerializer.Serialize(Settings, _jsonOptions);
         File.WriteAllText("appsettings.json", json);
     }
