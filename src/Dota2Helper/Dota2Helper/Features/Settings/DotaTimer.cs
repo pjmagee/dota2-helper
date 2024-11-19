@@ -5,33 +5,33 @@ namespace Dota2Helper.Features.Settings;
 
 public class DotaTimer
 {
-    [JsonPropertyName("IsEnabled")]
+    [JsonPropertyName(nameof(IsEnabled))]
     public required bool IsEnabled { get; set; }
 
-    [JsonPropertyName("IsManualReset")]
+    [JsonPropertyName(nameof(IsManualReset))]
     public required bool IsManualReset { get; set; }
 
-    [JsonPropertyName("IsMuted")]
+    [JsonPropertyName(nameof(IsMuted))]
     public required bool IsMuted { get; set; }
 
-    [JsonPropertyName("IsInterval")]
+    [JsonPropertyName(nameof(IsInterval))]
     public required bool IsInterval { get; set; }
 
-    [JsonPropertyName("Name")]
+    [JsonPropertyName(nameof(Name))]
     public required string Name { get; set; }
 
-    [JsonPropertyName("AudioFile")]
+    [JsonPropertyName(nameof(AudioFile))]
     public string? AudioFile { get; set; }
 
-    [JsonPropertyName("Time")]
+    [JsonPropertyName(nameof(Time))]
     public required TimeSpan Time { get; set; }
 
-    [JsonPropertyName("RemindAt")]
+    [JsonPropertyName(nameof(RemindAt))]
     public TimeSpan? RemindAt { get; set; }
 
-    [JsonPropertyName("HideAfter")]
-    public TimeSpan? HideAfter { get; set; }
+    [JsonPropertyName(nameof(StopAfter))]
+    public TimeSpan? StopAfter { get; set; }
 
-    [JsonPropertyName("ShowAfter")]
-    public TimeSpan? ShowAfter { get; set; }
+    [JsonPropertyName(nameof(StartAfter))]
+    public TimeSpan? StartAfter { get; set; }
 }

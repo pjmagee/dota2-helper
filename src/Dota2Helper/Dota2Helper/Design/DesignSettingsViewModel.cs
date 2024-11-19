@@ -1,4 +1,3 @@
-using System;
 using Dota2Helper.Features.Audio;
 using Dota2Helper.Features.Gsi;
 using Dota2Helper.Features.Settings;

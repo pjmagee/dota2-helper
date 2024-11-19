@@ -1,4 +1,5 @@
 ﻿<Solution>
+  <Configurations />
   <Project Path="Dota2Helper\Dota2Helper.Desktop\Dota2Helper.Desktop.csproj" Type="Classic C#" />
   <Project Path="Dota2Helper\Dota2Helper.Tests\Dota2Helper.Tests.csproj" Type="Classic C#" />
   <Project Path="Dota2Helper\Dota2Helper\Dota2Helper.csproj" Type="Classic C#" />

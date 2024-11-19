@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace Dota2Helper.Features.Settings;
 
@@ -9,27 +10,23 @@ public class SettingsService
 {
     readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
 
+    public SettingsService(IOptions<Settings> settings, IOptions<List<DotaTimer>> defaultTimers)
+    {
+        Settings = settings.Value;
+        DefaultTimers = defaultTimers.Value;
+    }
+
+    protected SettingsService()
+    {
+
+    }
+
     public Settings Settings { get; protected set; }
 
-    public List<DotaTimer> DefaultTimers { get; set; }
-
-    public SettingsService()
-    {
-        var configuration = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-            .AddJsonFile("appsettings.timers.default.json", optional: true, reloadOnChange: true)
-            .Build();
-
-        Settings = configuration.Get<Settings>()!;
-        DefaultTimers = configuration.GetSection("DefaultTimers").Get<List<DotaTimer>>()!;
-    }
+    public List<DotaTimer> DefaultTimers { get; protected set; }
 
     public void SaveSettings()
     {
-        if(Avalonia.Controls.Design.IsDesignMode)
-            return;
-
         var json = JsonSerializer.Serialize(Settings, _jsonOptions);
         File.WriteAllText("appsettings.json", json);
     }

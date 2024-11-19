@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
+using Dota2Helper.Design;
 using Dota2Helper.Features.Audio;
 using Dota2Helper.Features.Gsi;
 using Dota2Helper.Features.Http;
@@ -13,6 +16,7 @@ using Dota2Helper.Features.TimeProvider;
 using Dota2Helper.Features.Timers;
 using Dota2Helper.ViewModels;
 using Dota2Helper.Views;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Dota2Helper;
@@ -30,9 +34,22 @@ public partial class App : Application
 
     public override async void OnFrameworkInitializationCompleted()
     {
-        var services = new ServiceCollection()
-            .AddSingleton<GameTimeProvider>()
+
+        var services = new ServiceCollection().AddOptions();
+
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile(Avalonia.Controls.Design.IsDesignMode ? "appsettings.design.json" : "appsettings.json", optional: true, reloadOnChange: true)
+            .AddJsonFile(Avalonia.Controls.Design.IsDesignMode ? "appsettings.timers.default.design.json" : "appsettings.timers.default.json", optional: true, reloadOnChange: true)
+            .Build();
+
+        services
+            .Configure<Settings>(configuration.Bind)
+            .Configure<List<DotaTimer>>(configuration.GetSection("DefaultTimers").Bind);
+
+        services
             .AddSingleton<SettingsService>()
+            .AddSingleton<GameTimeProvider>()
             .AddSingleton<ITimeProvider>(sp => sp.GetRequiredService<GameTimeProvider>())
             .AddSingleton<DemoProvider>()
             .AddSingleton<ViewModelFactory>()

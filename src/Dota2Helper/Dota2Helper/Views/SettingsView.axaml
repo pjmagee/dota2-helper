@@ -10,13 +10,10 @@
     xmlns:timers="clr-namespace:Dota2Helper.Features.Timers"
     mc:Ignorable="d"
     d:DesignHeight="600" d:DesignWidth="800"
-    d:DataContext="{x:Type vm:SettingsViewModel}"
+    d:DataContext="{d:DesignInstance design:DesignSettingsViewModel, IsDesignTimeCreatable=True}"
     x:Class="Dota2Helper.Views.SettingsView"
     x:Name="SettingsUserControl"
     x:DataType="vm:SettingsViewModel">
-    <Design.DataContext>
-        <design:DesignSettingsViewModel />
-    </Design.DataContext>
     <UserControl.Resources>
         <audio:AudioFilePathConverter x:Key="AudioFilePathConverter" />
     </UserControl.Resources>
@@ -54,8 +51,8 @@
                               CanUserSortColumns="True"
                               BorderThickness="0.5"
                               MaxHeight="400"
-                              SelectedItem="{Binding SelectedProfileViewModel}"
-                              SelectedIndex="{Binding SelectedProfileIndex}"
+                              SelectedItem="{Binding SelectedProfileViewModel, Mode=TwoWay}"
+                              SelectedIndex="{Binding SelectedProfileIndex, Mode=TwoWay}"
                               SelectionMode="Single"
                               HorizontalScrollBarVisibility="Auto">
                         <DataGrid.Columns>
@@ -100,7 +97,7 @@
             <StackPanel Orientation="Vertical" Margin="0 10" Spacing="5">
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <DataGrid x:Name="DataGrid"
-                              ItemsSource="{Binding SelectedProfileViewModel.Timers}"
+                              ItemsSource="{Binding Timers}"
                               GridLinesVisibility="All"
                               BorderBrush="Black"
                               CanUserSortColumns="True"
@@ -163,7 +160,7 @@
                             </ToolTip.Tip>
                             <TextBlock Text="Starts at" VerticalAlignment="Center" />
                             <TimePicker UseSeconds="True"
-                                        SelectedTime="{Binding SelectedTimerViewModel.ShowAfter, Mode=TwoWay}" />
+                                        SelectedTime="{Binding SelectedTimerViewModel.StartsAfter, Mode=TwoWay}" />
                         </StackPanel>
                         <StackPanel Orientation="Vertical" Margin="5">
                             <ToolTip.Tip>
@@ -173,7 +170,7 @@
                             <TextBlock Text="Expires after" VerticalAlignment="Center" />
                             <TimePicker
                                 UseSeconds="True"
-                                SelectedTime="{Binding SelectedTimerViewModel.HideAfter, Mode=TwoWay}" />
+                                SelectedTime="{Binding SelectedTimerViewModel.StopsAfter, Mode=TwoWay}" />
                         </StackPanel>
                         <StackPanel Orientation="Vertical" Margin="5">
                             <ToolTip.Tip>

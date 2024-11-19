@@ -27,7 +27,8 @@ public class SettingsViewModel : ViewModelBase
     int _selectedProfileIndex;
 
     DotaTimerViewModel? _selectedTimerViewModel;
-    ProfileViewModel _selectedProfileViewModel;
+
+    // ProfileViewModel _selectedProfileViewModel;
     TimerStrategy? _selectedTimerMode;
     ThemeVariant _themeVariant = ThemeVariant.Default;
 
@@ -54,13 +55,25 @@ public class SettingsViewModel : ViewModelBase
         }
     }
 
-    public ProfileViewModel SelectedProfileViewModel
+    ObservableCollection<DotaTimerViewModel> _timers;
+
+    public ObservableCollection<DotaTimerViewModel> Timers
     {
-        get => _profileService.SelectedProfileViewModel;
+        get => _timers;
+        set => SetProperty(ref _timers, value);
+    }
+
+    private ProfileViewModel? _selectedProfileViewModel;
+
+    public ProfileViewModel? SelectedProfileViewModel
+    {
+        get => _selectedProfileViewModel;
         set
         {
-            _profileService.SelectedProfileViewModel = value;
+            if (value == null) return;
             SetProperty(ref _selectedProfileViewModel, value);
+            _profileService.SelectedProfileViewModel = value;
+            Timers = _profileService.SelectedProfileViewModel.Timers;
         }
     }
 
@@ -216,9 +229,11 @@ public class SettingsViewModel : ViewModelBase
     public void AddProfile()
     {
         _profileService.Profiles.Add(_viewModelFactory.Create(new Profile
-        {
-            Name = $"Profile {_profileService.Profiles.Count + 1}"
-        }));
+                {
+                    Name = $"Profile {_profileService.Profiles.Count + 1}"
+                }
+            )
+        );
     }
 
     public void AddTimer()

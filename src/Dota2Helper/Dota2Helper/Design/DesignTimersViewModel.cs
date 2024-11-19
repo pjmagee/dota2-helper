@@ -1,3 +1,4 @@
+using Dota2Helper.Features.Settings;
 using Dota2Helper.Features.TimeProvider;
 using Dota2Helper.ViewModels;
 

@@ -1,9 +1,14 @@
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
+using Avalonia.Collections;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Dota2Helper.Features.Settings;
 using Dota2Helper.Features.TimeProvider;
@@ -21,9 +26,25 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
     readonly ITimer? _timer;
     TimeSpan _time;
 
-    public SettingsViewModel SettingsViewModel => _settingsViewModel;
+    // public SettingsViewModel SettingsViewModel => _settingsViewModel;
+
+    // Cache
+    // public ObservableCollection<DotaTimerViewModel> Timers
+    // {
+    //     get => _timers;
+    //     set => SetProperty(ref _timers, value);
+    // }
+
+    private ObservableCollection<DotaTimerViewModel> _timers;
+
+    public ObservableCollection<DotaTimerViewModel> Timers
+    {
+        get => _timers;
+        set => SetProperty(ref _timers, value);
+    }
 
     readonly SemaphoreSlim _semaphore = new(1, 1);
+    // ObservableCollection<DotaTimerViewModel> _timers;
 
     public TimersViewModel(SettingsViewModel settingsViewModel, ITimeProvider timeProvider)
     {
@@ -39,7 +60,22 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
             dueTime: TimeSpan.Zero,
             period: TimeSpan.FromSeconds(0.500)
         );
+
+        // _settingsViewModel.PropertyChanged += (sender, args) =>
+        // {
+        //     if (args.PropertyName == nameof(_settingsViewModel.SelectedProfileViewModel))
+        //     {
+        //         SetTimers();
+        //     }
+        // };
+        //
+        // SetTimers();
     }
+
+    // void SetTimers()
+    // {
+    //     Timers = new ObservableCollection<DotaTimerViewModel>(_settingsViewModel.SelectedProfileViewModel.Timers);
+    // }
 
     void OpenSettings()
     {
@@ -57,16 +93,24 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
 
     async void UpdateTimers(object? state)
     {
+
+
         if (await _semaphore.WaitAsync(0))
         {
             try
             {
+                Timers = _settingsViewModel.SelectedProfileViewModel.Timers;
+
                 Time = _timeProvider.Time;
 
-                foreach (var timer in _settingsViewModel.SelectedProfileViewModel.Timers)
-                {
-                    timer.Update(Time);
-                }
+                Dispatcher.UIThread.Invoke(() =>
+                    {
+                        foreach (var timer in Timers)
+                        {
+                            timer.Update(Time);
+                        }
+                    }
+                );
             }
             finally
             {

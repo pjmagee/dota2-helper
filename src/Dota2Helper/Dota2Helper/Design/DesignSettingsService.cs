@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Dota2Helper.Features.Settings;
 using Dota2Helper.Features.Timers;
+using Microsoft.Extensions.Options;
 
 namespace Dota2Helper.Design;
 
@@ -9,55 +10,39 @@ public class DesignSettingsService : SettingsService
 {
     public DesignSettingsService() : base()
     {
-        Settings = new Settings
+        Settings = new Settings()
         {
+            DemoMuted = true,
+            Volume = 90,
             SelectedProfileIdx = 0,
-            Profiles =
-            [
-                new()
-                {
-                    Name = "Profile 1",
-                    Timers = new List<DotaTimer>
-                    {
-                        new()
-                        {
-                            IsEnabled = true,
-                            IsMuted = false,
-                            Name = "Starts at 30s",
-                            Time = TimeSpan.FromMinutes(1),
-                            ShowAfter = TimeSpan.FromSeconds(30),
-                            RemindAt = TimeSpan.FromSeconds(15),
-                            HideAfter = TimeSpan.FromMinutes(20),
-                            IsManualReset = false,
-                            IsInterval = true,
-                        },
-                        new()
-                        {
-                            IsEnabled = true,
-                            IsMuted = false,
-                            Name = "Expires at 30s",
-                            Time = TimeSpan.FromMinutes(1),
-                            HideAfter = TimeSpan.FromSeconds(30),
-                            IsManualReset = false,
-                            IsInterval = true,
-                        },
-                        new()
-                        {
-                            IsEnabled = true,
-                            IsMuted = false,
-                            Name = "Manual Reset",
-                            Time = TimeSpan.FromSeconds(20),
-                            RemindAt = TimeSpan.FromSeconds(15),
-                            HideAfter = TimeSpan.FromMinutes(20),
-                            IsManualReset = true,
-                            IsInterval = false
-                        },
-                    }
-                },
-            ],
-            Volume = 50,
             Mode = TimeMode.Auto,
-            DemoMuted = true
+            Profiles = new List<Profile>()
+            {
+                new Profile()
+                {
+                    Name = "Default",
+                    Timers = new List<DotaTimer>()
+                    {
+
+                    }
+                }
+            }
+        };
+
+        DefaultTimers = new List<DotaTimer>()
+        {
+            new DotaTimer()
+            {
+                Name = "Roshan",
+                Time = TimeSpan.FromMinutes(1),
+                IsEnabled = true,
+                IsInterval = true,
+                IsMuted = false,
+                IsManualReset = true,
+                RemindAt = null,
+                StartAfter = null,
+                StopAfter = null
+            }
         };
     }
 }

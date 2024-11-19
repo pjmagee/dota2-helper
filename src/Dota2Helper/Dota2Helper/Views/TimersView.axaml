@@ -6,14 +6,11 @@
              d:DesignHeight="300"
              d:DesignWidth="280"
              x:Class="Dota2Helper.Views.TimersView"
-             d:DataContext="{x:Type vm:TimersViewModel}"
+             d:DataContext="{d:DesignInstance design:DesignTimersViewModel, IsDesignTimeCreatable=True}"
              xmlns:icons="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
              xmlns:vm="clr-namespace:Dota2Helper.ViewModels"
              xmlns:design="clr-namespace:Dota2Helper.Design"
              x:DataType="vm:TimersViewModel">
-    <Design.DataContext>
-        <design:DesignTimersViewModel />
-    </Design.DataContext>
     <StackPanel Orientation="Vertical" Margin="2" Spacing="5">
         <!-- Setting and Game time -->
         <Grid>
@@ -51,15 +48,17 @@
             </Button>
         </Grid>
 
-        <DataGrid Opacity="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Opacity}"
-                  IsReadOnly="True"
-                  HeadersVisibility="None"
-                  RowHeight="22"
-                  CanUserReorderColumns="False"
-                  CanUserResizeColumns="False"
-                  CanUserSortColumns="False"
-                  GridLinesVisibility="Horizontal"
-                  ItemsSource="{Binding SettingsViewModel.SelectedProfileViewModel.Timers}">
+        <DataGrid x:Name="TimersGrid"
+            Opacity="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Opacity}"
+            IsReadOnly="True"
+            HeadersVisibility="None"
+            RowHeight="22"
+            Initialized="TimersGrid_OnInitialized"
+            CanUserReorderColumns="False"
+            CanUserResizeColumns="False"
+            CanUserSortColumns="False"
+            GridLinesVisibility="Horizontal"
+            ItemsSource="{Binding Timers}">
             <DataGrid.Resources>
                 <!-- Could not find a way to make row not hit test while maintain button hit test -->
                 <SolidColorBrush x:Key="DataGridRowSelectedBackgroundBrush" Color="Transparent" />
@@ -69,16 +68,21 @@
                 <SolidColorBrush x:Key="DataGridRowHoveredBackgroundColor" Color="Transparent" />
             </DataGrid.Resources>
             <DataGrid.Styles>
-                <Style Selector="DataGridRow">
-                    <Setter Property="IsVisible" Value="{Binding (vm:DotaTimerViewModel).IsVisible, Mode=OneWay}" />
-                </Style>
                 <!-- <Style Selector="DataGridRow"> -->
-                <!--     <Setter Property="IsHitTestVisible" Value="False" /> -->
+                <!--     <Setter Property="IsVisible" Value="{Binding IsVisible, DataType=vm:DotaTimerViewModel}" /> -->
+                <!-- </Style> -->
+                <!-- <Style Selector="DataGridRow.visible"> -->
+                <!--     <Setter Property="IsVisible" Value="True" /> -->
+                <!-- </Style> -->
+                <!-- <Style Selector="DataGridRow.hidden"> -->
+                <!--     <Setter Property="IsVisible" Value="False" /> -->
+                <!-- </Style> -->
+                <!-- <Style Selector="DataGridRow"> -->
+                <!--     <Setter Property="IsVisible" Value="False" /> -->
                 <!-- </Style> -->
                 <!-- <Style Selector="DataGridRow Button"> -->
                 <!--     <Setter Property="IsHitTestVisible" Value="True" /> -->
                 <!-- </Style> -->
-                <!-- make button in cell hit test visible -->
             </DataGrid.Styles>
             <DataGrid.Columns>
                 <DataGridTextColumn
@@ -100,7 +104,7 @@
                                     IsHitTestVisible="True"
                                     x:Name="Reset"
                                     Command="{Binding ResetCommand}"
-                                    IsVisible="{Binding IsResetRequired}">
+                                    IsVisible="{Binding IsManualReset}">
                                 <Button.Content>
                                     <icons:SymbolIcon Symbol="Timer" />
                                 </Button.Content>

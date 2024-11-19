@@ -15,9 +15,9 @@ public class ProfileService
     readonly SettingsService _settingsService;
     readonly ViewModelFactory _factory;
 
-    ProfileViewModel _selectedProfileViewModel;
+    ProfileViewModel? _selectedProfileViewModel;
 
-    public ProfileViewModel SelectedProfileViewModel
+    public ProfileViewModel? SelectedProfileViewModel
     {
         get => _selectedProfileViewModel;
         set => _selectedProfileViewModel = value;
@@ -41,9 +41,11 @@ public class ProfileService
         {
             foreach (var profile in _settingsService.Settings.Profiles.ToList())
             {
-                Profiles.Add(factory.Create(profile));
+                Profiles.Add(_factory.Create(profile));
             }
         }
+
+        SelectedProfileViewModel = Profiles[_settingsService.Settings.SelectedProfileIdx];
     }
 
     void SaveConfiguration(object? sender, NotifyCollectionChangedEventArgs e)
@@ -61,6 +63,12 @@ public class ProfileService
             {
                 item.PropertyChanged += SaveConfiguration;
                 item.Timers.CollectionChanged += SaveConfiguration;
+
+                foreach(var timer in item.Timers)
+                {
+                    timer.PropertyChanged -= SaveConfiguration;
+                    timer.PropertyChanged += SaveConfiguration;
+                }
             }
         }
         else if (e.Action == NotifyCollectionChangedAction.Remove)
@@ -69,6 +77,11 @@ public class ProfileService
             {
                 item.PropertyChanged -= SaveConfiguration;
                 item.Timers.CollectionChanged -= SaveConfiguration;
+
+                foreach(var timer in item.Timers)
+                {
+                    timer.PropertyChanged -= SaveConfiguration;
+                }
             }
         }
     }
@@ -97,8 +110,8 @@ public class ProfileService
                         AudioFile = y.AudioFile,
                         Time = y.Time,
                         RemindAt = y.RemindAt,
-                        HideAfter = y.HideAfter,
-                        ShowAfter = y.ShowAfter
+                        StopAfter = y.StopsAfter,
+                        StartAfter = y.StartsAfter
                     }
                 ).ToList()
             }
@@ -112,15 +125,14 @@ public class ProfileService
     readonly HashSet<string> _ignoredProperties =
     [
         nameof(DotaTimerViewModel.TimeRemaining),
-        nameof(DotaTimerViewModel.IsAlerting),
-        nameof(DotaTimerViewModel.IsExpired),
+        nameof(DotaTimerViewModel.IsAlertable),
+        nameof(DotaTimerViewModel.IsStopped),
+        nameof(DotaTimerViewModel.IsStarted),
         nameof(DotaTimerViewModel.IsVisible),
         nameof(DotaTimerViewModel.IsSoundPlayed),
         nameof(DotaTimerViewModel.IsManualTimerReset),
         nameof(DotaTimerViewModel.IsResetRequired)
     ];
-
-
 
 
     public void DefaultTimers()

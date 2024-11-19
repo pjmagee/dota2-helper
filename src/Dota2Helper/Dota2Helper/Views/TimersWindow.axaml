@@ -21,9 +21,7 @@
         PointerPressed="InputElement_OnPointerPressed"
         PointerReleased="InputElement_OnPointerReleased"
         SystemDecorations="None"
+        d:DataContext="{d:DesignInstance design:DesignTimersViewModel, IsDesignTimeCreatable=True}"
         CornerRadius="15">
-    <Design.DataContext>
-        <design:DesignTimersViewModel />
-    </Design.DataContext>
     <views:TimersView Opacity="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Opacity}" />
 </Window>

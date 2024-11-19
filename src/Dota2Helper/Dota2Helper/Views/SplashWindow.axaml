@@ -1,7 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         WindowStartupLocation="CenterScreen"
         xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
         xmlns:ie="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
@@ -11,6 +10,7 @@
         x:Class="Dota2Helper.Views.SplashWindow"
         Title="SplashScreen"
         Icon="/Assets/d2helper.ico"
+        d:DataContext="{d:DesignInstance vm:SplashScreenViewModel, IsDesignTimeCreatable=True}"
         Width="800" Height="402"
         x:DataType="vm:SplashScreenViewModel">
     <Border BorderBrush="Black" BorderThickness="2">
