@@ -26,16 +26,7 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
     readonly ITimer? _timer;
     TimeSpan _time;
 
-    // public SettingsViewModel SettingsViewModel => _settingsViewModel;
-
-    // Cache
-    // public ObservableCollection<DotaTimerViewModel> Timers
-    // {
-    //     get => _timers;
-    //     set => SetProperty(ref _timers, value);
-    // }
-
-    private ObservableCollection<DotaTimerViewModel> _timers;
+    ObservableCollection<DotaTimerViewModel> _timers;
 
     public ObservableCollection<DotaTimerViewModel> Timers
     {
@@ -44,7 +35,6 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
     }
 
     readonly SemaphoreSlim _semaphore = new(1, 1);
-    // ObservableCollection<DotaTimerViewModel> _timers;
 
     public TimersViewModel(SettingsViewModel settingsViewModel, ITimeProvider timeProvider)
     {
@@ -60,22 +50,7 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
             dueTime: TimeSpan.Zero,
             period: TimeSpan.FromSeconds(0.500)
         );
-
-        // _settingsViewModel.PropertyChanged += (sender, args) =>
-        // {
-        //     if (args.PropertyName == nameof(_settingsViewModel.SelectedProfileViewModel))
-        //     {
-        //         SetTimers();
-        //     }
-        // };
-        //
-        // SetTimers();
     }
-
-    // void SetTimers()
-    // {
-    //     Timers = new ObservableCollection<DotaTimerViewModel>(_settingsViewModel.SelectedProfileViewModel.Timers);
-    // }
 
     void OpenSettings()
     {

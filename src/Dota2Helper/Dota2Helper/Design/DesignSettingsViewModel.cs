@@ -12,7 +12,7 @@ public class DesignSettingsViewModel : SettingsViewModel
 
     }
 
-    public DesignSettingsViewModel() : this(new DesignSettingsService())
+    public DesignSettingsViewModel() : this(new SettingsService())
     {
 
     }

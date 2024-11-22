@@ -50,9 +50,16 @@ public class SettingsViewModel : ViewModelBase
         {
             if (SetProperty(ref _themeVariant, value))
             {
-                Application.Current!.RequestedThemeVariant = _themeVariant;
+                SetTheme(value);
             }
         }
+    }
+
+    void SetTheme(ThemeVariant variant)
+    {
+        Application.Current!.RequestedThemeVariant = variant;
+        _settingsService.Settings.Theme = variant.Key.ToString()!;
+        _settingsService.SaveSettings();
     }
 
     ObservableCollection<DotaTimerViewModel> _timers;
@@ -167,11 +174,22 @@ public class SettingsViewModel : ViewModelBase
         SetModeCommand = new RelayCommand<TimerStrategy>(SetMode);
         PlayAudioCommand = new RelayCommand(PlayAudio);
         TimerModes = new ObservableCollection<TimerStrategy>(TimerStrategy.Modes);
-        SelectedProfileViewModel = _profileService.Profiles[_settingsService.Settings.SelectedProfileIdx];
 
+        SelectedProfileViewModel = _profileService.Profiles[_settingsService.Settings.SelectedProfileIdx];
+        LoadSavedTheme(_settingsService.Settings.Theme);
         _selectedTimerMode = TimerModes.FirstOrDefault(tm => _settingsService.Settings.Mode == tm.Mode) ?? TimerModes[^1];
         _volume = _settingsService.Settings.Volume;
         _demoMuted = _settingsService.Settings.DemoMuted;
+    }
+
+    void LoadSavedTheme(string settingsTheme)
+    {
+        ThemeVariant = settingsTheme switch
+        {
+            "Dark" => ThemeVariant.Dark,
+            "Light" => ThemeVariant.Light,
+            _ => ThemeVariant.Default
+        };
     }
 
     void OpenFolder()

@@ -6,11 +6,13 @@
              d:DesignHeight="300"
              d:DesignWidth="280"
              x:Class="Dota2Helper.Views.TimersView"
-             d:DataContext="{d:DesignInstance design:DesignTimersViewModel, IsDesignTimeCreatable=True}"
              xmlns:icons="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
              xmlns:vm="clr-namespace:Dota2Helper.ViewModels"
              xmlns:design="clr-namespace:Dota2Helper.Design"
              x:DataType="vm:TimersViewModel">
+    <Design.DataContext>
+        <design:DesignTimersViewModel />
+    </Design.DataContext>
     <StackPanel Orientation="Vertical" Margin="2" Spacing="5">
         <!-- Setting and Game time -->
         <Grid>

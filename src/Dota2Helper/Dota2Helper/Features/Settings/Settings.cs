@@ -20,4 +20,7 @@ public class Settings
 
     [JsonPropertyName("DemoMuted")]
     public bool DemoMuted { get; set; } = true;
+
+    [JsonPropertyName("Theme")]
+    public string Theme { get; set; } = "Light";
 }

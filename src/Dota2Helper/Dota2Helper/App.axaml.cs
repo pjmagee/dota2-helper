@@ -7,7 +7,6 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
-using Dota2Helper.Design;
 using Dota2Helper.Features.Audio;
 using Dota2Helper.Features.Gsi;
 using Dota2Helper.Features.Http;
@@ -18,6 +17,7 @@ using Dota2Helper.ViewModels;
 using Dota2Helper.Views;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using static Avalonia.Controls.Design;
 
 namespace Dota2Helper;
 
@@ -34,13 +34,12 @@ public partial class App : Application
 
     public override async void OnFrameworkInitializationCompleted()
     {
-
         var services = new ServiceCollection().AddOptions();
 
         var configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile(Avalonia.Controls.Design.IsDesignMode ? "appsettings.design.json" : "appsettings.json", optional: true, reloadOnChange: true)
-            .AddJsonFile(Avalonia.Controls.Design.IsDesignMode ? "appsettings.timers.default.design.json" : "appsettings.timers.default.json", optional: true, reloadOnChange: true)
+            .AddJsonFile(IsDesignMode ? "appsettings.design.json" : "appsettings.json", optional: false, reloadOnChange: false)
+            .AddJsonFile(IsDesignMode ? "appsettings.timers.default.design.json" : "appsettings.timers.default.json", optional: false, reloadOnChange: false)
             .Build();
 
         services
@@ -75,7 +74,7 @@ public partial class App : Application
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            var splash = new SplashWindow()
+            var splash = new SplashWindow
             {
                 DataContext = ServiceProvider.GetRequiredService<SplashScreenViewModel>(),
             };

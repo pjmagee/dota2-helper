@@ -16,9 +16,10 @@ public class SettingsService
         DefaultTimers = defaultTimers.Value;
     }
 
-    protected SettingsService()
+    public SettingsService()
     {
-
+        Settings = new Settings();
+        DefaultTimers = new List<DotaTimer>();
     }
 
     public Settings Settings { get; protected set; }
