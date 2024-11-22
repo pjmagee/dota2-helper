@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using Avalonia.Controls;
+using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 using Dota2Helper.ViewModels;
 
@@ -25,14 +26,8 @@ public partial class TimersView : UserControl
             {
                 if (descendant is DataGridRow row && row.DataContext is DotaTimerViewModel dataContext)
                 {
-                    if (dataContext.Name == item.Name)
-                    {
-                        if (row.IsVisible != item.IsVisible)
-                        {
-                            Debug.WriteLine($"Row {dataContext.Name} IsVisible changed to {item.IsVisible}");
-                            row.IsVisible = item.IsVisible;
-                        }
-                    }
+                    Debug.WriteLine($"Row {dataContext.Name} IsVisible changed to {item.IsVisible}");
+                    row.IsVisible = item.IsVisible;
                 }
             }
         }

@@ -68,9 +68,9 @@
                 <SolidColorBrush x:Key="DataGridRowHoveredBackgroundColor" Color="Transparent" />
             </DataGrid.Resources>
             <DataGrid.Styles>
-                <!-- <Style Selector="DataGridRow"> -->
-                <!--     <Setter Property="IsVisible" Value="{Binding IsVisible, DataType=vm:DotaTimerViewModel}" /> -->
-                <!-- </Style> -->
+                <Style Selector="DataGridRow">
+                    <Setter Property="IsVisible" Value="{Binding IsVisible, DataType=vm:DotaTimerViewModel}" />
+                </Style>
                 <!-- <Style Selector="DataGridRow.visible"> -->
                 <!--     <Setter Property="IsVisible" Value="True" /> -->
                 <!-- </Style> -->
