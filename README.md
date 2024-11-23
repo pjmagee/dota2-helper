@@ -68,6 +68,13 @@ Valve does not seem to have dedicated GSI documentation for Dota2, but the conce
 2. Extract the zip file to a folder.
 3. Run the `Dota2Helper.Desktop.exe`
 
+
+### Preview
+
+<video width="400" src="https://github.com/pjmagee/dota2-helper/raw/refs/heads/main/docs/preview.mp4">    
+    Your browser does not support the video tag.
+</video>
+
 ### Screenshots
 
 <details>
