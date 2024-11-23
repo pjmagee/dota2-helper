@@ -139,7 +139,7 @@ public partial class App : Application
             dota2ConfigService.TryInstall();
 
             await Task.WhenAny(
-                Task.Delay(5000),
+                Task.Delay(8000),
                 Task.Delay(Timeout.Infinite, ((SplashScreenViewModel)splash.DataContext).CancellationToken)
             );
 

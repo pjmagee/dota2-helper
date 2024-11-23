@@ -19,7 +19,7 @@
     <UserControl.Resources>
         <audio:AudioFilePathConverter x:Key="AudioFilePathConverter" />
     </UserControl.Resources>
-    <DockPanel Height="600" Margin="5">
+    <DockPanel Margin="5">
         <StackPanel
             DockPanel.Dock="Top"
             Height="550"
@@ -181,7 +181,8 @@
                                 </StackPanel>
                                 <StackPanel Orientation="Vertical" Margin="5">
                                     <ToolTip.Tip>
-                                        When the timer will play the audio file
+                                        When the timer will play the audio file.
+                                        Also used to show the timer in pre-alerting mode in the Timers window.
                                     </ToolTip.Tip>
                                     <TextBlock Text="Reminder before" VerticalAlignment="Center" />
                                     <TimePicker UseSeconds="True"
@@ -205,15 +206,21 @@
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <StackPanel Orientation="Vertical" Margin="5">
-                                        <TextBlock Text="Enabled" VerticalAlignment="Center" />
+                                        <TextBlock
+                                            ToolTip.Tip="If the timer is enabled at all. If this is not checked, the timer will not trigger or be active in the Timers window"
+                                            Text="Enabled" VerticalAlignment="Center" />
                                         <CheckBox IsChecked="{Binding SelectedTimerViewModel.IsEnabled, Mode=TwoWay}" />
                                     </StackPanel>
                                     <StackPanel Orientation="Vertical" Margin="5">
-                                        <TextBlock Text="Muted" VerticalAlignment="Center" />
+                                        <TextBlock
+                                            ToolTip.Tip="If the timer will play the audio file when it triggers"
+                                            Text="No sound" VerticalAlignment="Center" />
                                         <CheckBox IsChecked="{Binding SelectedTimerViewModel.IsMuted, Mode=TwoWay}" />
                                     </StackPanel>
                                     <StackPanel Orientation="Vertical" Margin="5">
-                                        <TextBlock Text="Interval" VerticalAlignment="Center" />
+                                        <TextBlock
+                                            ToolTip.Tip="If the timer is an interval timer, this is the time between each trigger"
+                                            Text="Interval" VerticalAlignment="Center" />
                                         <CheckBox IsChecked="{Binding SelectedTimerViewModel.IsInterval, Mode=TwoWay}" />
                                     </StackPanel>
                                     <StackPanel Orientation="Vertical" Margin="5">
@@ -268,7 +275,7 @@
                                       Width="150">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate DataType="timers:TimerStrategy">
-                                        <TextBlock Text="{Binding Name}" />
+                                        <TextBlock Text="{Binding Name}" ToolTip.Tip="{Binding ToolTip}" />
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
@@ -282,6 +289,7 @@
                             <Button Width="140" Height="30"
                                     HorizontalContentAlignment="Center"
                                     VerticalContentAlignment="Center"
+                                    ToolTip.Tip="Copy the gamestate_integration_d2helper.cfg file to the Dota 2 game folder."
                                     Padding="2"
                                     Command="{Binding InstallCommand}">
                                 <Button.Content>
@@ -316,12 +324,23 @@
                     </StackPanel>
                 </TabItem>
                 <TabItem Header="Guide">
-                    <ScrollViewer
-                        VerticalScrollBarVisibility="Visible"
-                        HorizontalScrollBarVisibility="Visible">
+                    <ScrollViewer Height="450"
+                                  VerticalScrollBarVisibility="Visible"
+                                  HorizontalScrollBarVisibility="Visible">
                         <StackPanel Orientation="Vertical"
                                     Margin="0 10"
                                     Spacing="5">
+
+                            <!-- Tooltips on settings -->
+                            <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                                <TextBlock Margin="0 5" FontSize="18" FontWeight="Bold">
+                                    Tooltips
+                                </TextBlock>
+                                <TextBlock TextWrapping="Wrap" Width="750">
+                                    Tooltips are used to provide additional information about a setting or feature.
+                                    When you hover over a setting or feature, a tooltip will appear with more information.
+                                </TextBlock>
+                            </StackPanel>
 
                             <!-- GSI -->
                             <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
@@ -341,7 +360,7 @@
                                     Configuration Installation
                                 </TextBlock>
                                 <TextBlock TextWrapping="Wrap" Width="750">
-                                    When the application is started, it will check if the GSI file is installed and automatically install it if it is not.
+                                    When the application is started, it will check for and install the gamestate_integration_d2helper.cfg file if it does not exist.
                                     You can also install it from the Integration Tab, clicking the Install GSI button will copy the necessary file to the Dota 2 game folder.
                                     To remove the file, click the Uninstall GSI button or delete the file manually.
                                     <Bold>The application will not work without this file.</Bold>
@@ -357,6 +376,18 @@
                                     To use the application, you must launch Dota2 with a custom launch option.
                                     The application will not work if Dota 2 is already running when the application is started without this option.
                                     To do this, right-click Dota 2 in your Steam library, click Properties, and add <Bold>-gamestateintegration</Bold> to the Launch Options.
+                                </TextBlock>
+                            </StackPanel>
+
+                            <!-- Profiles -->
+                            <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                                <TextBlock Margin="0 5" FontSize="18" FontWeight="Bold">
+                                    Profiles
+                                </TextBlock>
+                                <TextBlock TextWrapping="Wrap" Width="750">
+                                    Profiles are used to group timers. You can create a profile for each hero, role, or game mode.
+                                    You can add, remove, and switch profiles from the Profiles tab.
+                                    Each profile can have its own set of timers.
                                 </TextBlock>
                             </StackPanel>
 
@@ -381,6 +412,28 @@
                                     The application can play audio files when a timer triggers. You can set the audio file for each timer from the Timers tab.
                                     The application will play the audio file when the timer triggers, the default audio files are located in the audio folder.
                                     The audio files were created using Google Text-to-Speech.
+                                </TextBlock>
+                            </StackPanel>
+
+                            <!-- Manual Timers -->
+                            <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                                <TextBlock Margin="0 5" FontSize="18" FontWeight="Bold">
+                                    Manual Timers
+                                </TextBlock>
+                                <TextBlock TextWrapping="Wrap" Width="750">
+                                    Manual timers require you to reset the timer after each trigger. This is useful for timers that are not based on a set interval.
+                                    For example, Roshan or Tormentor respawn times.
+                                </TextBlock>
+                            </StackPanel>
+
+                            <!-- Show After / Expire After -->
+                            <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                                <TextBlock Margin="0 5" FontSize="18" FontWeight="Bold">
+                                    Timer Visibility
+                                </TextBlock>
+                                <TextBlock TextWrapping="Wrap" Width="750">
+                                    Timers can be set to show and hide based on the game time. This is useful for timers that are only relevant for a certain period.
+                                    For example, pulling or stacking camps becomes less meaningful after a certain time.
                                 </TextBlock>
                             </StackPanel>
 

@@ -18,10 +18,11 @@ I do not own a Mac or Linux machine to test the application, so only Windows is 
 ## Features
 
 - An optimised timers view to overlay on top of Dota 2
-- Customisable behaviour for each timer such as audio, show/hide, interval
+- Customisable behaviour for each timer such as audio, show/hide
 - Playing audio notifications for each timer
-- Dark & light modes available
+- Dark & light mode themes (dire and radiant style)
 - Manual reset for dynamic objectives (e.g. Tormentors, Roshan)
+- Profiles for additional customisation, e.g. support heroes, pos, or role. 
 - Fake timers are used when the game is not running for easy configuration
 - When the game is running, the timers will automatically start based on the game time
 - Automatic installation of the game state integration configuration into your Dota 2 folder

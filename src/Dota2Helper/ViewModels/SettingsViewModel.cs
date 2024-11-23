@@ -151,7 +151,7 @@ public class SettingsViewModel : ViewModelBase
         ThemeVariant.Light,
     ];
 
-    public string Version => GitVersionInformation.InformationalVersion;
+    public string Version => $"Version: {GitVersionInformation.MajorMinorPatch}";
 
     public SettingsViewModel(
         ProfileService profileService,

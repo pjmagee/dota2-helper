@@ -10,17 +10,34 @@
         x:Class="Dota2Helper.Views.SplashWindow"
         Title="SplashScreen"
         Icon="/Assets/d2helper.ico"
-        d:DataContext="{d:DesignInstance vm:SplashScreenViewModel, IsDesignTimeCreatable=True}"
         Width="800" Height="402"
         x:DataType="vm:SplashScreenViewModel">
+    <Design.DataContext>
+        <vm:SplashScreenViewModel />
+    </Design.DataContext>
     <Border BorderBrush="Black" BorderThickness="2">
-        <Image
-            Source="../Assets/witch_doctor.png" Stretch="Uniform">
-            <i:Interaction.Behaviors>
-                <ie:EventTriggerBehavior EventName="PointerPressed">
-                    <ie:InvokeCommandAction Command="{Binding ContinueCommand}" />
-                </ie:EventTriggerBehavior>
-            </i:Interaction.Behaviors>
-        </Image>
+        <i:Interaction.Behaviors>
+            <ie:EventTriggerBehavior EventName="PointerPressed">
+                <ie:InvokeCommandAction Command="{Binding ContinueCommand}" />
+            </ie:EventTriggerBehavior>
+        </i:Interaction.Behaviors>
+        <Canvas>
+            <Canvas.Background>
+                <ImageBrush Source="../Assets/witch_doctor.jpg" Stretch="Uniform"></ImageBrush>
+            </Canvas.Background>
+            <StackPanel Orientation="Vertical"
+                        Canvas.Bottom="10"
+                        Canvas.Left="10">
+                <TextBlock Text="DOTA is a trademark of Valve Corporation" />
+                <TextBlock Text="Click anywhere to continue" FontWeight="Light" />
+
+            </StackPanel>
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Right"
+                        Canvas.Bottom="10"
+                        Canvas.Right="10">
+                <TextBlock Text="Created by Patrick Magee" HorizontalAlignment="Right" />
+                <TextBlock Text="{Binding Version}" HorizontalAlignment="Right" />
+            </StackPanel>
+        </Canvas>
     </Border>
 </Window>
