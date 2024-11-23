@@ -6,12 +6,13 @@ using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
 using Microsoft.Win32;
+using static Avalonia.Controls.Design;
 
 namespace Dota2Helper.Features.Gsi;
 
 public partial class GsiConfigService
 {
-    string ConfigFile => Avalonia.Controls.Design.IsDesignMode ? "gamestate_integration_design.cfg" : "gamestate_integration_d2helper.cfg";
+    string ConfigFile => IsDesignMode ? "gamestate_integration_design.cfg" : "gamestate_integration_d2helper.cfg";
 
     [GeneratedRegex(@"\s*\""path\""\s*\""(.+?)\""", RegexOptions.Compiled)]
     private static partial Regex LibraryLocations();

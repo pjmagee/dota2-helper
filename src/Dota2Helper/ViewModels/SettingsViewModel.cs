@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Styling;
@@ -149,6 +150,8 @@ public class SettingsViewModel : ViewModelBase
         ThemeVariant.Dark,
         ThemeVariant.Light,
     ];
+
+    public string Version => GitVersionInformation.InformationalVersion;
 
     public SettingsViewModel(
         ProfileService profileService,

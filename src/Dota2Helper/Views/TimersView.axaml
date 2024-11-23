@@ -13,6 +13,9 @@
     <Design.DataContext>
         <design:DesignTimersViewModel />
     </Design.DataContext>
+    <!-- <UserControl.Resources> -->
+    <!--     <StaticResource x:Key="TimerColorConverter" /> -->
+    <!-- </UserControl.Resources> -->
     <StackPanel Orientation="Vertical" Margin="2" Spacing="5">
         <!-- Setting and Game time -->
         <Grid>
@@ -92,9 +95,17 @@
                 <DataGridTemplateColumn Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock x:Name="Remaining" IsHitTestVisible="False"
-                                       Text="{Binding TimeRemaining}"
-                                       HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <TextBlock x:Name="Remaining"
+                                       IsHitTestVisible="False"
+                                       Text="{Binding TimeRemaining}" Classes.alertable="{Binding IsAlertable}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock.Styles>
+                                    <Style Selector="TextBlock.alertable">
+                                        <Setter Property="Foreground" Value="Red" />
+                                        <Setter Property="FontWeight" Value="SemiBold" />
+                                    </Style>
+                                </TextBlock.Styles>
+                            </TextBlock>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

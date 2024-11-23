@@ -1,4 +1,5 @@
 using System;
+using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
 using Dota2Helper.Features.Audio;
 using Dota2Helper.Features.Settings;
@@ -186,9 +187,9 @@ public class DotaTimerViewModel : ViewModelBase
             IsVisible = CalculateIsVisible(gameTime);
 
             TimeRemaining = CalculateTimeRemaining(gameTime);
+
             IsResetRequired = CalculateIsResetRequired(gameTime);
             IsAlertable = CalculateIsAlertable(gameTime);
-
 
             if (CalculateIsSoundPlayable())
             {
@@ -205,6 +206,8 @@ public class DotaTimerViewModel : ViewModelBase
         {
             IsVisible = false;
         }
+
+
     }
 
     public TimeSpan GameTime

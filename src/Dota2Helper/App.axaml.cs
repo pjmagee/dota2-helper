@@ -36,15 +36,69 @@ public partial class App : Application
     {
         var services = new ServiceCollection().AddOptions();
 
-        var configuration = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile(IsDesignMode ? "appsettings.design.json" : "appsettings.json", optional: false, reloadOnChange: false)
-            .AddJsonFile(IsDesignMode ? "appsettings.timers.default.design.json" : "appsettings.timers.default.json", optional: false, reloadOnChange: false)
-            .Build();
+        if (IsDesignMode)
+        {
+            services
+                .Configure<Settings>(o =>
+                {
+                        o.Mode = TimeMode.Auto;
+                        o.Volume = 50;
+                        o.Theme = "Light";
+                        o.DemoMuted = true;
+                        o.SelectedProfileIdx = 0;
+                        o.Profiles = new List<Profile>
+                        {
+                            new Profile
+                            {
+                                Name = "Default",
+                                Timers = new List<DotaTimer>
+                                {
+                                    new DotaTimer
+                                    {
+                                        Name = "Roshan",
+                                        Time = TimeSpan.FromMinutes(8),
+                                        IsInterval = false,
+                                        IsManualReset = true,
+                                        IsEnabled = true,
+                                        IsMuted = false,
+                                        RemindAt = TimeSpan.FromMinutes(1),
+                                        StopAfter = TimeSpan.FromMinutes(1),
+                                        StartAfter = TimeSpan.FromMinutes(1),
+                                        AudioFile = "C:\\Users\\Public\\Music\\Sample Music\\Kalimba.mp3",
+                                    }
+                                }
+                            }
+                        };
+                })
+                .Configure<List<DotaTimer>>(o =>
+                {
+                    o.Add(new DotaTimer
+                    {
+                        Name = "Roshan",
+                        Time = TimeSpan.FromMinutes(8),
+                        IsInterval = false,
+                        IsManualReset = true,
+                        IsEnabled = true,
+                        IsMuted = false,
+                        RemindAt = TimeSpan.FromMinutes(1),
+                        StopAfter = TimeSpan.FromMinutes(1),
+                        StartAfter = TimeSpan.FromMinutes(1),
+                        AudioFile = "C:\\Users\\Public\\Music\\Sample Music\\Kalimba.mp3",
+                    });
+                });
+        }
+        else
+        {
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+                .AddJsonFile("appsettings.timers.default.json", optional: false, reloadOnChange: false)
+                .Build();
 
-        services
-            .Configure<Settings>(configuration.Bind)
-            .Configure<List<DotaTimer>>(configuration.GetSection("DefaultTimers").Bind);
+            services
+                .Configure<Settings>(configuration.Bind)
+                .Configure<List<DotaTimer>>(configuration.GetSection("DefaultTimers").Bind);
+        }
 
         services
             .AddSingleton<SettingsService>()
