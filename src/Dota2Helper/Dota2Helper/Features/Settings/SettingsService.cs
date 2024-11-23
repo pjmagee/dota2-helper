@@ -29,7 +29,15 @@ public class SettingsService
     public void SaveSettings()
     {
         var json = JsonSerializer.Serialize(Settings, _jsonOptions);
-        File.WriteAllText("appsettings.json", json);
+
+        if(Avalonia.Controls.Design.IsDesignMode)
+        {
+
+        }
+        else
+        {
+            File.WriteAllText("appsettings.json", json);
+        }
     }
 
     public void UpdateSettings(Settings updatedSettings)
