@@ -1,16 +1,18 @@
 {
   "name": "Dota2Helper",
+  "engineVersion": "v0.14.0",
   "sdk": "go",
   "dependencies": [
     {
       "name": "arc",
-      "source": "github.com/sagikazarmark/daggerverse/arc@b45dbd7448bb967aca4a538af9ce7f042abf0316"
+      "source": "github.com/sagikazarmark/daggerverse/arc@b45dbd7448bb967aca4a538af9ce7f042abf0316",
+      "pin": "b45dbd7448bb967aca4a538af9ce7f042abf0316"
     },
     {
       "name": "gh",
-      "source": "github.com/sagikazarmark/daggerverse/gh@b45dbd7448bb967aca4a538af9ce7f042abf0316"
+      "source": "github.com/sagikazarmark/daggerverse/gh@7fc77a4f8dd54d4d4c56e40517f7109e8585bcdd",
+      "pin": "7fc77a4f8dd54d4d4c56e40517f7109e8585bcdd"
     }
   ],
-  "source": "dagger",
-  "engineVersion": "v0.14.0"
+  "source": "dagger"
 }

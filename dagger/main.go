@@ -161,7 +161,7 @@ func (m *Dota2Helper) Release(
 	err = dag.Gh(ghOpts).Release().Create(ctx, tag, title, dagger.GhReleaseCreateOpts{
 		Target:        "main",
 		Files:         []*dagger.File{zip},
-		Latest:        true,
+		Latest:        dagger.GhLatestLatestAuto,
 		VerifyTag:     true,
 		Draft:         true,
 		GenerateNotes: true,
