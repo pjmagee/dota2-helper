@@ -180,8 +180,9 @@ public class DotaTimerViewModel : ViewModelBase
 
         if (IsEnabled)
         {
-            IsStopped = CalculateIsStopped(gameTime);
             IsStarted = CalculateIsStarted(gameTime);
+            IsStopped = CalculateIsStopped(gameTime);
+
             IsVisible = CalculateIsVisible(gameTime);
 
             TimeRemaining = CalculateTimeRemaining(gameTime);
@@ -283,7 +284,7 @@ public class DotaTimerViewModel : ViewModelBase
 
     bool CalculateIsVisible(TimeSpan gameTime)
     {
-        return IsEnabled && !IsStopped && IsStarted;
+        return IsEnabled && IsStarted && !IsStopped;
     }
 
     TimeSpan CalculateTimeUntilNextOccurrence(TimeSpan gameTime)

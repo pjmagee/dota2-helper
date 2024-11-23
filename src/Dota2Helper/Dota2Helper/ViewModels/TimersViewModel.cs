@@ -9,6 +9,7 @@ using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Dota2Helper.Features.Settings;
 using Dota2Helper.Features.TimeProvider;
@@ -34,7 +35,14 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
         set => SetProperty(ref _timers, value);
     }
 
+    public ObservableCollection<DotaTimerViewModel> VisibleTimers
+    {
+        get => _visibleTimers;
+        set => SetProperty(ref _visibleTimers, value);
+    }
+
     readonly SemaphoreSlim _semaphore = new(1, 1);
+    ObservableCollection<DotaTimerViewModel> _visibleTimers = new();
 
     public TimersViewModel(SettingsViewModel settingsViewModel, ITimeProvider timeProvider)
     {
@@ -68,24 +76,19 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
 
     async void UpdateTimers(object? state)
     {
-
-
         if (await _semaphore.WaitAsync(0))
         {
             try
             {
                 Timers = _settingsViewModel.SelectedProfileViewModel.Timers;
-
                 Time = _timeProvider.Time;
 
-                Dispatcher.UIThread.Invoke(() =>
-                    {
-                        foreach (var timer in Timers)
-                        {
-                            timer.Update(Time);
-                        }
-                    }
-                );
+                foreach (var timer in Timers)
+                {
+                    timer.Update(Time);
+                }
+
+                VisibleTimers = new(Timers.Where(t => t.IsVisible));
             }
             finally
             {

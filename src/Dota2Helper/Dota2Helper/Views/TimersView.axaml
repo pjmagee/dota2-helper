@@ -60,7 +60,7 @@
             CanUserResizeColumns="False"
             CanUserSortColumns="False"
             GridLinesVisibility="Horizontal"
-            ItemsSource="{Binding Timers}">
+            ItemsSource="{Binding VisibleTimers}">
             <DataGrid.Resources>
                 <!-- Could not find a way to make row not hit test while maintain button hit test -->
                 <SolidColorBrush x:Key="DataGridRowSelectedBackgroundBrush" Color="Transparent" />
@@ -70,9 +70,9 @@
                 <SolidColorBrush x:Key="DataGridRowHoveredBackgroundColor" Color="Transparent" />
             </DataGrid.Resources>
             <DataGrid.Styles>
-                <Style Selector="DataGridRow">
-                    <Setter Property="IsVisible" Value="{Binding IsVisible, DataType=vm:DotaTimerViewModel}" />
-                </Style>
+                <!-- <Style Selector="DataGridRow"> -->
+                <!--     <Setter Property="IsVisible" Value="{Binding IsVisible, DataType=vm:DotaTimerViewModel}" /> -->
+                <!-- </Style> -->
                 <!-- <Style Selector="DataGridRow.visible"> -->
                 <!--     <Setter Property="IsVisible" Value="True" /> -->
                 <!-- </Style> -->

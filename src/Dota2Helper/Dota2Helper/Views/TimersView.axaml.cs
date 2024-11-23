@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using Avalonia.Controls;
 using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
@@ -19,33 +21,57 @@ public partial class TimersView : UserControl
     {
         try
         {
-            var item = (DotaTimerViewModel) sender!;
+            var item = (DotaTimerViewModel)sender!;
             var dataGrid = this.GetControl<DataGrid>("TimersGrid");
 
-            foreach (var descendant in dataGrid.GetVisualDescendants())
+            foreach (DataGridRow row in dataGrid.GetVisualDescendants().OfType<DataGridRow>())
             {
-                if (descendant is DataGridRow row && row.DataContext is DotaTimerViewModel dataContext)
+                if (row.DataContext is DotaTimerViewModel dataContext)
                 {
-                    Debug.WriteLine($"Row {dataContext.Name} IsVisible changed to {item.IsVisible}");
-                    row.IsVisible = item.IsVisible;
+                    if (dataContext == item)
+                    {
+                        row.IsVisible = item.IsVisible;
+                        row.Classes.Remove("visible");
+                        row.Classes.Remove("hidden");
+
+                        if (item.IsVisible)
+                        {
+                            row.Classes.Add("visible");
+                        }
+                        else
+                        {
+                            row.Classes.Add("hidden");
+                        }
+                    }
                 }
             }
         }
-        finally
+        catch (Exception e)
         {
-
+            Debug.WriteLine(e);
         }
     }
 
     void TimersGrid_OnInitialized(object? sender, EventArgs e)
     {
-        if (DataContext is TimersViewModel viewModel)
-        {
-            foreach (var item in viewModel.Timers)
-            {
-                item.PropertyChanged -= OnItemOnPropertyChanged;
-                item.PropertyChanged += OnItemOnPropertyChanged;
-            }
-        }
+        // if (DataContext is TimersViewModel viewModel)
+        // {
+        //     viewModel.Timers.CollectionChanged += (o, args) => { IsVisibleCalculation(args); };
+        //
+        //     foreach (var item in viewModel.Timers)
+        //     {
+        //         item.PropertyChanged -= OnItemOnPropertyChanged;
+        //         item.PropertyChanged += OnItemOnPropertyChanged;
+        //     }
+        // }
+    }
+
+    void IsVisibleCalculation(NotifyCollectionChangedEventArgs args)
+    {
+        // foreach (var item in args.NewItems!.OfType<DotaTimerViewModel>())
+        // {
+        //     item.PropertyChanged -= OnItemOnPropertyChanged;
+        //     item.PropertyChanged += OnItemOnPropertyChanged;
+        // }
     }
 }
