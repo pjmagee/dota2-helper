@@ -71,9 +71,7 @@ Valve does not seem to have dedicated GSI documentation for Dota2, but the conce
 
 ### Preview
 
-<video width="400" src="https://github.com/pjmagee/dota2-helper/raw/refs/heads/main/docs/preview.mp4">    
-    Your browser does not support the video tag.
-</video>
+https://github.com/user-attachments/assets/505a08f3-24fe-4d41-a8b3-b867670b5910
 
 ### Screenshots
 
@@ -84,6 +82,7 @@ Valve does not seem to have dedicated GSI documentation for Dota2, but the conce
 </details>
 
 <details>
+
 <summary>Timers</summary>
 
 ![timers](./docs/settings-timers.png)
