@@ -50,7 +50,8 @@ func (m *Dota2Helper) Build(
 		WithDirectory("/repo", git, opts).
 		WithWorkdir("/repo/src").
 		WithMountedCache("/root/.nuget/packages", cache).
-		WithExec([]string{"dotnet", "build"}).
+		// https://github.com/dotnet/sdk/issues/40913
+		WithExec([]string{"dotnet", "build", "Dota2Helper"}).
 		Stdout(ctx)
 }
 
