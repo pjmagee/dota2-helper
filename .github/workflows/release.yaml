@@ -22,7 +22,7 @@ jobs:
       with:
         version: "latest"
         verb: call
-        args: release --tag=${{ github.ref_name }} --token=env:GITHUB_TOKEN
+        args: release --token=env:GITHUB_TOKEN
         cloud-token: ${{ secrets.DAGGER_CLOUD_TOKEN }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
