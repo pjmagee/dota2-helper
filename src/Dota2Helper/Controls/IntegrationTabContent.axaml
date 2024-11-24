@@ -1,0 +1,119 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Dota2Helper.ViewModels"
+             xmlns:timers="clr-namespace:Dota2Helper.Features.Timers"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Dota2Helper.Controls.IntegrationTabContent"
+             x:DataType="vm:SettingsViewModel">
+    <StackPanel Margin="0 10" Orientation="Vertical">
+
+        <StackPanel Margin="5" Orientation="Vertical" Spacing="5">
+            <Grid Margin="5" RowDefinitions="*,*,*,*" ColumnDefinitions="100,Auto" VerticalAlignment="Center">
+                <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Timer Mode</Label>
+                <ComboBox Grid.Row="0" Grid.Column="1"
+                          SelectedItem="{Binding SelectedTimerMode, Mode=TwoWay}"
+                          ItemsSource="{Binding TimerModes, Mode=OneTime}"
+                          Width="150">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate DataType="timers:TimerStrategy">
+                            <TextBlock Text="{Binding Name}" ToolTip.Tip="{Binding ToolTip}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Demo Muted</Label>
+                <CheckBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding DemoMuted, Mode=TwoWay}" />
+
+            </Grid>
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" Spacing="5">
+            <TextBlock FontSize="18" FontWeight="Bold">GSI Configuration</TextBlock>
+
+            <Grid Margin="5" RowDefinitions="*,*,*,*" ColumnDefinitions="Auto,Auto" VerticalAlignment="Center">
+
+                <!-- row 0 -->
+                <Label Grid.Column="0" Grid.Row="0" VerticalAlignment="Center">
+                    Launch argument:
+                </Label>
+                <TextBlock Grid.Column="1" Grid.Row="0"
+                           VerticalAlignment="Center" IsVisible="{Binding IsLaunchArgumentPresent}" Text="Found!"
+                           Foreground="Green" />
+                <TextBlock Grid.Column="1" Grid.Row="0"
+                           VerticalAlignment="Center" IsVisible="{Binding !IsLaunchArgumentPresent}" Text="Missing!"
+                           Foreground="Red" />
+
+                <!-- row 1 -->
+                <Label Grid.Column="0" Grid.Row="1" VerticalAlignment="Center">
+                    Connection:
+                </Label>
+                <TextBlock Grid.Column="1" Grid.Row="1"
+                           VerticalAlignment="Center" IsVisible="{Binding IsListening}" Text="Listening" Foreground="Green" />
+                <TextBlock Grid.Column="1" Grid.Row="1"
+                           VerticalAlignment="Center" IsVisible="{Binding !IsListening}" Text="Not Listening" Foreground="Red" />
+
+                <!-- row 2 -->
+                <Label Grid.Column="0" Grid.Row="2" VerticalAlignment="Center">
+                    Last game update:
+                </Label>
+                <TextBlock Grid.Column="1" Grid.Row="2"
+                           VerticalAlignment="Center" IsVisible="{Binding LatestUpdateTime, Converter={x:Static ObjectConverters.IsNull}}"
+                           Text="Waiting..." />
+                <TextBlock Grid.Column="1" Grid.Row="2"
+                           VerticalAlignment="Center"
+                           IsVisible="{Binding LatestUpdateTime, Converter={x:Static ObjectConverters.IsNotNull}}"
+                           Text="{Binding LatestUpdateTime}" />
+
+                <!-- row 3: The URI its listening on -->
+                <Label Grid.Column="0" Grid.Row="3" VerticalAlignment="Center">
+                    Listening on:
+                </Label>
+                <TextBlock Grid.Column="1" Grid.Row="3"
+                           VerticalAlignment="Center"
+                           Text="{Binding GsiUri}" />
+
+
+
+            </Grid>
+
+            <StackPanel Margin="5" Orientation="Vertical" Spacing="5">
+                <Button Width="140" Height="30"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        ToolTip.Tip="Copy the gamestate_integration_d2helper.cfg file to the Dota 2 game folder."
+                        Padding="2"
+                        Command="{Binding InstallCommand}">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal" Spacing="2">
+                            <TextBlock Text="Install GSI" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+                <Button Width="140" Height="30"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Padding="2"
+                        Command="{Binding OpenFolderCommand}">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal" Spacing="2">
+                            <TextBlock Text="Open Folder" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+                <Button Width="140" Height="30"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Padding="2"
+                        Command="{Binding InstallCommand}">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal" Spacing="2">
+                            <TextBlock Text="Uninstall GSI" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+        </StackPanel>
+
+    </StackPanel>
+</UserControl>

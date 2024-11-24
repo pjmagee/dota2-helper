@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "DefaultTimers": {
+      "type": "array",
+      "description": "The list of default timers.",
+      "items": {
+         "type": "object",
+         "$ref": "./timer.schema.json"
+      }
+    }
+  }
+}

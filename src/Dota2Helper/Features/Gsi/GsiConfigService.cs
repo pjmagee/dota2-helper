@@ -1,11 +1,13 @@
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
 using Microsoft.Win32;
+using ValveKeyValue;
 using static Avalonia.Controls.Design;
 
 namespace Dota2Helper.Features.Gsi;
@@ -13,6 +15,47 @@ namespace Dota2Helper.Features.Gsi;
 public partial class GsiConfigService
 {
     string ConfigFile => IsDesignMode ? "gamestate_integration_design.cfg" : "gamestate_integration_d2helper.cfg";
+
+    public bool IsLaunchArgumentPresent()
+    {
+        var steamInstallationPath = GetSteamInstallationPath();
+        if (steamInstallationPath == null) return false;
+
+        var localConfigPath = Path.Combine(steamInstallationPath, "userdata");
+        var configs = Directory.EnumerateFileSystemEntries(localConfigPath, "localconfig.vdf", SearchOption.AllDirectories);
+
+        foreach (var config in configs)
+        {
+            try
+            {
+                using (var stream = File.Open(config, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {
+                    var kv = KVSerializer.Create(KVSerializationFormat.KeyValues1Text);
+                    var localconfig = kv.Deserialize(stream, new KVSerializerOptions()
+                        {
+                            HasEscapeSequences = true,
+                            EnableValveNullByteBugBehavior = true
+                        }
+                    );
+
+                    var launchOptions = localconfig["Software"]["Valve"]["Steam"]["apps"]["570"]["LaunchOptions"].ToString();
+
+                    if (launchOptions.Contains("-gamestateintegration"))
+                    {
+                        return true;
+                    }
+
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+            }
+        }
+
+        return false;
+    }
+
 
     [GeneratedRegex(@"\s*\""path\""\s*\""(.+?)\""", RegexOptions.Compiled)]
     private static partial Regex LibraryLocations();

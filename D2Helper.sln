@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F4C18836-BA5F-4A8F-8C9F-A5EA46CFFDED}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dota2Helper", "src\Dota2Helper\Dota2Helper.csproj", "{D44EF4AF-01AA-48C1-8057-8A2F5880FDE4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dota2Helper.Desktop", "src\Dota2Helper.Desktop\Dota2Helper.Desktop.csproj", "{6BD90C02-5ED5-48C8-8FF3-D06058C8DD08}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dota2Helper.Tests", "src\Dota2Helper.Tests\Dota2Helper.Tests.csproj", "{410882A5-4754-4FAE-89C0-B96579EEDFEF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D44EF4AF-01AA-48C1-8057-8A2F5880FDE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D44EF4AF-01AA-48C1-8057-8A2F5880FDE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D44EF4AF-01AA-48C1-8057-8A2F5880FDE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D44EF4AF-01AA-48C1-8057-8A2F5880FDE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BD90C02-5ED5-48C8-8FF3-D06058C8DD08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BD90C02-5ED5-48C8-8FF3-D06058C8DD08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BD90C02-5ED5-48C8-8FF3-D06058C8DD08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BD90C02-5ED5-48C8-8FF3-D06058C8DD08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{410882A5-4754-4FAE-89C0-B96579EEDFEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{410882A5-4754-4FAE-89C0-B96579EEDFEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{410882A5-4754-4FAE-89C0-B96579EEDFEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{410882A5-4754-4FAE-89C0-B96579EEDFEF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D44EF4AF-01AA-48C1-8057-8A2F5880FDE4} = {F4C18836-BA5F-4A8F-8C9F-A5EA46CFFDED}
+		{6BD90C02-5ED5-48C8-8FF3-D06058C8DD08} = {F4C18836-BA5F-4A8F-8C9F-A5EA46CFFDED}
+		{410882A5-4754-4FAE-89C0-B96579EEDFEF} = {F4C18836-BA5F-4A8F-8C9F-A5EA46CFFDED}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3E52862B-D75C-4986-8E04-407B092C1187}
+	EndGlobalSection
+EndGlobal

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Platform;
 using Avalonia.Styling;
 using CommunityToolkit.Mvvm.Input;
 using Dota2Helper.Features.Audio;
@@ -28,8 +30,6 @@ public class SettingsViewModel : ViewModelBase
     int _selectedProfileIndex;
 
     DotaTimerViewModel? _selectedTimerViewModel;
-
-    // ProfileViewModel _selectedProfileViewModel;
     TimerStrategy? _selectedTimerMode;
     ThemeVariant _themeVariant = ThemeVariant.Default;
 
@@ -37,7 +37,8 @@ public class SettingsViewModel : ViewModelBase
     public ObservableCollection<TimerStrategy> TimerModes { get; set; }
     public IRelayCommand<DotaTimerViewModel> DeleteTimerCommand { get; }
     public IRelayCommand<ProfileViewModel> DeleteProfileCommand { get; }
-    public IRelayCommand<SettingsView> SelectFileCommand { get; }
+
+    public IRelayCommand SelectFileCommand { get; }
     public IRelayCommand InstallCommand { get; }
     public IRelayCommand UninstallCommand { get; }
     public IRelayCommand OpenFolderCommand { get; set; }
@@ -56,6 +57,23 @@ public class SettingsViewModel : ViewModelBase
         }
     }
 
+    public bool IsLaunchArgumentPresent
+    {
+        get => _gsiConfigService.IsLaunchArgumentPresent();
+    }
+
+    public bool IsListening
+    {
+        get => _isListening;
+        set => SetProperty(ref _isListening, value);
+    }
+
+    public DateTime? LatestUpdateTime
+    {
+        get => _latestUpdateTime;
+        set => SetProperty(ref _latestUpdateTime, value);
+    }
+
     void SetTheme(ThemeVariant variant)
     {
         Application.Current!.RequestedThemeVariant = variant;
@@ -72,6 +90,8 @@ public class SettingsViewModel : ViewModelBase
     }
 
     private ProfileViewModel? _selectedProfileViewModel;
+    bool _isListening;
+    DateTime? _latestUpdateTime;
 
     public ProfileViewModel? SelectedProfileViewModel
     {
@@ -136,10 +156,13 @@ public class SettingsViewModel : ViewModelBase
         get => _selectedProfileIndex;
         set
         {
-            if (SetProperty(ref _selectedProfileIndex, value))
+            if(value >= 0 || value >= _profileService.Profiles.Count - 1)
             {
-                _settingsService.Settings.SelectedProfileIdx = value;
-                _settingsService.UpdateSettings(_settingsService.Settings);
+                if (SetProperty(ref _selectedProfileIndex, value))
+                {
+                    _settingsService.Settings.SelectedProfileIdx = value;
+                    _settingsService.UpdateSettings(_settingsService.Settings);
+                }
             }
         }
     }
@@ -152,6 +175,7 @@ public class SettingsViewModel : ViewModelBase
     ];
 
     public string Version => $"Version: {GitVersionInformation.MajorMinorPatch}";
+    public string GsiUri => _gsiConfigService.GetUri().ToString();
 
     public SettingsViewModel(
         ProfileService profileService,
@@ -170,7 +194,7 @@ public class SettingsViewModel : ViewModelBase
 
         DeleteTimerCommand = new RelayCommand<DotaTimerViewModel>(DeleteTimer);
         DeleteProfileCommand = new RelayCommand<ProfileViewModel>(DeleteProfile);
-        SelectFileCommand = new RelayCommand<SettingsView>(SelectFile);
+        SelectFileCommand = new RelayCommand(SelectFile);
         InstallCommand = new RelayCommand(Install);
         UninstallCommand = new RelayCommand(Uninstall);
         OpenFolderCommand = new RelayCommand(OpenFolder);
@@ -221,19 +245,17 @@ public class SettingsViewModel : ViewModelBase
 
     void Uninstall() => _gsiConfigService.Uninstall();
 
-    async void SelectFile(SettingsView? view)
+    async void SelectFile()
     {
         try
         {
-            if (view is not null)
-            {
-                var topLevel = TopLevel.GetTopLevel(view)!;
-                var files = await topLevel.StorageProvider.OpenFilePickerAsync(new AudioFilePickerOptions());
+            var desktop = App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+            var topLevel = TopLevel.GetTopLevel(desktop.MainWindow);
+            var files = await topLevel.StorageProvider.OpenFilePickerAsync(new AudioFilePickerOptions());
 
-                if (files.Count == 1)
-                {
-                    SelectedTimerViewModel!.AudioFile = files[0].Path.ToString();
-                }
+            if (files.Count == 1)
+            {
+                SelectedTimerViewModel!.AudioFile = files[0].Path.ToString();
             }
         }
         catch (Exception)

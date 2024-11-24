@@ -1,0 +1,60 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:vm="clr-namespace:Dota2Helper.ViewModels"
+             xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
+             x:Class="Dota2Helper.Controls.ProfilesTabContent"
+             x:DataType="vm:SettingsViewModel">
+    <StackPanel Orientation="Vertical" Margin="0 10" Spacing="5">
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <DataGrid ItemsSource="{Binding Profiles, Mode=TwoWay}"
+                      GridLinesVisibility="All"
+                      Width="400"
+                      BorderBrush="Black"
+                      CanUserSortColumns="True"
+                      BorderThickness="0.5"
+                      MaxHeight="400"
+                      SelectedItem="{Binding SelectedProfileViewModel, Mode=TwoWay}"
+                      SelectedIndex="{Binding SelectedProfileIndex, Mode=TwoWay}"
+                      SelectionMode="Single"
+                      HorizontalScrollBarVisibility="Auto">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="200" />
+                    <DataGridTextColumn Header="Timers" Binding="{Binding Timers.Count}" />
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Width="30" Height="30"
+                                        HorizontalContentAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        Padding="2"
+                                        Command="{Binding $parent[DataGrid].((vm:SettingsViewModel)DataContext).DeleteProfileCommand}"
+                                        CommandParameter="{Binding}">
+                                    <Button.Content>
+                                        <avalonia:SymbolIcon Symbol="Delete" />
+                                    </Button.Content>
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <Button Width="120" Height="30"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Padding="2"
+                    Command="{Binding AddProfile}">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal" Spacing="2">
+                        <avalonia:SymbolIcon Symbol="Add" />
+                        <TextBlock Text="Add profile" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

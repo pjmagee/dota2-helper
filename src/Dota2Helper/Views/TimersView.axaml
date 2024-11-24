@@ -53,12 +53,11 @@
             </Button>
         </Grid>
 
-        <DataGrid x:Name="TimersGrid"
+        <DataGrid
             Opacity="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Opacity}"
             IsReadOnly="True"
             HeadersVisibility="None"
             RowHeight="22"
-            Initialized="TimersGrid_OnInitialized"
             CanUserReorderColumns="False"
             CanUserResizeColumns="False"
             CanUserSortColumns="False"

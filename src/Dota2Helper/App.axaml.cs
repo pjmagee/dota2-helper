@@ -64,7 +64,7 @@ public partial class App : Application
                                         RemindAt = TimeSpan.FromMinutes(1),
                                         StopAfter = TimeSpan.FromMinutes(1),
                                         StartAfter = TimeSpan.FromMinutes(1),
-                                        AudioFile = "C:\\Users\\Public\\Music\\Sample Music\\Kalimba.mp3",
+                                        AudioFile = null,
                                     }
                                 }
                             }
@@ -83,7 +83,7 @@ public partial class App : Application
                         RemindAt = TimeSpan.FromMinutes(1),
                         StopAfter = TimeSpan.FromMinutes(1),
                         StartAfter = TimeSpan.FromMinutes(1),
-                        AudioFile = "C:\\Users\\Public\\Music\\Sample Music\\Kalimba.mp3",
+                        AudioFile = null,
                     });
                 });
         }

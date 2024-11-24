@@ -37,9 +37,10 @@ type GitVersion struct {
 	WeightedPreReleaseNumber  int    `json:"WeightedPreReleaseNumber"`
 }
 
+// Build the project
 func (m *Dota2Helper) Build(
 	ctx context.Context,
-// +defaultPath="."
+	// +defaultPath="."
 	git *dagger.Directory) (string, error) {
 
 	cache := dag.CacheVolume("nuget-cache")
@@ -55,9 +56,10 @@ func (m *Dota2Helper) Build(
 		Stdout(ctx)
 }
 
+// Get the semver details of the current git repository
 func (m *Dota2Helper) GitVersion(
 	ctx context.Context,
-// +defaultPath="."
+	// +defaultPath="."
 	git *dagger.Directory) (GitVersion, error) {
 
 	version, err := dag.Container().
@@ -80,9 +82,10 @@ func (m *Dota2Helper) GitVersion(
 	return gitVersion, nil
 }
 
+// Publish the project in release mode
 func (m *Dota2Helper) PublishWindows(
 	ctx context.Context,
-// +defaultPath="."
+	// +defaultPath="."
 	git *dagger.Directory,
 	version string) *dagger.Container {
 
@@ -113,9 +116,10 @@ func (m *Dota2Helper) PublishWindows(
 		})
 }
 
+// Zip the published files
 func (m *Dota2Helper) Zip(
 	ctx context.Context,
-// +defaultPath="."
+	// +defaultPath="."
 	git *dagger.Directory) (*dagger.File, error) {
 
 	gitVersion, err := m.GitVersion(ctx, git)
@@ -136,9 +140,10 @@ func (m *Dota2Helper) Zip(
 	return zip, nil
 }
 
+// Create a release on github
 func (m *Dota2Helper) Release(
 	ctx context.Context,
-// +defaultPath="/"
+	// +defaultPath="/"
 	git *dagger.Directory,
 	token *dagger.Secret) error {
 
@@ -172,4 +177,73 @@ func (m *Dota2Helper) Release(
 	}
 
 	return nil
+}
+
+func (m *Dota2Helper) CreateAudioAssets(
+	ctx context.Context,
+	// +defaultPath="."
+	git *dagger.Directory,
+	secret *dagger.Secret) *dagger.Directory {
+
+	// list of tts strings to convert to audio
+	list := []string{
+		"Pull",
+		"Stack",
+		"Bounty",
+		"Power rune",
+		"Lotus Pool",
+		"Wisdom rune",
+		"Radiant Tormentor",
+		"Dire Tormentor",
+		"Roshan",
+		"Tier 1s",
+		"Tier 2s",
+		"Tier 3s",
+		"Tier 4s",
+		"Tier 5s",
+	}
+
+	// loop and create audio files
+	assets := dag.Directory()
+	for _, text := range list {
+		audio, err := m.CreateTextToSpeech(ctx, secret, text)
+		fileName := fmt.Sprintf("%s.mp3", text)
+		if err != nil {
+			panic(err)
+		}
+		assets = assets.WithFile(fileName, audio)
+	}
+
+	return assets
+}
+
+// Create a text to speech audio file from the given text
+func (m *Dota2Helper) CreateTextToSpeech(
+	ctx context.Context,
+	secret *dagger.Secret,
+	text string) (*dagger.File, error) {
+
+	payload := fmt.Sprintf(`{
+		"model": "tts-1-hd",
+		"input": "%s",
+		"voice": "nova"
+	}`, text)
+
+	ctr, err := dag.Container().
+		From("curlimages/curl:latest").
+		WithSecretVariable("OPEN_AI_API_KEY", secret).
+		WithExec([]string{
+			"sh", "-c",
+			fmt.Sprintf(`curl https://api.openai.com/v1/audio/speech \
+            -H "Authorization: Bearer $OPEN_AI_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d '%s' \
+            --output speech.mp3`, payload),
+		}).Sync(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return ctr.File("speech.mp3"), err
 }

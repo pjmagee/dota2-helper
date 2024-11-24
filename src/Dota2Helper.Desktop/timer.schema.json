@@ -1,0 +1,83 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "The schema for a timer.",
+  "properties": {
+    "Name": {
+      "type": "string",
+      "description": "The name of the entity."
+    },
+    "IsEnabled": {
+      "type": "boolean",
+      "description": "Indicates if the feature is enabled."
+    },
+    "IsManualReset": {
+      "type": "boolean",
+      "description": "Indicates if the reset is manual."
+    },
+    "IsMuted": {
+      "type": "boolean",
+      "description": "Indicates if the audio is muted."
+    },
+    "IsInterval": {
+      "type": "boolean",
+      "description": "Indicates if the timer is interval-based."
+    },
+    "AudioFile": {
+      "type": "string",       
+      "pattern": "^(?:file:\\/\\/[^\\s]+|\\.\\/[^\\s]+|\\/[^\\s]+|[a-zA-Z]:[\\\\\\/][^\\s]+)(?:[^\\s\\/\\:*?\"<>|]+\\s?)*[^\\s\\/\\:*?\"<>|]+\\.(?:mp3|wav)$",
+      "description": "The audio file to play."
+    },
+    "Time": {
+      "type": "string",
+      "pattern": "^\\d{2}:\\d{2}:\\d{2}$",
+      "description": "The time duration in HH:MM:SS format."
+    },
+    "RemindAt": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^\\d{2}:\\d{2}:\\d{2}$"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "The time before the event to remind in HH:MM:SS format or null."
+    },
+    "StopAfter": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^\\d{2}:\\d{2}:\\d{2}$"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "The duration after which the event stops in HH:MM:SS format or null."
+    },
+    "StartAfter": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^\\d{2}:\\d{2}:\\d{2}$"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "The duration after which the event starts in HH:MM:SS format or null."
+    }
+  },
+  "required": [
+    "Name",
+    "IsEnabled",
+    "IsManualReset",
+    "IsMuted",
+    "IsInterval",
+    "AudioFile",
+    "Time"
+  ],
+  "additionalProperties": false
+}

@@ -46,6 +46,7 @@ public class LocalListener : BackgroundWorker
         {
             _listener.Stop();
             _listener.Close();
+            _settingsViewModel.IsListening = false;
 
             CreateAndStartListener();
         }
@@ -75,11 +76,15 @@ public class LocalListener : BackgroundWorker
             {
                 if (_listener is not null && _listener.IsListening)
                 {
+                    _settingsViewModel.IsListening = true;
+
                     var context = _listener.GetContext();
                     var gameState = JsonSerializer.Deserialize<GameState>(context.Request.InputStream)!;
                     _realProvider.Time = gameState.GameTime();
                     context.Response.StatusCode = (int)HttpStatusCode.OK;
                     context.Response.Close();
+
+                    _settingsViewModel.LatestUpdateTime = DateTime.Now;
                 }
             }
             catch (Exception e)

@@ -41,7 +41,8 @@ public class ProfileService
         {
             foreach (var profile in _settingsService.Settings.Profiles.ToList())
             {
-                Profiles.Add(_factory.Create(profile));
+                var profileViewModel = _factory.Create(profile);
+                Profiles.Add(profileViewModel);
             }
         }
 
@@ -61,28 +62,38 @@ public class ProfileService
         {
             foreach (ProfileViewModel item in e.NewItems ?? Array.Empty<ProfileViewModel>())
             {
-                item.PropertyChanged += SaveConfiguration;
-                item.Timers.CollectionChanged += SaveConfiguration;
-
-                foreach(var timer in item.Timers)
-                {
-                    timer.PropertyChanged -= SaveConfiguration;
-                    timer.PropertyChanged += SaveConfiguration;
-                }
+                RegisterProfile(item);
             }
         }
         else if (e.Action == NotifyCollectionChangedAction.Remove)
         {
             foreach (ProfileViewModel item in e.OldItems ?? Array.Empty<ProfileViewModel>())
             {
-                item.PropertyChanged -= SaveConfiguration;
-                item.Timers.CollectionChanged -= SaveConfiguration;
-
-                foreach(var timer in item.Timers)
-                {
-                    timer.PropertyChanged -= SaveConfiguration;
-                }
+                UnregisterProfile(item);
             }
+        }
+    }
+
+    void UnregisterProfile(ProfileViewModel item)
+    {
+        item.PropertyChanged -= SaveConfiguration;
+        item.Timers.CollectionChanged -= SaveConfiguration;
+
+        foreach(var timer in item.Timers)
+        {
+            timer.PropertyChanged -= SaveConfiguration;
+        }
+    }
+
+    void RegisterProfile(ProfileViewModel item)
+    {
+        item.PropertyChanged += SaveConfiguration;
+        item.Timers.CollectionChanged += SaveConfiguration;
+
+        foreach(var timer in item.Timers)
+        {
+            timer.PropertyChanged -= SaveConfiguration;
+            timer.PropertyChanged += SaveConfiguration;
         }
     }
 
@@ -91,6 +102,10 @@ public class ProfileService
         if (sender is DotaTimerViewModel timer && !string.IsNullOrWhiteSpace(e.PropertyName))
         {
             if (_ignoredProperties.Contains(e.PropertyName)) return;
+            SaveConfiguration();
+        }
+        else if (sender is ProfileViewModel profile && !string.IsNullOrWhiteSpace(e.PropertyName))
+        {
             SaveConfiguration();
         }
     }

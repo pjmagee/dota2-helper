@@ -1,0 +1,174 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
+             xmlns:viewModels="clr-namespace:Dota2Helper.ViewModels"
+             xmlns:audio="clr-namespace:Dota2Helper.Features.Audio"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Dota2Helper.Controls.TimersTabContent"
+             x:DataType="viewModels:SettingsViewModel">
+    <TemplatedControl.Resources>
+        <audio:AudioFilePathConverter x:Key="AudioFilePathConverter" />
+    </TemplatedControl.Resources>
+    <StackPanel Orientation="Vertical" Margin="0 10" Spacing="5">
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <DataGrid x:Name="DataGrid"
+                      ItemsSource="{Binding Timers}"
+                      GridLinesVisibility="All"
+                      BorderBrush="Black"
+                      CanUserSortColumns="True"
+                      BorderThickness="0.5"
+                      MaxHeight="400"
+                      SelectedItem="{Binding SelectedTimerViewModel}"
+                      SelectionMode="Single"
+                      HorizontalScrollBarVisibility="Auto">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
+                    <DataGridTemplateColumn Header="Time">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TimePicker UseSeconds="True" SelectedTime="{Binding Time}">
+                                    <TimePicker.Resources>
+                                        <x:Double x:Key="TimePickerThemeMinWidth">120</x:Double>
+                                    </TimePicker.Resources>
+                                </TimePicker>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridCheckBoxColumn Header="Enabled" Binding="{Binding IsEnabled}" />
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Width="30" Height="30"
+                                            HorizontalContentAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            Padding="2"
+                                            Command="{Binding $parent[DataGrid].((viewModels:SettingsViewModel)DataContext).DeleteTimerCommand}"
+                                            CommandParameter="{Binding}">
+                                        <Button.Content>
+                                            <avalonia:SymbolIcon Symbol="Delete" />
+                                        </Button.Content>
+                                    </Button>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            <StackPanel Orientation="Vertical" Margin="0" IsVisible="{Binding SelectedTimerViewModel, Converter={x:Static ObjectConverters.IsNotNull}}">
+                <StackPanel Orientation="Vertical" Margin="5">
+                    <TextBlock Text="Name" VerticalAlignment="Center" />
+                    <TextBox Text="{Binding SelectedTimerViewModel.Name, Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel Orientation="Vertical" Margin="5">
+                    <ToolTip.Tip>
+                        If the timer is an interval timer, this is the time between each trigger.
+                        If the timer is not an interval timer, when game seconds or minutes = this time, the timer will trigger.
+                    </ToolTip.Tip>
+                    <TextBlock Text="Time" VerticalAlignment="Center" />
+                    <TimePicker UseSeconds="True"
+                                SelectedTime="{Binding SelectedTimerViewModel.Time, Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel Orientation="Vertical" Margin="5">
+                    <ToolTip.Tip>
+                        When the timer will become active and begin to trigger based on the game time
+                    </ToolTip.Tip>
+                    <TextBlock Text="Starts at" VerticalAlignment="Center" />
+                    <TimePicker UseSeconds="True"
+                                SelectedTime="{Binding SelectedTimerViewModel.StartsAfter, Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel Orientation="Vertical" Margin="5">
+                    <ToolTip.Tip>
+                        When the timer will disable itself, and no longer trigger based on the game.
+                        For example, pulling or stacking camps becomes less meaningful after a certain time.
+                    </ToolTip.Tip>
+                    <TextBlock Text="Expires after" VerticalAlignment="Center" />
+                    <TimePicker
+                        UseSeconds="True"
+                        SelectedTime="{Binding SelectedTimerViewModel.StopsAfter, Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel Orientation="Vertical" Margin="5">
+                    <ToolTip.Tip>
+                        When the timer will play the audio file.
+                        Also used to show the timer in pre-alerting mode in the Timers window.
+                    </ToolTip.Tip>
+                    <TextBlock Text="Reminder before" VerticalAlignment="Center" />
+                    <TimePicker UseSeconds="True"
+                                SelectedTime="{Binding SelectedTimerViewModel.RemindAt, Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel Orientation="Vertical" Margin="5" Spacing="5">
+                    <ToolTip.Tip>
+                        The audio file that will be played when the timer triggers if Text to Speech is disabled.
+                    </ToolTip.Tip>
+                    <TextBlock Text="Audio file" />
+                    <TextBox IsReadOnly="True"
+                             Text="{Binding SelectedTimerViewModel.AudioFile, Mode=OneWay, Converter={StaticResource AudioFilePathConverter}}" />
+                    <StackPanel Orientation="Horizontal" Spacing="5">
+                        <Button Content="Browse"
+                                Command="{Binding SelectFileCommand}" />
+                        <Button Content="Play"
+                                Command="{Binding PlayAudioCommand}"
+                                CommandParameter="{Binding}" />
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Vertical" Margin="5">
+                        <TextBlock
+                            ToolTip.Tip="If the timer is enabled at all. If this is not checked, the timer will not trigger or be active in the Timers window"
+                            Text="Enabled" VerticalAlignment="Center" />
+                        <CheckBox IsChecked="{Binding SelectedTimerViewModel.IsEnabled, Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Margin="5">
+                        <TextBlock
+                            ToolTip.Tip="If the timer will play the audio file when it triggers"
+                            Text="No sound" VerticalAlignment="Center" />
+                        <CheckBox IsChecked="{Binding SelectedTimerViewModel.IsMuted, Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Margin="5">
+                        <TextBlock
+                            ToolTip.Tip="If the timer is an interval timer, this is the time between each trigger"
+                            Text="Interval" VerticalAlignment="Center" />
+                        <CheckBox IsChecked="{Binding SelectedTimerViewModel.IsInterval, Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Margin="5">
+                        <ToolTip.Tip>
+                            Requires manual reset after each trigger.
+                            This is useful for timers that are not based on a set interval. e.g Roshan or Tormentor respawn times.
+                        </ToolTip.Tip>
+                        <TextBlock Text="Manual" VerticalAlignment="Center" />
+                        <CheckBox IsChecked="{Binding SelectedTimerViewModel.IsManualReset, Mode=TwoWay}" />
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <Button Width="120" Height="30"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Padding="2"
+                    Command="{Binding AddTimer}">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal" Spacing="2">
+                        <avalonia:SymbolIcon Symbol="Add" />
+                        <TextBlock Text="Add timer" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+            <Button Width="120" Height="30"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Padding="2"
+                    Command="{Binding DefaultTimers}">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal" Spacing="2">
+                        <avalonia:SymbolIcon Symbol="BookDefault" />
+                        <TextBlock Text="Default timers" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+        </StackPanel>
+        <TextBlock Text="AI was used for the default audio that comes with the application." />
+    </StackPanel>
+</UserControl>
