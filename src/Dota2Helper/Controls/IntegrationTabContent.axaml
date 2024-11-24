@@ -10,19 +10,20 @@
     <StackPanel Margin="0 10" Orientation="Vertical">
 
         <StackPanel Margin="5" Orientation="Vertical" Spacing="5">
-            <Grid Margin="5" RowDefinitions="*,*,*,*" ColumnDefinitions="100,Auto" VerticalAlignment="Center">
-                <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Timer Mode</Label>
+
+            <Grid Margin="5" RowDefinitions="*,*,*,*" ColumnDefinitions="Auto,Auto" VerticalAlignment="Center">
+                <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Timer mode:</Label>
                 <ComboBox Grid.Row="0" Grid.Column="1"
                           SelectedItem="{Binding SelectedTimerMode, Mode=TwoWay}"
                           ItemsSource="{Binding TimerModes, Mode=OneTime}"
                           Width="150">
                     <ComboBox.ItemTemplate>
                         <DataTemplate DataType="timers:TimerStrategy">
-                            <TextBlock Text="{Binding Name}" ToolTip.Tip="{Binding ToolTip}" />
+                            <TextBlock Text="{Binding Name}" ToolTip.Tip="{Binding ToolTip}" HorizontalAlignment="Stretch" />
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Demo Muted</Label>
+                <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Mute demo timers:</Label>
                 <CheckBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding DemoMuted, Mode=TwoWay}" />
 
             </Grid>

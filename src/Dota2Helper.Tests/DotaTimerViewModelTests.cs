@@ -27,18 +27,29 @@ public class DotaTimerViewModelTests
         TimeSpan time = TimeSpan.FromSeconds(0);
         TimeSpan maxTime = timer.Time;
 
+        Assert.IsTrue(timer.IsFirstManualTimer);
+
         while (time < maxTime)
         {
             timer.Update(time);
             time = time.Add(TimeSpan.FromSeconds(1));
         }
 
-        // Assert
-        Assert.IsTrue(timer.IsResetRequired);
-        Assert.IsTrue(timer.TimeRemaining == timer.Time);
-
-        timer.ResetCommand.Execute(null);
-
+        // Assert first manual reset is not required
         Assert.IsFalse(timer.IsResetRequired);
+        Assert.IsFalse(timer.IsFirstManualTimer);
+
+        time = TimeSpan.FromSeconds(10);
+        maxTime = maxTime.Add(timer.Time);
+
+        while (time < maxTime)
+        {
+            timer.Update(time);
+            time = time.Add(TimeSpan.FromSeconds(1));
+        }
+
+        // Assert second manual reset is required
+        Assert.IsFalse(timer.IsFirstManualTimer);
+        Assert.IsTrue(timer.IsResetRequired);
     }
 }

@@ -88,7 +88,7 @@
                 <TextBlock TextWrapping="Wrap" Width="750">
                     The application can play audio files when a timer triggers. You can set the audio file for each timer from the Timers tab.
                     The application will play the audio file when the timer triggers, the default audio files are located in the audio folder.
-                    The audio files were created using Google Text-to-Speech.
+                    The audio files were created using OpenAI TTS and are free to use. You can also use your own audio mp3 or wav files.
                 </TextBlock>
             </StackPanel>
 
@@ -111,6 +111,20 @@
                 <TextBlock TextWrapping="Wrap" Width="750">
                     Timers can be set to show and hide based on the game time. This is useful for timers that are only relevant for a certain period.
                     For example, pulling or stacking camps becomes less meaningful after a certain time.
+                </TextBlock>
+            </StackPanel>
+
+            <!-- Timer Mode -->
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                <TextBlock Margin="0 5" FontSize="18" FontWeight="Bold">
+                    Timer mode
+                </TextBlock>
+                <TextBlock TextWrapping="Wrap" Width="750">
+                    Timer mode is used to determine how the application will handle game time.
+                    There are three modes, Game, Demo and Auto:
+                    In Game mode, the application will use the game time from the GSI data.
+                    In Demo mode, the application will use a fake time.
+                    In Auto mode, the application will use the game time from the GSI data if it is available, otherwise, it will use the fake time.
                 </TextBlock>
             </StackPanel>
 
