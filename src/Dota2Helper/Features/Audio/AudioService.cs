@@ -1,29 +1,25 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using Dota2Helper.Features.Settings;
-using LibVLCSharp.Shared;
+using NAudio.Wave;
 
 namespace Dota2Helper.Features.Audio;
 
-public interface IAudioService
-{
-    void Play(string audioFile);
-}
-
-public class AudioService : BackgroundWorker, IAudioService
+public class AudioService : BackgroundWorker, IAudioService, IDisposable
 {
     readonly SettingsService _settingsService;
-    LibVLC LibVlc { get; } = new();
-    readonly MediaPlayer _mediaPlayer;
+    readonly WaveOutEvent _mediaPlayer;
 
-    Queue<string> AudioQueue { get; } = new();
+    ConcurrentQueue<string> AudioQueue { get; } = new();
 
     public AudioService(SettingsService settingsService)
     {
         _settingsService = settingsService;
-        _mediaPlayer = new MediaPlayer(LibVlc);
+        _mediaPlayer = new WaveOutEvent();
         RunWorkerAsync();
     }
 
@@ -43,16 +39,14 @@ public class AudioService : BackgroundWorker, IAudioService
             {
                 try
                 {
-                    var uri = new Uri(audioFile, UriKind.RelativeOrAbsolute);
-                    var fromType = uri.IsAbsoluteUri ? FromType.FromLocation : FromType.FromPath;
-
-                    using(var media = new Media(LibVlc, audioFile, fromType))
+                    using (var audioFileReader = new AudioFileReader(audioFile))
                     {
-                        _mediaPlayer.Volume = (int) _settingsService.Settings.Volume;
-                        _mediaPlayer.Play(media);
+                        _mediaPlayer.Init(audioFileReader);
+                        _mediaPlayer.Volume = (float)(_settingsService.Settings.Volume / 100.0);
+                        _mediaPlayer.Play();
                     }
                 }
-                catch(Exception)
+                catch (Exception)
                 {
 
                 }
