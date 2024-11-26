@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
@@ -8,6 +9,8 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform;
 using Avalonia.Styling;
 using CommunityToolkit.Mvvm.Input;
+using Dota2Helper.Features;
+using Dota2Helper.Features.About;
 using Dota2Helper.Features.Audio;
 using Dota2Helper.Features.Gsi;
 using Dota2Helper.Features.Settings;
@@ -44,6 +47,8 @@ public class SettingsViewModel : ViewModelBase
     public IRelayCommand OpenFolderCommand { get; set; }
     public IRelayCommand SetModeCommand { get; }
     public IRelayCommand PlayAudioCommand { get; }
+
+    public IEnumerable<AboutItem> AboutItems => new AboutTableData();
 
     public ThemeVariant ThemeVariant
     {

@@ -61,6 +61,9 @@
                 <TabItem Header="Guide">
                     <controls:GuideTabContent DataContext="{Binding}" />
                 </TabItem>
+                <TabItem Header="About">
+                    <controls:AboutTabContent DataContext="{Binding}" />
+                </TabItem>
             </TabControl>
         </StackPanel>
         <TextBlock
