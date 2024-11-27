@@ -48,7 +48,7 @@ public class SettingsViewModel : ViewModelBase
     public IRelayCommand SetModeCommand { get; }
     public IRelayCommand PlayAudioCommand { get; }
 
-    public IEnumerable<AboutItem> AboutItems => new AboutTableData();
+    public IEnumerable<PackageItem> PackageItems => new AboutTableData();
 
     public ThemeVariant ThemeVariant
     {

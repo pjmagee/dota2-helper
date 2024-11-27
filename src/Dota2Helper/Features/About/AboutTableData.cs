@@ -1,55 +1,35 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
 namespace Dota2Helper.Features.About;
 
-public class AboutTableData : SortedSet<AboutItem>
+public class AboutTableData : SortedSet<PackageItem>
 {
     public AboutTableData()
     {
-        foreach (var item in GetReferencedAssemblies())
+        foreach (var item in GetPackageItems())
         {
             Add(item);
         }
     }
 
-    IEnumerable<AboutItem> GetReferencedAssemblies()
+    IEnumerable<PackageItem>? GetPackageItems()
     {
-        var currentAssembly = Assembly.GetExecutingAssembly();
-        var referencedAssemblies = currentAssembly.GetReferencedAssemblies();
-
-        List<AboutItem> items = [];
-
-        foreach (var assemblyName in referencedAssemblies)
+        try
         {
-            try
-            {
-                Assembly assembly = Assembly.Load(assemblyName);
-
-                // Check if the assembly has NuGet metadata
-                var hasMetaDataAttribute = HasMetaDataAttribute(assembly);
-
-                if (!hasMetaDataAttribute) continue;
-
-                // Retrieve description
-                string description = GetAssemblyDescription(assembly);
-
-                items.Add(new AboutItem
-                    {
-                        Name = assemblyName.Name!,
-                        Value = assemblyName.Version!.ToString(),
-                        Description = description
-                    }
-                );
-            }
-            catch
-            {
-                // Skip assemblies that fail to load
-            }
+            var dir = Directory.GetCurrentDirectory();
+            var json = File.ReadAllText(Path.Combine(dir, "packages.json"));
+            return System.Text.Json.JsonSerializer.Deserialize<List<PackageItem>>(json);
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine(e);
         }
 
-        return items;
+        return [];
     }
 
     bool HasMetaDataAttribute(Assembly assembly)

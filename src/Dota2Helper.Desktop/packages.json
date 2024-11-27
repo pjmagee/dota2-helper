@@ -1,0 +1,214 @@
+[
+  {
+    "PackageId": "Avalonia",
+    "PackageVersion": "11.2.1",
+    "PackageProjectUrl": "https://avaloniaui.net/?utm_source=nuget\u0026utm_medium=referral\u0026utm_content=project_homepage_link",
+    "Copyright": "Copyright 2013-2024 \u00A9 The AvaloniaUI Project",
+    "Authors": "Avalonia Team",
+    "License": "MIT",
+    "LicenseUrl": "https://licenses.nuget.org/MIT",
+    "LicenseInformationOrigin": 0
+  },
+  {
+    "PackageId": "Avalonia.Controls.DataGrid",
+    "PackageVersion": "11.2.1",
+    "PackageProjectUrl": "https://avaloniaui.net/?utm_source=nuget\u0026utm_medium=referral\u0026utm_content=project_homepage_link",
+    "Copyright": "Copyright 2013-2024 \u00A9 The AvaloniaUI Project",
+    "Authors": "Avalonia Team",
+    "License": "MIT",
+    "LicenseUrl": "https://licenses.nuget.org/MIT",
+    "LicenseInformationOrigin": 0
+  },
+  {
+    "PackageId": "Avalonia.Desktop",
+    "PackageVersion": "11.2.1",
+    "PackageProjectUrl": "https://avaloniaui.net/?utm_source=nuget\u0026utm_medium=referral\u0026utm_content=project_homepage_link",
+    "Copyright": "Copyright 2013-2024 \u00A9 The AvaloniaUI Project",
+    "Authors": "Avalonia Team",
+    "License": "MIT",
+    "LicenseUrl": "https://licenses.nuget.org/MIT",
+    "LicenseInformationOrigin": 0
+  },
+  {
+    "PackageId": "Avalonia.Diagnostics",
+    "PackageVersion": "11.2.1",
+    "PackageProjectUrl": "https://avaloniaui.net/?utm_source=nuget\u0026utm_medium=referral\u0026utm_content=project_homepage_link",
+    "Copyright": "Copyright 2013-2024 \u00A9 The AvaloniaUI Project",
+    "Authors": "Avalonia Team",
+    "License": "MIT",
+    "LicenseUrl": "https://licenses.nuget.org/MIT",
+    "LicenseInformationOrigin": 0
+  },
+  {
+    "PackageId": "Avalonia.Fonts.Inter",
+    "PackageVersion": "11.2.1",
+    "PackageProjectUrl": "https://avaloniaui.net/?utm_source=nuget\u0026utm_medium=referral\u0026utm_content=project_homepage_link",
+    "Copyright": "Copyright 2013-2024 \u00A9 The AvaloniaUI Project",
+    "Authors": "Avalonia Team",
+    "License": "MIT",
+    "LicenseUrl": "https://licenses.nuget.org/MIT",
+    "LicenseInformationOrigin": 0
+  },
+  {
+    "PackageId": "Avalonia.Themes.Fluent",
+    "PackageVersion": "11.2.1",
+    "PackageProjectUrl": "https://avaloniaui.net/?utm_source=nuget\u0026utm_medium=referral\u0026utm_content=project_homepage_link",
+    "Copyright": "Copyright 2013-2024 \u00A9 The AvaloniaUI Project",
+    "Authors": "Avalonia Team",
+    "License": "MIT",
+    "LicenseUrl": "https://licenses.nuget.org/MIT",
+    "LicenseInformationOrigin": 0
+  },
+  {
+    "PackageId": "Avalonia.Xaml.Interactions",
+    "PackageVersion": "11.2.0.1",
+    "PackageProjectUrl": "https://github.com/wieslawsoltes/AvaloniaBehaviors",
+    "Copyright": "Copyright \u00A9 Wies\u0142aw \u0160olt\u00E9s 2024",
+    "Authors": "Wies\u0142aw \u0160olt\u00E9s",
+    "License": "MIT",
+    "LicenseUrl": "https://licenses.nuget.org/MIT",
+    "LicenseInformationOrigin": 0
+  },
+  {
+    "PackageId": "Avalonia.Xaml.Interactions.Events",
+    "PackageVersion": "11.2.0.1",
+    "PackageProjectUrl": "https://github.com/wieslawsoltes/AvaloniaBehaviors",
+    "Copyright": "Copyright \u00A9 Wies\u0142aw \u0160olt\u00E9s 2024",
+    "Authors": "Wies\u0142aw \u0160olt\u00E9s",
+    "License": "MIT",
+    "LicenseUrl": "https://licenses.nuget.org/MIT",
+    "LicenseInformationOrigin": 0
+  },
+  {
+    "PackageId": "CommunityToolkit.Mvvm",
+    "PackageVersion": "8.3.2",
+    "PackageProjectUrl": "https://github.com/CommunityToolkit/dotnet",
+    "Copyright": "(c) .NET Foundation and Contributors. All rights reserved.",
+    "Authors": "Microsoft",
+    "License": "MIT",
+    "LicenseUrl": "https://licenses.nuget.org/MIT",
+    "LicenseInformationOrigin": 0
+  },
+  {
+    "PackageId": "coverlet.collector",
+    "PackageVersion": "6.0.0",
+    "PackageProjectUrl": "https://github.com/coverlet-coverage/coverlet",
+    "Authors": "tonerdo",
+    "License": "MIT",
+    "LicenseUrl": "https://licenses.nuget.org/MIT",
+    "LicenseInformationOrigin": 0
+  },
+  {
+    "PackageId": "FluentIcons.Avalonia",
+    "PackageVersion": "1.1.265",
+    "Authors": "davidxuang",
+    "License": "MIT",
+    "LicenseUrl": "https://licenses.nuget.org/MIT",
+    "LicenseInformationOrigin": 0
+  },
+  {
+    "PackageId": "GitVersion.MsBuild",
+    "PackageVersion": "6.0.0",
+    "PackageProjectUrl": "https://github.com/GitTools/GitVersion",
+    "Copyright": "Copyright GitTools 2024.",
+    "Authors": "GitTools and Contributors",
+    "License": "MIT",
+    "LicenseUrl": "https://licenses.nuget.org/MIT",
+    "LicenseInformationOrigin": 0
+  },
+  {
+    "PackageId": "Microsoft.Extensions.Configuration.Binder",
+    "PackageVersion": "9.0.0",
+    "PackageProjectUrl": "https://dot.net/",
+    "Copyright": "\u00A9 Microsoft Corporation. All rights reserved.",
+    "Authors": "Microsoft",
+    "License": "MIT",
+    "LicenseUrl": "https://licenses.nuget.org/MIT",
+    "LicenseInformationOrigin": 0
+  },
+  {
+    "PackageId": "Microsoft.Extensions.Configuration.Json",
+    "PackageVersion": "9.0.0",
+    "PackageProjectUrl": "https://dot.net/",
+    "Copyright": "\u00A9 Microsoft Corporation. All rights reserved.",
+    "Authors": "Microsoft",
+    "License": "MIT",
+    "LicenseUrl": "https://licenses.nuget.org/MIT",
+    "LicenseInformationOrigin": 0
+  },
+  {
+    "PackageId": "Microsoft.Extensions.DependencyInjection",
+    "PackageVersion": "9.0.0",
+    "PackageProjectUrl": "https://dot.net/",
+    "Copyright": "\u00A9 Microsoft Corporation. All rights reserved.",
+    "Authors": "Microsoft",
+    "License": "MIT",
+    "LicenseUrl": "https://licenses.nuget.org/MIT",
+    "LicenseInformationOrigin": 0
+  },
+  {
+    "PackageId": "Microsoft.Extensions.Options",
+    "PackageVersion": "9.0.0",
+    "PackageProjectUrl": "https://dot.net/",
+    "Copyright": "\u00A9 Microsoft Corporation. All rights reserved.",
+    "Authors": "Microsoft",
+    "License": "MIT",
+    "LicenseUrl": "https://licenses.nuget.org/MIT",
+    "LicenseInformationOrigin": 0
+  },
+  {
+    "PackageId": "Microsoft.NET.Test.Sdk",
+    "PackageVersion": "17.11.1",
+    "PackageProjectUrl": "https://github.com/microsoft/vstest",
+    "Copyright": "\u00A9 Microsoft Corporation. All rights reserved.",
+    "Authors": "Microsoft",
+    "License": "MIT",
+    "LicenseUrl": "https://licenses.nuget.org/MIT",
+    "LicenseInformationOrigin": 0
+  },
+  {
+    "PackageId": "MSTest.TestAdapter",
+    "PackageVersion": "3.6.3",
+    "PackageProjectUrl": "https://github.com/microsoft/testfx",
+    "Copyright": "\u00A9 Microsoft Corporation. All rights reserved.",
+    "Authors": "Microsoft",
+    "License": "MIT",
+    "LicenseUrl": "https://licenses.nuget.org/MIT",
+    "LicenseInformationOrigin": 0
+  },
+  {
+    "PackageId": "MSTest.TestFramework",
+    "PackageVersion": "3.6.3",
+    "PackageProjectUrl": "https://github.com/microsoft/testfx",
+    "Copyright": "\u00A9 Microsoft Corporation. All rights reserved.",
+    "Authors": "Microsoft",
+    "License": "MIT",
+    "LicenseUrl": "https://licenses.nuget.org/MIT",
+    "LicenseInformationOrigin": 0
+  },
+  {
+    "PackageId": "NAudio",
+    "PackageVersion": "2.2.1",
+    "PackageProjectUrl": "https://github.com/naudio/NAudio",
+    "Copyright": "\u00A9 Mark Heath 2023",
+    "Authors": "Mark Heath \u0026 Contributors",
+    "ValidationErrors": [
+      {
+        "Error": "Validation for licenses of type File not yet supported",
+        "Context": "C:\\Users\\patri\\Documents\\Projects\\D2Helper\\src\\Dota2Helper\\Dota2Helper.csproj"
+      }
+    ],
+    "LicenseUrl": "https://aka.ms/deprecateLicenseUrl",
+    "LicenseInformationOrigin": 2
+  },
+  {
+    "PackageId": "ValveKeyValue",
+    "PackageVersion": "0.12.0.391",
+    "PackageProjectUrl": "https://valveresourceformat.github.io/",
+    "Copyright": "Copyright \u00A9 ValveKeyValue Contributors",
+    "Authors": "ValveKeyValue Contributors",
+    "License": "MIT",
+    "LicenseUrl": "https://licenses.nuget.org/MIT",
+    "LicenseInformationOrigin": 0
+  }
+]
