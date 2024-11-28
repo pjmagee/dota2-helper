@@ -2,6 +2,14 @@
   "name": "Dota2Helper",
   "engineVersion": "v0.14.0",
   "sdk": "go",
+  "exclude": [
+    ".vscode",
+    ".github",
+    "docs",
+    "LICENSE",
+    "README.md",
+    "src/.idea"
+  ],
   "dependencies": [
     {
       "name": "arc",
