@@ -8,7 +8,9 @@
     "docs",
     "LICENSE",
     "README.md",
-    "src/.idea"
+    "src/.idea",
+    "**/bin/**",
+    "**/obj/**"
   ],
   "dependencies": [
     {

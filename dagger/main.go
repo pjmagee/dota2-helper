@@ -64,6 +64,21 @@ func (m *Dota2Helper) Dotnet() *dagger.Container {
 		WithExec([]string{"dotnet", "tool", "install", "--global", "GitVersion.Tool"})
 }
 
+func (m *Dota2Helper) GetPackages(
+	ctx context.Context,
+// +defaultPath="."
+	git *dagger.Directory) (string, error) {
+
+	return m.Dotnet().
+		WithDirectory("/repo", git).
+		WithWorkdir("/repo/src").
+		WithExec([]string{
+			"sh",
+			"-c",
+			"~/.dotnet/tools/nuget-license -i Dota2Helper.sln -o JsonPretty || true"}).
+		Stdout(ctx)
+}
+
 // Get the semver details of the current git repository
 func (m *Dota2Helper) GitVersion(
 	ctx context.Context,
@@ -99,12 +114,15 @@ func (m *Dota2Helper) PublishWindows(
 
 	cache := dag.CacheVolume("nuget-cache")
 
+	packages, _ := m.GetPackages(ctx, git)
+
 	return m.Dotnet().
 		WithDirectory("/repo", git, dagger.ContainerWithDirectoryOpts{
-			Exclude: []string{"**/bin/**", "**/obj/**"},
+			Exclude: []string{},
 		}).
 		WithMountedCache("/root/.nuget/packages", cache).
 		WithWorkdir("/repo/src").
+		WithNewFile("./Dota2Helper.Desktop/packages.json", packages).
 		WithExec([]string{
 			"dotnet",
 			"publish",
