@@ -63,7 +63,11 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
     void OpenSettings()
     {
         var settingsWindow = App.ServiceProvider.GetRequiredService<SettingsWindow>();
+
         settingsWindow.Show();
+
+        if (settingsWindow.WindowState == WindowState.Minimized)
+            settingsWindow.WindowState = WindowState.Normal;
     }
 
     static void CloseApplication()
