@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using Avalonia;
@@ -28,14 +30,6 @@ public class SettingsViewModel : ViewModelBase
     readonly SettingsService _settingsService;
     readonly GsiConfigService _gsiConfigService;
 
-    double _volume;
-    bool _demoMuted;
-    int _selectedProfileIndex;
-
-    DotaTimerViewModel? _selectedTimerViewModel;
-    TimerStrategy? _selectedTimerMode;
-    ThemeVariant _themeVariant = ThemeVariant.Default;
-
     public ObservableCollection<ProfileViewModel> Profiles => _profileService.Profiles;
     public ObservableCollection<TimerStrategy> TimerModes { get; set; }
     public IRelayCommand<DotaTimerViewModel> DeleteTimerCommand { get; }
@@ -52,31 +46,28 @@ public class SettingsViewModel : ViewModelBase
 
     public ThemeVariant ThemeVariant
     {
-        get => _themeVariant;
+        get;
         set
         {
-            if (SetProperty(ref _themeVariant, value))
+            if (SetProperty(ref field, value))
             {
                 SetTheme(value);
             }
         }
-    }
+    } = ThemeVariant.Default;
 
-    public bool IsLaunchArgumentPresent
-    {
-        get => _gsiConfigService.IsLaunchArgumentPresent();
-    }
+    public bool IsLaunchArgumentPresent => _gsiConfigService.IsLaunchArgumentPresent();
 
     public bool IsListening
     {
-        get => _isListening;
-        set => SetProperty(ref _isListening, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
     public DateTime? LatestUpdateTime
     {
-        get => _latestUpdateTime;
-        set => SetProperty(ref _latestUpdateTime, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
     void SetTheme(ThemeVariant variant)
@@ -86,25 +77,19 @@ public class SettingsViewModel : ViewModelBase
         _settingsService.SaveSettings();
     }
 
-    ObservableCollection<DotaTimerViewModel> _timers;
-
-    public ObservableCollection<DotaTimerViewModel> Timers
+    public ObservableCollection<DotaTimerViewModel>? Timers
     {
-        get => _timers;
-        set => SetProperty(ref _timers, value);
+        get;
+        set => SetProperty(ref field, value);
     }
-
-    private ProfileViewModel? _selectedProfileViewModel;
-    bool _isListening;
-    DateTime? _latestUpdateTime;
 
     public ProfileViewModel? SelectedProfileViewModel
     {
-        get => _selectedProfileViewModel;
+        get;
         set
         {
             if (value == null) return;
-            SetProperty(ref _selectedProfileViewModel, value);
+            SetProperty(ref field, value);
             _profileService.SelectedProfileViewModel = value;
             Timers = _profileService.SelectedProfileViewModel.Timers;
         }
@@ -112,16 +97,17 @@ public class SettingsViewModel : ViewModelBase
 
     public DotaTimerViewModel? SelectedTimerViewModel
     {
-        get => _selectedTimerViewModel;
-        set => SetProperty(ref _selectedTimerViewModel, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
+    [field: AllowNull, MaybeNull]
     public TimerStrategy SelectedTimerMode
     {
-        get => _selectedTimerMode ?? TimerModes[^1];
+        get => field ?? TimerModes[^1];
         set
         {
-            if (SetProperty(ref _selectedTimerMode, value))
+            if (SetProperty(ref field, value))
             {
                 SetModeCommand.Execute(value);
                 _settingsService.Settings.Mode = value.Mode;
@@ -132,10 +118,10 @@ public class SettingsViewModel : ViewModelBase
 
     public double Volume
     {
-        get => _volume;
+        get;
         set
         {
-            if (SetProperty(ref _volume, value))
+            if (SetProperty(ref field, value))
             {
                 _settingsService.Settings.Volume = value;
                 _settingsService.UpdateSettings(_settingsService.Settings);
@@ -145,10 +131,10 @@ public class SettingsViewModel : ViewModelBase
 
     public bool DemoMuted
     {
-        get => _demoMuted;
+        get;
         set
         {
-            if (SetProperty(ref _demoMuted, value))
+            if (SetProperty(ref field, value))
             {
                 _settingsService.Settings.DemoMuted = value;
                 _settingsService.UpdateSettings(_settingsService.Settings);
@@ -158,12 +144,12 @@ public class SettingsViewModel : ViewModelBase
 
     public int SelectedProfileIndex
     {
-        get => _selectedProfileIndex;
+        get;
         set
         {
-            if(value >= 0 || value >= _profileService.Profiles.Count - 1)
+            if (value >= 0 || value >= _profileService.Profiles.Count - 1)
             {
-                if (SetProperty(ref _selectedProfileIndex, value))
+                if (SetProperty(ref field, value))
                 {
                     _settingsService.Settings.SelectedProfileIdx = value;
                     _settingsService.UpdateSettings(_settingsService.Settings);
@@ -208,10 +194,12 @@ public class SettingsViewModel : ViewModelBase
         TimerModes = new ObservableCollection<TimerStrategy>(TimerStrategy.Modes);
 
         SelectedProfileViewModel = _profileService.Profiles[_settingsService.Settings.SelectedProfileIdx];
+        Timers = SelectedProfileViewModel.Timers;
         LoadSavedTheme(_settingsService.Settings.Theme);
-        _selectedTimerMode = TimerModes.FirstOrDefault(tm => _settingsService.Settings.Mode == tm.Mode) ?? TimerModes[^1];
-        _volume = _settingsService.Settings.Volume;
-        _demoMuted = _settingsService.Settings.DemoMuted;
+        SelectedTimerMode = TimerModes.FirstOrDefault(tm => _settingsService.Settings.Mode == tm.Mode) ?? TimerModes[^1];
+        Volume = _settingsService.Settings.Volume;
+        DemoMuted = _settingsService.Settings.DemoMuted;
+
     }
 
     void LoadSavedTheme(string settingsTheme)
@@ -254,18 +242,24 @@ public class SettingsViewModel : ViewModelBase
     {
         try
         {
-            var desktop = App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
-            var topLevel = TopLevel.GetTopLevel(desktop.MainWindow);
-            var files = await topLevel.StorageProvider.OpenFilePickerAsync(new AudioFilePickerOptions());
-
-            if (files.Count == 1)
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                SelectedTimerViewModel!.AudioFile = files[0].Path.ToString();
+                var topLevel = TopLevel.GetTopLevel(desktop.MainWindow);
+
+                if (topLevel is not null)
+                {
+                    var files = await topLevel.StorageProvider.OpenFilePickerAsync(new AudioFilePickerOptions());
+
+                    if (files.Count == 1)
+                    {
+                        SelectedTimerViewModel!.AudioFile = files[0].Path.ToString();
+                    }
+                }
             }
         }
-        catch (Exception)
+        catch (Exception e)
         {
-
+            Debug.WriteLine(e);
         }
     }
 
@@ -286,6 +280,11 @@ public class SettingsViewModel : ViewModelBase
 
     public void AddTimer()
     {
+        if (SelectedProfileViewModel is null)
+        {
+            return;
+        }
+
         var dotaTimer = new DotaTimer
         {
             Name = $"Timer {SelectedProfileViewModel.Timers.Count + 1}",

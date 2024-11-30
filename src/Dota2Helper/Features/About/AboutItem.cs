@@ -1,5 +1,8 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 using System.Text.Json.Serialization;
+using Dota2Helper.Features.Settings;
 
 namespace Dota2Helper.Features.About;
 
@@ -10,25 +13,36 @@ public class PackageItem : IComparable<PackageItem>
         return string.Compare(PackageId, other?.PackageId, StringComparison.Ordinal);
     }
 
+    [SetsRequiredMembers]
+    public PackageItem(string packageId, string packageVersion, string packageProjectUrl, string copyright, string authors, string license, string licenseUrl)
+    {
+        PackageId = packageId;
+        PackageVersion = packageVersion;
+        PackageProjectUrl = packageProjectUrl;
+        Copyright = copyright;
+        Authors = authors;
+        License = license;
+        LicenseUrl = licenseUrl;
+    }
 
     [JsonPropertyName("PackageId")]
-    public string PackageId { get; set; }
+    public required string PackageId { get; set; }
 
     [JsonPropertyName("PackageVersion")]
-    public string PackageVersion { get; set; }
+    public required string PackageVersion { get; set; }
 
     [JsonPropertyName("PackageProjectUrl")]
-    public string PackageProjectUrl { get; set; }
+    public required string PackageProjectUrl { get; set; }
 
     [JsonPropertyName("Copyright")]
-    public string Copyright { get; set; }
+    public required string Copyright { get; set; }
 
     [JsonPropertyName("Authors")]
-    public string Authors { get; set; }
+    public required string Authors { get; set; }
 
     [JsonPropertyName("License")]
-    public string License { get; set; }
+    public required string License { get; set; }
 
     [JsonPropertyName("LicenseUrl")]
-    public string LicenseUrl { get; set; }
+    public required string LicenseUrl { get; set; }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using Avalonia.Controls;
@@ -16,9 +17,31 @@ public class AudioFilePathConverter : IValueConverter
     {
         if (value is string path && !string.IsNullOrEmpty(path))
         {
-            var fileName = Path.GetFileName(path);
-            var parentDir = Path.GetFileName(Path.GetDirectoryName(path));
-            value = $"..\\{parentDir}\\{fileName}";
+            var fi = new FileInfo(path);
+            var pathParts = new List<string>
+            {
+                fi.Name
+            };
+
+            var di = fi.Directory;
+
+            for (int level = 0; level < 3; level++)
+            {
+                if (di != null)
+                {
+                    pathParts.Add(di.Name);
+                    di = di.Parent;
+                    level++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            pathParts.Reverse();
+
+            return string.Join(Path.DirectorySeparatorChar, pathParts);
         }
 
         return value;

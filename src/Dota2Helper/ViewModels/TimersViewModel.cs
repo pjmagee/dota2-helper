@@ -25,24 +25,12 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
     readonly SettingsViewModel _settingsViewModel;
     readonly ITimeProvider _timeProvider;
     readonly ITimer? _timer;
-    TimeSpan _time;
 
-    ObservableCollection<DotaTimerViewModel> _timers;
+    public ObservableCollection<DotaTimerViewModel> Timers { get; set => SetProperty(ref field, value); } = [];
 
-    public ObservableCollection<DotaTimerViewModel> Timers
-    {
-        get => _timers;
-        set => SetProperty(ref _timers, value);
-    }
-
-    public ObservableCollection<DotaTimerViewModel> VisibleTimers
-    {
-        get => _visibleTimers;
-        set => SetProperty(ref _visibleTimers, value);
-    }
+    public ObservableCollection<DotaTimerViewModel> VisibleTimers { get; set => SetProperty(ref field, value); } = new();
 
     readonly SemaphoreSlim _semaphore = new(1, 1);
-    ObservableCollection<DotaTimerViewModel> _visibleTimers = new();
 
     public TimersViewModel(SettingsViewModel settingsViewModel, ITimeProvider timeProvider)
     {
@@ -80,24 +68,31 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
 
     async void UpdateTimers(object? state)
     {
-        if (await _semaphore.WaitAsync(0))
+        try
         {
-            try
+            if (await _semaphore.WaitAsync(0))
             {
-                Timers = _settingsViewModel.SelectedProfileViewModel.Timers;
-                Time = _timeProvider.Time;
-
-                foreach (var timer in Timers)
+                try
                 {
-                    timer.Update(Time);
-                }
+                    Timers = _settingsViewModel.SelectedProfileViewModel?.Timers!;
+                    Time = _timeProvider.Time;
 
-                VisibleTimers = new(Timers.Where(t => t.IsVisible));
+                    foreach (var timer in Timers)
+                    {
+                        timer.Update(Time);
+                    }
+
+                    VisibleTimers = new(Timers.Where(t => t.IsVisible));
+                }
+                finally
+                {
+                    _semaphore.Release();
+                }
             }
-            finally
-            {
-                _semaphore.Release();
-            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
         }
     }
 
@@ -105,8 +100,8 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
 
     public TimeSpan Time
     {
-        get => _time;
-        set => SetProperty(ref _time, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
     public IRelayCommand CloseAppCommand { get; }

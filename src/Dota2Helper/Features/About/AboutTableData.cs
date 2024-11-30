@@ -16,13 +16,13 @@ public class AboutTableData : SortedSet<PackageItem>
         }
     }
 
-    IEnumerable<PackageItem>? GetPackageItems()
+    IEnumerable<PackageItem> GetPackageItems()
     {
         try
         {
             var dir = Directory.GetCurrentDirectory();
             var json = File.ReadAllText(Path.Combine(dir, "packages.json"));
-            return System.Text.Json.JsonSerializer.Deserialize<List<PackageItem>>(json);
+            return System.Text.Json.JsonSerializer.Deserialize<List<PackageItem>>(json)!;
         }
         catch(Exception e)
         {

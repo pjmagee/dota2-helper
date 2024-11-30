@@ -7,7 +7,7 @@
              x:DataType="viewModels:SettingsViewModel"
              x:Class="Dota2Helper.Controls.AboutTabContent" Margin="5">
 
-    <StackPanel Orientation="Vertical" Spacing="5" HorizontalAlignment="Left" Width="750">
+    <StackPanel Orientation="Vertical" Spacing="5" HorizontalAlignment="Left">
         <TextBlock Margin="5" HorizontalAlignment="Left">
             All 3rd party packages used in this project.
         </TextBlock>

@@ -8,7 +8,7 @@ namespace Dota2Helper.Features.Settings;
 
 public class SettingsService
 {
-    readonly JsonSerializerOptions _jsonOptions = new()
+    readonly static JsonSerializerOptions JsonOptions = new()
     {
         WriteIndented = true
     };
@@ -25,15 +25,15 @@ public class SettingsService
         DefaultTimers = new List<DotaTimer>();
     }
 
-    public Settings Settings { get; protected set; }
+    public Settings Settings { get; private set; }
 
-    public List<DotaTimer> DefaultTimers { get; protected set; }
+    public List<DotaTimer> DefaultTimers { get; }
 
     public void SaveSettings()
     {
         if (Avalonia.Controls.Design.IsDesignMode) return;
 
-        var json = JsonSerializer.Serialize(Settings, _jsonOptions);
+        var json = JsonSerializer.Serialize(Settings, JsonOptions);
         File.WriteAllText("appsettings.json", json);
     }
 

@@ -39,53 +39,8 @@ public partial class App : Application
         if (IsDesignMode)
         {
             services
-                .Configure<Settings>(o =>
-                {
-                        o.Mode = TimeMode.Auto;
-                        o.Volume = 50;
-                        o.Theme = "Light";
-                        o.DemoMuted = true;
-                        o.SelectedProfileIdx = 0;
-                        o.Profiles = new List<Profile>
-                        {
-                            new Profile
-                            {
-                                Name = "Default",
-                                Timers = new List<DotaTimer>
-                                {
-                                    new DotaTimer
-                                    {
-                                        Name = "Roshan",
-                                        Time = TimeSpan.FromMinutes(8),
-                                        IsInterval = false,
-                                        IsManualReset = true,
-                                        IsEnabled = true,
-                                        IsMuted = false,
-                                        RemindAt = TimeSpan.FromMinutes(1),
-                                        StopAfter = TimeSpan.FromMinutes(1),
-                                        StartAfter = TimeSpan.FromMinutes(1),
-                                        AudioFile = null,
-                                    }
-                                }
-                            }
-                        };
-                })
-                .Configure<List<DotaTimer>>(o =>
-                {
-                    o.Add(new DotaTimer
-                    {
-                        Name = "Roshan",
-                        Time = TimeSpan.FromMinutes(8),
-                        IsInterval = false,
-                        IsManualReset = true,
-                        IsEnabled = true,
-                        IsMuted = false,
-                        RemindAt = TimeSpan.FromMinutes(1),
-                        StopAfter = TimeSpan.FromMinutes(1),
-                        StartAfter = TimeSpan.FromMinutes(1),
-                        AudioFile = null,
-                    });
-                });
+                .Configure<Settings>(ConfigureDesignSettings)
+                .Configure<List<DotaTimer>>(ConfigureDesignDefaultTimers);
         }
         else
         {
@@ -162,5 +117,55 @@ public partial class App : Application
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    void ConfigureDesignDefaultTimers(List<DotaTimer> o)
+    {
+        o.Add(new DotaTimer
+            {
+                Name = "Roshan",
+                Time = TimeSpan.FromMinutes(8),
+                IsInterval = false,
+                IsManualReset = true,
+                IsEnabled = true,
+                IsMuted = false,
+                RemindAt = TimeSpan.FromMinutes(1),
+                StopAfter = TimeSpan.FromMinutes(1),
+                StartAfter = TimeSpan.FromMinutes(1),
+                AudioFile = null,
+            }
+        );
+    }
+
+    void ConfigureDesignSettings(Settings o)
+    {
+        o.Mode = TimeMode.Auto;
+        o.Volume = 50;
+        o.Theme = "Light";
+        o.DemoMuted = true;
+        o.SelectedProfileIdx = 0;
+        o.Profiles = new List<Profile>
+        {
+            new Profile
+            {
+                Name = "Default",
+                Timers = new List<DotaTimer>
+                {
+                    new DotaTimer
+                    {
+                        Name = "Roshan",
+                        Time = TimeSpan.FromMinutes(8),
+                        IsInterval = false,
+                        IsManualReset = true,
+                        IsEnabled = true,
+                        IsMuted = false,
+                        RemindAt = TimeSpan.FromMinutes(1),
+                        StopAfter = TimeSpan.FromMinutes(1),
+                        StartAfter = TimeSpan.FromMinutes(1),
+                        AudioFile = null,
+                    }
+                }
+            }
+        };
     }
 }

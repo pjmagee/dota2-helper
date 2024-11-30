@@ -79,7 +79,7 @@ public class ProfileService
         item.PropertyChanged -= SaveConfiguration;
         item.Timers.CollectionChanged -= SaveConfiguration;
 
-        foreach(var timer in item.Timers)
+        foreach (var timer in item.Timers)
         {
             timer.PropertyChanged -= SaveConfiguration;
         }
@@ -90,7 +90,7 @@ public class ProfileService
         item.PropertyChanged += SaveConfiguration;
         item.Timers.CollectionChanged += SaveConfiguration;
 
-        foreach(var timer in item.Timers)
+        foreach (var timer in item.Timers)
         {
             timer.PropertyChanged -= SaveConfiguration;
             timer.PropertyChanged += SaveConfiguration;
@@ -152,11 +152,14 @@ public class ProfileService
 
     public void DefaultTimers()
     {
-        SelectedProfileViewModel.Timers.Clear();
-
-        foreach (var dotaTimer in _settingsService.DefaultTimers)
+        if (SelectedProfileViewModel is not null)
         {
-            SelectedProfileViewModel.Timers.Add(_factory.Create(dotaTimer));
+            SelectedProfileViewModel.Timers.Clear();
+
+            foreach (var dotaTimer in _settingsService.DefaultTimers)
+            {
+                SelectedProfileViewModel.Timers.Add(_factory.Create(dotaTimer));
+            }
         }
     }
 }

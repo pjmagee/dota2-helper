@@ -6,6 +6,7 @@
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <Configurations>Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
+        <LangVersion>preview</LangVersion>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -21,11 +22,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia.Desktop" Version="11.2.1" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.2.2" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="GitVersion.MsBuild" Version="6.0.0">
+        <PackageReference Include="GitVersion.MsBuild" Version="6.0.5">
             <PrivateAssets>All</PrivateAssets>
         </PackageReference>
     </ItemGroup>

@@ -79,5 +79,6 @@
     "AudioFile",
     "Time"
   ],
-  "additionalProperties": false
+  "additionalProperties": false,
+  "additionalItems": false
 }

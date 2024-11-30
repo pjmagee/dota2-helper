@@ -13,37 +13,14 @@ namespace Dota2Helper.ViewModels;
 /// </summary>
 public class DotaTimerViewModel : ViewModelBase
 {
-    DotaTimer _timer;
     readonly IAudioService _audioService;
 
-    string _name;
-
-    bool _isEnabled;
-    bool _isResetRequired;
-    bool _isAlertable;
-    bool _isManualReset;
-    bool _isMuted;
-    bool _isInterval;
-    bool _isStopped;
-    bool _isVisible;
-
-    TimeSpan _gameTime;
-
-    TimeSpan _time;
-    TimeSpan _timeRemaining;
-    TimeSpan? _startsAfter;
-    TimeSpan? _timeRemind;
-    TimeSpan? _stopsAfter;
-    string? _audioFile;
-
     TimeSpan? ManualResetTime { get; set; }
-    bool _isStarted;
 
     public DotaTimerViewModel(DotaTimer timer, IAudioService audioService)
     {
         _audioService = audioService;
-        _timer = timer;
-        _name = timer.Name;
+        Name = timer.Name;
 
         Name = timer.Name;
         Time = timer.Time;
@@ -70,63 +47,63 @@ public class DotaTimerViewModel : ViewModelBase
 
     public string Name
     {
-        get => _name;
-        set => SetProperty(ref _name, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
     public TimeSpan Time
     {
-        get => _time;
-        set => SetProperty(ref _time, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
     public bool IsStopped
     {
-        get => _isStopped;
-        set => SetProperty(ref _isStopped, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
     public bool IsStarted
     {
-        get => _isStarted;
-        set => SetProperty(ref _isStarted, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
     public bool IsEnabled
     {
-        get => _isEnabled;
-        set => SetProperty(ref _isEnabled, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
 
     public TimeSpan? RemindAt
     {
-        get => _timeRemind;
-        set => SetProperty(ref _timeRemind, value == TimeSpan.Zero ? null : value);
+        get;
+        set => SetProperty(ref field, value == TimeSpan.Zero ? null : value);
     }
 
     public TimeSpan? StopsAfter
     {
-        get => _stopsAfter;
-        set => SetProperty(ref _stopsAfter, value == TimeSpan.Zero ? null : value);
+        get;
+        set => SetProperty(ref field, value == TimeSpan.Zero ? null : value);
     }
 
     public bool IsAlertable
     {
-        get => _isAlertable;
-        set => SetProperty(ref _isAlertable, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
     public bool IsVisible
     {
-        get => _isVisible;
-        set => SetProperty(ref _isVisible, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
     public bool IsResetRequired
     {
-        get => _isResetRequired;
-        set => SetProperty(ref _isResetRequired, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
     public IRelayCommand ResetCommand { get; }
@@ -139,38 +116,38 @@ public class DotaTimerViewModel : ViewModelBase
 
     public TimeSpan TimeRemaining
     {
-        get => _timeRemaining;
-        set => SetProperty(ref _timeRemaining, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
     public TimeSpan? StartsAfter
     {
-        get => _startsAfter;
-        set => SetProperty(ref _startsAfter, value == TimeSpan.Zero ? null : value);
+        get;
+        set => SetProperty(ref field, value == TimeSpan.Zero ? null : value);
     }
 
     public bool IsManualReset
     {
-        get => _isManualReset;
-        set => SetProperty(ref _isManualReset, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
     public bool IsMuted
     {
-        get => _isMuted;
-        set => SetProperty(ref _isMuted, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
     public bool IsInterval
     {
-        get => _isInterval;
-        set => SetProperty(ref _isInterval, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
     public string? AudioFile
     {
-        get => _audioFile;
-        set => SetProperty(ref _audioFile, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
     public bool IsSoundPlayed { get; set; }
@@ -193,7 +170,7 @@ public class DotaTimerViewModel : ViewModelBase
 
             if (CalculateIsSoundPlayable())
             {
-                App.ServiceProvider.GetRequiredService<TimerAudioService>().Play(AudioFile!);
+                _audioService.Play(AudioFile!);
                 IsSoundPlayed = true;
             }
 
@@ -212,8 +189,8 @@ public class DotaTimerViewModel : ViewModelBase
 
     public TimeSpan GameTime
     {
-        get => _gameTime;
-        set => SetProperty(ref _gameTime, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
     TimeSpan CalculateTimeRemaining(TimeSpan gameTime)

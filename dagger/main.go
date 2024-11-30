@@ -41,7 +41,7 @@ type GitVersion struct {
 // Build the project
 func (m *Dota2Helper) Build(
 	ctx context.Context,
-	// +defaultPath="."
+// +defaultPath="."
 	git *dagger.Directory) (string, error) {
 
 	cache := dag.CacheVolume("nuget-cache")
@@ -59,36 +59,34 @@ func (m *Dota2Helper) Build(
 // Get a dotnet container with the required tools
 func (m *Dota2Helper) Dotnet() *dagger.Container {
 	return dag.Container().
-		From("mcr.microsoft.com/dotnet/sdk:8.0").
+		From("mcr.microsoft.com/dotnet/sdk:9.0").
 		WithExec([]string{"dotnet", "tool", "install", "--global", "nuget-license"}).
-		WithExec([]string{"dotnet", "tool", "install", "--global", "GitVersion.Tool"})
+		WithExec([]string{"dotnet", "tool", "install", "--global", "GitVersion.Tool"}).
+		WithExec([]string{"sh", "-c", "export PATH=\"$PATH:/root/.dotnet/tools\""})
 }
 
 func (m *Dota2Helper) GetPackages(
 	ctx context.Context,
-	// +defaultPath="."
+// +defaultPath="."
 	git *dagger.Directory) (string, error) {
 
 	return m.Dotnet().
 		WithDirectory("/repo", git).
 		WithWorkdir("/repo/src").
-		WithExec([]string{
-			"sh",
-			"-c",
-			"~/.dotnet/tools/nuget-license -i Dota2Helper.sln -o JsonPretty || true"}).
+		WithExec([]string{"sh", "-c", "~/.dotnet/tools/nuget-license -i Dota2Helper.sln -o JsonPretty || true"}).
 		Stdout(ctx)
 }
 
 // Get the semver details of the current git repository
 func (m *Dota2Helper) GitVersion(
 	ctx context.Context,
-	// +defaultPath="."
+// +defaultPath="."
 	git *dagger.Directory) (GitVersion, error) {
 
 	version, err := m.Dotnet().
 		WithDirectory("/repo", git).
 		WithWorkdir("/repo").
-		WithExec([]string{"sh", "-c", "$HOME/.dotnet/tools/dotnet-gitversion"}).
+		WithExec([]string{"sh", "-c", "~/.dotnet/tools/dotnet-gitversion"}).
 		Stdout(ctx)
 
 	if err != nil {
@@ -108,7 +106,7 @@ func (m *Dota2Helper) GitVersion(
 // Publish the project in release mode
 func (m *Dota2Helper) PublishWindows(
 	ctx context.Context,
-	// +defaultPath="."
+// +defaultPath="."
 	git *dagger.Directory,
 	version string) *dagger.Container {
 
@@ -144,7 +142,7 @@ func (m *Dota2Helper) PublishWindows(
 // Zip the published files
 func (m *Dota2Helper) Zip(
 	ctx context.Context,
-	// +defaultPath="."
+// +defaultPath="."
 	git *dagger.Directory) (*dagger.File, error) {
 
 	gitVersion, err := m.GitVersion(ctx, git)
@@ -168,7 +166,7 @@ func (m *Dota2Helper) Zip(
 // Create a release on github
 func (m *Dota2Helper) Release(
 	ctx context.Context,
-	// +defaultPath="/"
+// +defaultPath="/"
 	git *dagger.Directory,
 	token *dagger.Secret) error {
 

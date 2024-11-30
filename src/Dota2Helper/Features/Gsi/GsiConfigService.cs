@@ -14,6 +14,8 @@ namespace Dota2Helper.Features.Gsi;
 
 public partial class GsiConfigService
 {
+    private const string GsiFlag = "-gamestateintegration";
+
     string ConfigFile => IsDesignMode ? "gamestate_integration_design.cfg" : "gamestate_integration_d2helper.cfg";
 
     public bool IsLaunchArgumentPresent()
@@ -31,16 +33,16 @@ public partial class GsiConfigService
                 using (var stream = File.Open(config, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
                     var kv = KVSerializer.Create(KVSerializationFormat.KeyValues1Text);
-                    var localconfig = kv.Deserialize(stream, new KVSerializerOptions()
+                    var localConfig = kv.Deserialize(stream, new KVSerializerOptions()
                         {
                             HasEscapeSequences = true,
                             EnableValveNullByteBugBehavior = true
                         }
                     );
 
-                    var launchOptions = localconfig["Software"]["Valve"]["Steam"]["apps"]["570"]["LaunchOptions"].ToString();
+                    string launchOptions = localConfig["Software"]["Valve"]["Steam"]["apps"]["570"]["LaunchOptions"].ToString(CultureInfo.InvariantCulture);
 
-                    if (launchOptions.Contains("-gamestateintegration"))
+                    if (!string.IsNullOrWhiteSpace(launchOptions) && launchOptions.Contains(GsiFlag))
                     {
                         return true;
                     }
