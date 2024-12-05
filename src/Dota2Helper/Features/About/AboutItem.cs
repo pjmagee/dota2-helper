@@ -13,36 +13,24 @@ public class PackageItem : IComparable<PackageItem>
         return string.Compare(PackageId, other?.PackageId, StringComparison.Ordinal);
     }
 
-    [SetsRequiredMembers]
-    public PackageItem(string packageId, string packageVersion, string packageProjectUrl, string copyright, string authors, string license, string licenseUrl)
-    {
-        PackageId = packageId;
-        PackageVersion = packageVersion;
-        PackageProjectUrl = packageProjectUrl;
-        Copyright = copyright;
-        Authors = authors;
-        License = license;
-        LicenseUrl = licenseUrl;
-    }
-
     [JsonPropertyName("PackageId")]
-    public required string PackageId { get; set; }
+    public string PackageId { get; set; }
 
     [JsonPropertyName("PackageVersion")]
-    public required string PackageVersion { get; set; }
+    public string PackageVersion { get; set; }
 
     [JsonPropertyName("PackageProjectUrl")]
-    public required string PackageProjectUrl { get; set; }
+    string PackageProjectUrl { get; set; }
 
     [JsonPropertyName("Copyright")]
-    public required string Copyright { get; set; }
+    string Copyright { get; set; }
 
     [JsonPropertyName("Authors")]
-    public required string Authors { get; set; }
+    public string Authors { get; set; }
 
     [JsonPropertyName("License")]
-    public required string License { get; set; }
+    public string License { get; set; }
 
     [JsonPropertyName("LicenseUrl")]
-    public required string LicenseUrl { get; set; }
+    public string LicenseUrl { get; set; }
 }

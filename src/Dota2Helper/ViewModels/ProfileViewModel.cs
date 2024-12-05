@@ -6,10 +6,11 @@ namespace Dota2Helper.ViewModels;
 
 public class ProfileViewModel : ViewModelBase
 {
+    string _name = null!;
     public string Name
     {
-        get;
-        set => SetProperty(ref field, value);
+        get => _name;
+        set => SetProperty(ref _name, value);
     }
 
     public ObservableCollection<DotaTimerViewModel> Timers { get; } = [];

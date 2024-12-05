@@ -26,9 +26,20 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
     readonly ITimeProvider _timeProvider;
     readonly ITimer? _timer;
 
-    public ObservableCollection<DotaTimerViewModel> Timers { get; set => SetProperty(ref field, value); } = [];
+    ObservableCollection<DotaTimerViewModel> _timers = [];
+    public ObservableCollection<DotaTimerViewModel> Timers
+    {
+        get => _timers;
+        set => SetProperty(ref _timers, value);
+    }
 
-    public ObservableCollection<DotaTimerViewModel> VisibleTimers { get; set => SetProperty(ref field, value); } = new();
+    ObservableCollection<DotaTimerViewModel> _visibleTimers = [];
+    public ObservableCollection<DotaTimerViewModel> VisibleTimers
+    {
+        get => _visibleTimers;
+        set => SetProperty(ref _visibleTimers, value);
+    }
+
 
     readonly SemaphoreSlim _semaphore = new(1, 1);
 
@@ -98,10 +109,11 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
 
     public IRelayCommand OpenSettingsCommand { get; }
 
+    TimeSpan _time;
     public TimeSpan Time
     {
-        get;
-        set => SetProperty(ref field, value);
+        get => _time;
+        set => SetProperty(ref _time, value);
     }
 
     public IRelayCommand CloseAppCommand { get; }

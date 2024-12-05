@@ -16,7 +16,7 @@ public class DesignTimersViewModel : TimersViewModel
 
     }
 
-    public DesignTimersViewModel() : this(new SettingsService())
+    public DesignTimersViewModel() : this(new DesignSettingsService())
     {
 
     }

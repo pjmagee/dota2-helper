@@ -7,6 +7,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
+using Dota2Helper.Design;
 using Dota2Helper.Features.Audio;
 using Dota2Helper.Features.Gsi;
 using Dota2Helper.Features.Http;
@@ -17,6 +18,7 @@ using Dota2Helper.ViewModels;
 using Dota2Helper.Views;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using static Avalonia.Controls.Design;
 
 namespace Dota2Helper;
@@ -38,9 +40,7 @@ public partial class App : Application
 
         if (IsDesignMode)
         {
-            services
-                .Configure<Settings>(ConfigureDesignSettings)
-                .Configure<List<DotaTimer>>(ConfigureDesignDefaultTimers);
+            services.AddSingleton<SettingsService>(new DesignSettingsService());
         }
         else
         {
@@ -53,10 +53,12 @@ public partial class App : Application
             services
                 .Configure<Settings>(configuration.Bind)
                 .Configure<List<DotaTimer>>(configuration.GetSection("DefaultTimers").Bind);
+
+            services
+                .AddSingleton<SettingsService>();
         }
 
         services
-            .AddSingleton<SettingsService>()
             .AddSingleton<GameTimeProvider>()
             .AddSingleton<ITimeProvider>(sp => sp.GetRequiredService<GameTimeProvider>())
             .AddSingleton<DemoProvider>()
@@ -119,53 +121,7 @@ public partial class App : Application
         base.OnFrameworkInitializationCompleted();
     }
 
-    void ConfigureDesignDefaultTimers(List<DotaTimer> o)
-    {
-        o.Add(new DotaTimer
-            {
-                Name = "Roshan",
-                Time = TimeSpan.FromMinutes(8),
-                IsInterval = false,
-                IsManualReset = true,
-                IsEnabled = true,
-                IsMuted = false,
-                RemindAt = TimeSpan.FromMinutes(1),
-                StopAfter = TimeSpan.FromMinutes(1),
-                StartAfter = TimeSpan.FromMinutes(1),
-                AudioFile = null,
-            }
-        );
-    }
 
-    void ConfigureDesignSettings(Settings o)
-    {
-        o.Mode = TimeMode.Auto;
-        o.Volume = 50;
-        o.Theme = "Light";
-        o.DemoMuted = true;
-        o.SelectedProfileIdx = 0;
-        o.Profiles = new List<Profile>
-        {
-            new Profile
-            {
-                Name = "Default",
-                Timers = new List<DotaTimer>
-                {
-                    new DotaTimer
-                    {
-                        Name = "Roshan",
-                        Time = TimeSpan.FromMinutes(8),
-                        IsInterval = false,
-                        IsManualReset = true,
-                        IsEnabled = true,
-                        IsMuted = false,
-                        RemindAt = TimeSpan.FromMinutes(1),
-                        StopAfter = TimeSpan.FromMinutes(1),
-                        StartAfter = TimeSpan.FromMinutes(1),
-                        AudioFile = null,
-                    }
-                }
-            }
-        };
-    }
+
+
 }

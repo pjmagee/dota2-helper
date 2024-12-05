@@ -25,9 +25,9 @@ public class SettingsService
         DefaultTimers = new List<DotaTimer>();
     }
 
-    public Settings Settings { get; private set; }
+    public Settings Settings { get; protected set; }
 
-    public List<DotaTimer> DefaultTimers { get; }
+    public List<DotaTimer> DefaultTimers { get;  protected set;}
 
     public void SaveSettings()
     {
@@ -43,3 +43,4 @@ public class SettingsService
         SaveSettings();
     }
 }
+

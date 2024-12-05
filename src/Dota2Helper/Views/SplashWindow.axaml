@@ -23,7 +23,7 @@
         </i:Interaction.Behaviors>
         <Canvas>
             <Canvas.Background>
-                <ImageBrush Source="../Assets/witch_doctor.jpg" Stretch="Uniform"></ImageBrush>
+                <ImageBrush Source="../Assets/witch_doctor.jpg" Stretch="Uniform" />
             </Canvas.Background>
             <StackPanel Orientation="Vertical"
                         Canvas.Bottom="10"

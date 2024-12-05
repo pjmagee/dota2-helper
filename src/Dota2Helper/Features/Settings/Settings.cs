@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using Dota2Helper.Features.Timers;
@@ -7,6 +8,7 @@ namespace Dota2Helper.Features.Settings;
 public class Settings
 {
     [JsonPropertyName("$schema")]
+
     public string Schema { get; set; } = "./appsettings.schema.json";
 
     [JsonPropertyName("Profiles")]

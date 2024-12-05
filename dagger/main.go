@@ -42,52 +42,55 @@ type GitVersion struct {
 func (m *Dota2Helper) Build(
 	ctx context.Context,
 // +defaultPath="."
+// +ignore=["**/bin", "**/obj", "**/.idea", "**/docs", "**/.github", "**/.gitignore"]
 	git *dagger.Directory) (string, error) {
 
-	cache := dag.CacheVolume("nuget-cache")
-	opts := dagger.ContainerWithDirectoryOpts{Exclude: []string{"**/bin/**", "**/obj/**"}}
-
-	return m.Dotnet().
-		WithDirectory("/repo", git, opts).
+	return m.DotnetContainer().
+		WithDirectory("/repo", git).
 		WithWorkdir("/repo/src").
-		WithMountedCache("/root/.nuget/packages", cache).
 		// https://github.com/dotnet/sdk/issues/40913
 		WithExec([]string{"dotnet", "build", "Dota2Helper"}).
 		Stdout(ctx)
 }
 
 // Get a dotnet container with the required tools
-func (m *Dota2Helper) Dotnet() *dagger.Container {
+func (m *Dota2Helper) DotnetContainer() *dagger.Container {
+
+	cache := dag.CacheVolume("nuget-cache")
+
 	return dag.Container().
-		From("mcr.microsoft.com/dotnet/sdk:9.0").
+		From("mcr.microsoft.com/dotnet/sdk:8.0-alpine").
+		WithMountedCache("/root/.nuget/packages", cache).
 		WithExec([]string{"dotnet", "tool", "install", "--global", "nuget-license"}).
 		WithExec([]string{"dotnet", "tool", "install", "--global", "GitVersion.Tool"}).
 		WithExec([]string{"sh", "-c", "export PATH=\"$PATH:/root/.dotnet/tools\""})
 }
 
-func (m *Dota2Helper) GetPackages(
-	ctx context.Context,
+// Scan the project for used packages and bundle licenses and metadata into a single file
+func (m *Dota2Helper) GetPackagesFile(
 // +defaultPath="."
-	git *dagger.Directory) (string, error) {
+// +ignore=["**/bin", "**/obj", "**/.idea", "**/docs", "**/.github", "**/.gitignore"]
+	git *dagger.Directory) *dagger.File {
 
-	return m.Dotnet().
+	return m.DotnetContainer().
 		WithDirectory("/repo", git).
 		WithWorkdir("/repo/src").
-		WithExec([]string{"sh", "-c", "~/.dotnet/tools/nuget-license -i Dota2Helper.sln -o JsonPretty || true"}).
-		Stdout(ctx)
+		WithExec([]string{"dotnet", "restore"}).
+		WithExec([]string{"sh", "-c", "~/.dotnet/tools/nuget-license -i Dota2Helper.sln -o JsonPretty > ./packages.json || true"}).
+		File("/repo/src/packages.json")
 }
 
 // Get the semver details of the current git repository
 func (m *Dota2Helper) GitVersion(
-	ctx context.Context,
 // +defaultPath="."
+// +ignore=["**/bin", "**/obj", "**/.idea", "**/docs", "**/.github", "**/.gitignore"]
 	git *dagger.Directory) (GitVersion, error) {
 
-	version, err := m.Dotnet().
+	version, err := m.DotnetContainer().
 		WithDirectory("/repo", git).
 		WithWorkdir("/repo").
 		WithExec([]string{"sh", "-c", "~/.dotnet/tools/dotnet-gitversion"}).
-		Stdout(ctx)
+		Stdout(context.Background())
 
 	if err != nil {
 		return GitVersion{}, err
@@ -104,23 +107,16 @@ func (m *Dota2Helper) GitVersion(
 }
 
 // Publish the project in release mode
-func (m *Dota2Helper) PublishWindows(
-	ctx context.Context,
+func (m *Dota2Helper) DotnetPublish(
 // +defaultPath="."
+// +ignore=["**/bin", "**/obj", "**/.idea", "**/docs", "**/.github", "**/.gitignore"]
 	git *dagger.Directory,
 	version string) *dagger.Container {
 
-	cache := dag.CacheVolume("nuget-cache")
-
-	packages, _ := m.GetPackages(ctx, git)
-
-	return m.Dotnet().
-		WithDirectory("/repo", git, dagger.ContainerWithDirectoryOpts{
-			Exclude: []string{},
-		}).
-		WithMountedCache("/root/.nuget/packages", cache).
+	return m.DotnetContainer().
+		WithDirectory("/repo", git).
 		WithWorkdir("/repo/src").
-		WithNewFile("./Dota2Helper.Desktop/packages.json", packages).
+		WithFile("./Dota2Helper.Desktop/packages.json", m.GetPackagesFile(git)).
 		WithExec([]string{
 			"dotnet",
 			"publish",
@@ -139,20 +135,20 @@ func (m *Dota2Helper) PublishWindows(
 		})
 }
 
-// Zip the published files
-func (m *Dota2Helper) Zip(
-	ctx context.Context,
+// Publish the project in release mode and create a zip file
+func (m *Dota2Helper) PublishAsZip(
 // +defaultPath="."
+// +ignore=["**/bin", "**/obj", "**/.idea", "**/docs", "**/.github", "**/.gitignore"]
 	git *dagger.Directory) (*dagger.File, error) {
 
-	gitVersion, err := m.GitVersion(ctx, git)
+	gitVersion, err := m.GitVersion(git)
 
 	if err != nil {
 		return nil, err
 	}
 
 	version := gitVersion.MajorMinorPatch
-	published := m.PublishWindows(ctx, git, version)
+	published := m.DotnetPublish(git, version)
 	assets := published.Directory("/publish")
 
 	zip := dag.
@@ -165,18 +161,12 @@ func (m *Dota2Helper) Zip(
 
 // Create a release on github
 func (m *Dota2Helper) Release(
-	ctx context.Context,
 // +defaultPath="/"
 	git *dagger.Directory,
 	token *dagger.Secret) error {
 
-	gitVersion, err := m.GitVersion(ctx, git)
-
-	if err != nil {
-		return err
-	}
-
-	zip, err := m.Zip(ctx, git)
+	var zip, _ = m.PublishAsZip(git)
+	var gitVersion, _ = m.GitVersion(git)
 
 	ghOpts := dagger.GhOpts{
 		Token: token,
@@ -185,26 +175,23 @@ func (m *Dota2Helper) Release(
 
 	tag := fmt.Sprintf("v%s", gitVersion.MajorMinorPatch)
 	title := fmt.Sprintf("Dota 2 Helper %s", gitVersion.MajorMinorPatch)
-
-	err = dag.Gh(ghOpts).Release().Create(ctx, tag, title, dagger.GhReleaseCreateOpts{
+	releaseOptions := dagger.GhReleaseCreateOpts{
 		Target:        "main",
 		Files:         []*dagger.File{zip},
 		Latest:        dagger.GhLatestLatestAuto,
 		VerifyTag:     true,
 		Draft:         true,
 		GenerateNotes: true,
-	})
-
-	if err != nil {
-		return err
 	}
 
-	return nil
+	err := dag.Gh(ghOpts).Release().Create(context.Background(), tag, title, releaseOptions)
+	return err
 }
 
 // Create audio assets using OpenAI TTS
 func (m *Dota2Helper) CreateAudioAssets(
 	ctx context.Context,
+// The OpenAI API key
 	secret *dagger.Secret) (*dagger.Directory, error) {
 
 	assets := []string{
@@ -224,25 +211,24 @@ func (m *Dota2Helper) CreateAudioAssets(
 		"Tier 5s",
 	}
 
-	var template = `{
-		"model": "tts-1-hd",
-		"input": "%s",
-		"voice": "nova"
-	}`
-
 	build := dag.Container().
 		From("curlimages/curl:latest").
 		WithSecretVariable("OPEN_AI_API_KEY", secret).
 		WithoutEntrypoint().
 		WithWorkdir("/audio")
 
+	var template = `{
+		"model": "tts-1-hd",
+		"input": "%s",
+		"voice": "nova"
+	}`
+
 	for _, text := range assets {
-		payload := fmt.Sprintf(template, text)
 		cmd := fmt.Sprintf(`curl -v https://api.openai.com/v1/audio/speech \
             			-H "Authorization: Bearer $OPEN_AI_API_KEY" \
             			-H "Content-Type: application/json" \
             			-d '%s' \
-            			--output "%s"`, payload, fmt.Sprintf("%s.mp3", text))
+            			--output "%s"`, fmt.Sprintf(template, text), fmt.Sprintf("%s.mp3", text))
 		build = build.WithExec([]string{"sh", "-c", cmd})
 	}
 

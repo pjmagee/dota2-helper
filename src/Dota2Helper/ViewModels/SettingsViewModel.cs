@@ -44,30 +44,33 @@ public class SettingsViewModel : ViewModelBase
 
     public IEnumerable<PackageItem> PackageItems => new AboutTableData();
 
+    ThemeVariant _themeVariant = ThemeVariant.Default;
     public ThemeVariant ThemeVariant
     {
-        get;
+        get => _themeVariant;
         set
         {
-            if (SetProperty(ref field, value))
+            if (SetProperty(ref _themeVariant, value))
             {
                 SetTheme(value);
             }
         }
-    } = ThemeVariant.Default;
+    }
 
     public bool IsLaunchArgumentPresent => _gsiConfigService.IsLaunchArgumentPresent();
 
+    bool _isListening;
     public bool IsListening
     {
-        get;
-        set => SetProperty(ref field, value);
+        get => _isListening;
+        set => SetProperty(ref _isListening, value);
     }
 
+    DateTime? _latestUpdateTime;
     public DateTime? LatestUpdateTime
     {
-        get;
-        set => SetProperty(ref field, value);
+        get => _latestUpdateTime;
+        set => SetProperty(ref _latestUpdateTime, value);
     }
 
     void SetTheme(ThemeVariant variant)
@@ -77,37 +80,40 @@ public class SettingsViewModel : ViewModelBase
         _settingsService.SaveSettings();
     }
 
+    ObservableCollection<DotaTimerViewModel>? _timers;
     public ObservableCollection<DotaTimerViewModel>? Timers
     {
-        get;
-        set => SetProperty(ref field, value);
+        get => _timers;
+        set => SetProperty(ref _timers, value);
     }
 
+    ProfileViewModel? _selectedProfileViewModel;
     public ProfileViewModel? SelectedProfileViewModel
     {
-        get;
+        get => _selectedProfileViewModel;
         set
         {
             if (value == null) return;
-            SetProperty(ref field, value);
+            SetProperty(ref _selectedProfileViewModel, value);
             _profileService.SelectedProfileViewModel = value;
             Timers = _profileService.SelectedProfileViewModel.Timers;
         }
     }
 
+    DotaTimerViewModel? _selectedTimerViewModel;
     public DotaTimerViewModel? SelectedTimerViewModel
     {
-        get;
-        set => SetProperty(ref field, value);
+        get => _selectedTimerViewModel;
+        set => SetProperty(ref _selectedTimerViewModel, value);
     }
 
-    [field: AllowNull, MaybeNull]
+    TimerStrategy _selectedTimerMode = TimerStrategy.Modes[^1];
     public TimerStrategy SelectedTimerMode
     {
-        get => field ?? TimerModes[^1];
+        get => _selectedTimerMode;
         set
         {
-            if (SetProperty(ref field, value))
+            if (SetProperty(ref _selectedTimerMode, value))
             {
                 SetModeCommand.Execute(value);
                 _settingsService.Settings.Mode = value.Mode;
@@ -116,12 +122,13 @@ public class SettingsViewModel : ViewModelBase
         }
     }
 
+    double _volume;
     public double Volume
     {
-        get;
+        get => _volume;
         set
         {
-            if (SetProperty(ref field, value))
+            if (SetProperty(ref _volume, value))
             {
                 _settingsService.Settings.Volume = value;
                 _settingsService.UpdateSettings(_settingsService.Settings);
@@ -129,12 +136,13 @@ public class SettingsViewModel : ViewModelBase
         }
     }
 
+    bool _demoMuted;
     public bool DemoMuted
     {
-        get;
+        get => _demoMuted;
         set
         {
-            if (SetProperty(ref field, value))
+            if (SetProperty(ref _demoMuted, value))
             {
                 _settingsService.Settings.DemoMuted = value;
                 _settingsService.UpdateSettings(_settingsService.Settings);
@@ -142,14 +150,15 @@ public class SettingsViewModel : ViewModelBase
         }
     }
 
+    int _selectedProfileIndex;
     public int SelectedProfileIndex
     {
-        get;
+        get => _selectedProfileIndex;
         set
         {
             if (value >= 0 || value >= _profileService.Profiles.Count - 1)
             {
-                if (SetProperty(ref field, value))
+                if (SetProperty(ref _selectedProfileIndex, value))
                 {
                     _settingsService.Settings.SelectedProfileIdx = value;
                     _settingsService.UpdateSettings(_settingsService.Settings);
