@@ -26,6 +26,23 @@ I do not own a Mac or Linux machine to test the application, so only Windows is 
 - When the game is running, the timers will automatically start based on the game time
 - Automatic installation of the game state integration configuration into your Dota 2 folder
 
+## Why use this application?
+
+### Learn about objectives
+ 
+- The application can help you learn about the importance of objectives in Dota 2
+- Objectives can be the difference between winning and losing a game
+- Stacking and Pulling camps can be overwhelming for new players, but this application can help you learn the timings
+- Early players can learn the importance of power runes and bounty runes which add up over the course of the game.
+
+### Free alternative
+
+There are a few alternatives to this application, but they have their own costs and limitations:
+
+- Valve's Dota+ Subscription offers similar 'camp' timer features, but this application is free and has more customisation options.
+- There are a couple of extenions with some Dota support on the Overwolf app store, but you have to install Overwolf and the extensions, and they may not be free.
+- Overwolf can be seen as bloatware by some users, and it may impact your game performance.
+
 ## (GSI) Game State Integration
 
 The application uses the Game State Integration feature of Dota 2 to get the game time and other information.
