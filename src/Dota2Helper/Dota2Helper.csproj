@@ -24,7 +24,7 @@
         <PackageReference Include="Avalonia.Diagnostics" Version="11.2.2" Condition="'$(Configuration)' == 'Debug'" />
         <PackageReference Include="Avalonia.Xaml.Interactions" Version="11.2.0.1" />
         <PackageReference Include="Avalonia.Xaml.Interactions.Events" Version="11.2.0.1" />
-        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
         <PackageReference Include="FluentIcons.Avalonia" Version="1.1.266" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.0" />
