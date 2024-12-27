@@ -1,6 +1,5 @@
 using Dota2Helper.Features.Audio;
 using Dota2Helper.Features.Settings;
-using Dota2Helper.Features.Timers;
 using Dota2Helper.ViewModels;
 
 namespace Dota2Helper.Tests;

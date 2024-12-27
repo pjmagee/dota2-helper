@@ -62,6 +62,7 @@
                     Profiles
                 </TextBlock>
                 <TextBlock TextWrapping="Wrap" Width="750">
+                    Selecting a profile from the Profiles tab will make it active. The active profile will be used for the timers overlay.
                     Profiles are used to group timers. You can create a profile for each hero, role, or game mode.
                     You can add, remove, and switch profiles from the Profiles tab.
                     Each profile can have its own set of timers.

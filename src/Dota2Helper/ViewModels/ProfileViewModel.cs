@@ -1,5 +1,4 @@
 using System.Collections.ObjectModel;
-using Dota2Helper.Features.Audio;
 using Dota2Helper.Features.Settings;
 
 namespace Dota2Helper.ViewModels;
@@ -7,6 +6,7 @@ namespace Dota2Helper.ViewModels;
 public class ProfileViewModel : ViewModelBase
 {
     string _name = null!;
+    
     public string Name
     {
         get => _name;

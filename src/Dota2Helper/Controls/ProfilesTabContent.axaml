@@ -2,20 +2,25 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="450"
              xmlns:vm="clr-namespace:Dota2Helper.ViewModels"
              xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
              x:Class="Dota2Helper.Controls.ProfilesTabContent"
              x:DataType="vm:SettingsViewModel">
     <StackPanel Orientation="Vertical" Margin="0 10" Spacing="5">
-        <StackPanel Orientation="Horizontal" Spacing="5">
+        <StackPanel Orientation="Vertical" Spacing="5">
+            <TextBlock TextAlignment="Left">
+                Selecting a profile will make it active. The active profile will be used for the timers overlay.
+            </TextBlock>
             <DataGrid ItemsSource="{Binding Profiles, Mode=TwoWay}"
                       GridLinesVisibility="All"
-                      Width="400"
                       BorderBrush="Black"
                       CanUserSortColumns="True"
                       BorderThickness="0.5"
                       MaxHeight="400"
+                      Width="600"
+                      ColumnHeaderTheme="{DynamicResource DataGridHeaderTheme}"
+                      HorizontalAlignment="Left"
                       SelectedItem="{Binding SelectedProfileViewModel, Mode=TwoWay}"
                       SelectedIndex="{Binding SelectedProfileIndex, Mode=TwoWay}"
                       SelectionMode="Single"

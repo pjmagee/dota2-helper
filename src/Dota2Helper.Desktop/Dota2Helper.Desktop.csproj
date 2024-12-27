@@ -22,11 +22,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia.Desktop" Version="11.2.2" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.2.3" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="GitVersion.MsBuild" Version="6.0.5">
+        <PackageReference Include="GitVersion.MsBuild" Version="6.1.0">
             <PrivateAssets>All</PrivateAssets>
         </PackageReference>
     </ItemGroup>
