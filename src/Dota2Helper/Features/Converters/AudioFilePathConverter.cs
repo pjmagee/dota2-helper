@@ -2,14 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using Avalonia.Controls;
 using Avalonia.Data.Converters;
-using Avalonia.Media;
-using Avalonia.Platform;
-using Avalonia.Styling;
-using Dota2Helper.ViewModels;
 
-namespace Dota2Helper.Features.Audio;
+namespace Dota2Helper.Features.Converters;
+
 
 public class AudioFilePathConverter : IValueConverter
 {

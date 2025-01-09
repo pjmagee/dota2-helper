@@ -104,7 +104,7 @@ public partial class GsiConfigService
 
     public bool TryInstall()
     {
-        if (IsIntegrationInstalled()) return true;
+        if (IsIntegrationInstalled()) return false;
 
         var dota2FolderPath = GetDota2InstallationPath();
         if (dota2FolderPath == null) return false;

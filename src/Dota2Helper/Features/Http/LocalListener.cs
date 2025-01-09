@@ -3,16 +3,19 @@ using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
 using Dota2Helper.Features.Gsi;
 using Dota2Helper.Features.Http.Serialisation;
 using Dota2Helper.Features.TimeProvider;
 using Dota2Helper.ViewModels;
+using Microsoft.Extensions.Hosting;
 
 namespace Dota2Helper.Features.Http;
 
-public class LocalListener : BackgroundWorker
+public class LocalListener : BackgroundService
 {
-    readonly RealProvider _realProvider;
+    readonly RealGameTimeProvider _realGameTimeProvider;
     readonly GsiConfigWatcher _configWatcher;
     readonly GsiConfigService _configurationService;
     readonly SettingsViewModel _settingsViewModel;
@@ -20,12 +23,12 @@ public class LocalListener : BackgroundWorker
     HttpListener? _listener;
 
     public LocalListener(
-        RealProvider realProvider,
+        RealGameTimeProvider realGameTimeProvider,
         GsiConfigWatcher configWatcher,
         GsiConfigService configurationService,
         SettingsViewModel settingsViewModel)
     {
-        _realProvider = realProvider;
+        _realGameTimeProvider = realGameTimeProvider;
         _configurationService = configurationService;
         _settingsViewModel = settingsViewModel;
         _configWatcher = configWatcher;
@@ -56,6 +59,27 @@ public class LocalListener : BackgroundWorker
         }
     }
 
+    public void ManualStart()
+    {
+        TryCreateOrRenewListener();
+
+        if (_listener is not null)
+        {
+            _settingsViewModel.IsListening = _listener.IsListening;
+        }
+    }
+
+    public void ManualStop()
+    {
+        if (_listener is not null)
+        {
+            _listener.Stop();
+            _listener.Close();
+            _listener = null;
+            _settingsViewModel.IsListening = false;
+        }
+    }
+
     void CreateAndStartListener()
     {
         if (_configurationService.IsIntegrationInstalled())
@@ -66,11 +90,11 @@ public class LocalListener : BackgroundWorker
         }
     }
 
-    protected override void OnDoWork(DoWorkEventArgs eventArgs)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         TryCreateOrRenewListener();
 
-        while (!CancellationPending)
+        while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
@@ -78,9 +102,9 @@ public class LocalListener : BackgroundWorker
                 {
                     _settingsViewModel.IsListening = true;
 
-                    var context = _listener.GetContext();
+                    var context = await _listener.GetContextAsync();
                     var gameState = JsonSerializer.Deserialize<GameState>(context.Request.InputStream)!;
-                    _realProvider.Time = gameState.GameTime();
+                    _realGameTimeProvider.Time = gameState.GameTime();
                     context.Response.StatusCode = (int)HttpStatusCode.OK;
                     context.Response.Close();
 
@@ -91,22 +115,26 @@ public class LocalListener : BackgroundWorker
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
             }
+
+            await Task.Delay(100, stoppingToken);
         }
     }
 
-    protected override void Dispose(bool disposing)
+    public override void Dispose()
     {
-        if (disposing)
+        if (_listener is not null)
         {
             try
             {
                 _listener?.Stop();
                 _listener?.Close();
             }
-            catch
+            catch (Exception e)
             {
-                // ignored
+                System.Diagnostics.Debug.WriteLine(e.Message);
             }
         }
+
+        base.Dispose();
     }
 }

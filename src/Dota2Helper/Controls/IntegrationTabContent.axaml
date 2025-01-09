@@ -4,9 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:Dota2Helper.ViewModels"
              xmlns:timers="clr-namespace:Dota2Helper.Features.Timers"
+             xmlns:converters="clr-namespace:Dota2Helper.Features.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Dota2Helper.Controls.IntegrationTabContent"
              x:DataType="vm:SettingsViewModel">
+    <UserControl.Resources>
+        <converters:IsListeningConverter x:Key="IsListeningConverter" />
+        <converters:IsConfigInstalledConverter x:Key="IsConfigInstalledConverter" />
+    </UserControl.Resources>
+
     <StackPanel Margin="0 10" Orientation="Vertical">
 
         <StackPanel Margin="5" Orientation="Vertical" Spacing="5">
@@ -47,7 +53,7 @@
 
                 <!-- row 1 -->
                 <Label Grid.Column="0" Grid.Row="1" VerticalAlignment="Center">
-                    Connection:
+                    Status:
                 </Label>
                 <TextBlock Grid.Column="1" Grid.Row="1"
                            VerticalAlignment="Center" IsVisible="{Binding IsListening}" Text="Listening" Foreground="Green" />
@@ -79,18 +85,7 @@
             </Grid>
 
             <StackPanel Margin="5" Orientation="Vertical" Spacing="5">
-                <Button Width="140" Height="30"
-                        HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        ToolTip.Tip="Copy the gamestate_integration_d2helper.cfg file to the Dota 2 game folder."
-                        Padding="2"
-                        Command="{Binding InstallCommand}">
-                    <Button.Content>
-                        <StackPanel Orientation="Horizontal" Spacing="2">
-                            <TextBlock Text="Install GSI" VerticalAlignment="Center" />
-                        </StackPanel>
-                    </Button.Content>
-                </Button>
+
                 <Button Width="140" Height="30"
                         HorizontalContentAlignment="Center"
                         VerticalContentAlignment="Center"
@@ -102,14 +97,27 @@
                         </StackPanel>
                     </Button.Content>
                 </Button>
+
+                <Button Width="140" Height="30"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Padding="2" ToolTip.Tip="Copy/Delete the gamestate_integration_d2helper.cfg file to the Dota 2 game folder."
+                        Command="{Binding InstallUninstallCommand}">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal" Spacing="2">
+                            <TextBlock Text="{Binding IsInstalled, Converter={StaticResource IsConfigInstalledConverter}}" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+                <!-- Buttons for Starting and Stopping the Listener -->
                 <Button Width="140" Height="30"
                         HorizontalContentAlignment="Center"
                         VerticalContentAlignment="Center"
                         Padding="2"
-                        Command="{Binding InstallCommand}">
+                        Command="{Binding StartStopListeningCommand}">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal" Spacing="2">
-                            <TextBlock Text="Uninstall GSI" VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding IsListening, Converter={StaticResource IsListeningConverter}}" VerticalAlignment="Center" />
                         </StackPanel>
                     </Button.Content>
                 </Button>

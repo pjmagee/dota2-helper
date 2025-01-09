@@ -1,22 +1,18 @@
 using System;
-using System.ComponentModel;
 using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
 
 namespace Dota2Helper.Features.TimeProvider;
 
-public class DemoProvider : BackgroundWorker, ITimeProvider
+public class DemoTimeProvider : BackgroundService, ITimeProvider
 {
     public ProviderType ProviderType => ProviderType.Demo;
     public TimeSpan Time { get; private set; } = TimeSpan.FromSeconds(-90);
 
-    public DemoProvider()
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        RunWorkerAsync();
-    }
-
-    protected override void OnDoWork(DoWorkEventArgs e)
-    {
-        while (!CancellationPending)
+        while (!stoppingToken.IsCancellationRequested)
         {
             if (Time > TimeSpan.FromMinutes(60))
             {
@@ -24,7 +20,7 @@ public class DemoProvider : BackgroundWorker, ITimeProvider
             }
 
             Time += TimeSpan.FromSeconds(1);
-            Thread.Sleep(500);
+            await Task.Delay(500, stoppingToken);
         }
     }
 }

@@ -1,45 +1,35 @@
 using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Dota2Helper.Features.Settings;
 using Dota2Helper.Features.Timers;
+using Microsoft.Extensions.Hosting;
 
 namespace Dota2Helper.Features.TimeProvider;
 
-public class GameTimeProvider : BackgroundWorker, ITimeProvider
+public class GameTimeProvider(SettingsService settingsService, RealGameTimeProvider realGameTimeProvider, DemoTimeProvider demoTimeProvider) : BackgroundService, ITimeProvider
 {
     public ProviderType ProviderType => _current?.ProviderType ?? ProviderType.Real;
     public TimeSpan Time => _current?.Time ?? TimeSpan.Zero;
 
     Process? _dota2;
     ITimeProvider? _current;
-    readonly SettingsService _settingsService;
-    readonly RealProvider _realProvider;
-    readonly DemoProvider _demoProvider;
 
-    public GameTimeProvider(SettingsService settingsService, RealProvider realProvider, DemoProvider demoProvider)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _settingsService = settingsService;
-        _realProvider = realProvider;
-        _demoProvider = demoProvider;
-        RunWorkerAsync();
-    }
-
-    protected override void OnDoWork(DoWorkEventArgs e)
-    {
-        while (!CancellationPending)
+        while (!stoppingToken.IsCancellationRequested)
         {
-            if(_settingsService.Settings.Mode is TimeMode.Real)
+            if(settingsService.Settings.Mode is TimeMode.Real)
             {
-                _current = _realProvider;
+                _current = realGameTimeProvider;
             }
-            else if (_settingsService.Settings.Mode is TimeMode.Demo)
+            else if (settingsService.Settings.Mode is TimeMode.Demo)
             {
-                _current = _demoProvider;
+                _current = demoTimeProvider;
             }
-            else if (_settingsService.Settings.Mode is TimeMode.Auto)
+            else if (settingsService.Settings.Mode is TimeMode.Auto)
             {
                 if (_dota2 is null)
                 {
@@ -47,22 +37,22 @@ public class GameTimeProvider : BackgroundWorker, ITimeProvider
 
                     if (_dota2 is null)
                     {
-                        _current = _demoProvider;
+                        _current = demoTimeProvider;
                     }
                     else
                     {
-                        _current = _realProvider;
+                        _current = realGameTimeProvider;
                         _dota2.EnableRaisingEvents = true;
                         _dota2.Exited += (sender, args) =>
                         {
                             _dota2 = null;
-                            _current = _demoProvider;
+                            _current = demoTimeProvider;
                         };
                     }
                 }
             }
 
-            Thread.Sleep(2000);
+            await Task.Delay(2000, stoppingToken);
         }
     }
 }

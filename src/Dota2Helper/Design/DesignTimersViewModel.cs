@@ -11,7 +11,7 @@ public class DesignTimersViewModel : TimersViewModel
 
     }
 
-    DesignTimersViewModel(SettingsService settingsService) : this(new GameTimeProvider(settingsService, new RealProvider(), new DemoProvider()))
+    DesignTimersViewModel(SettingsService settingsService) : this(new GameTimeProvider(settingsService, new RealGameTimeProvider(), new DemoTimeProvider()))
     {
 
     }

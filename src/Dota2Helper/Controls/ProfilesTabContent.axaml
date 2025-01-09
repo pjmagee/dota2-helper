@@ -18,17 +18,16 @@
                       CanUserSortColumns="True"
                       BorderThickness="0.5"
                       MaxHeight="400"
-                      Width="600"
                       ColumnHeaderTheme="{DynamicResource DataGridHeaderTheme}"
                       HorizontalAlignment="Left"
                       SelectedItem="{Binding SelectedProfileViewModel, Mode=TwoWay}"
                       SelectedIndex="{Binding SelectedProfileIndex, Mode=TwoWay}"
-                      SelectionMode="Single"
+                      SelectionMode="Single" AutoGenerateColumns="False"
                       HorizontalScrollBarVisibility="Auto">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="200" />
-                    <DataGridTextColumn Header="Timers" Binding="{Binding Timers.Count}" />
-                    <DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Timers" Binding="{Binding Timers.Count}" Width="150" />
+                    <DataGridTemplateColumn Header="Actions" Width="150">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Button Width="30" Height="30"
