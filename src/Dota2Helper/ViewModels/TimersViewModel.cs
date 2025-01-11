@@ -1,19 +1,13 @@
 using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
-using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Threading;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Dota2Helper.Features.Settings;
 using Dota2Helper.Features.TimeProvider;
-using Dota2Helper.Features.Timers;
 using Dota2Helper.Views;
 using Microsoft.Extensions.DependencyInjection;
 using TimeProvider = System.TimeProvider;
@@ -87,6 +81,7 @@ public class TimersViewModel : ViewModelBase, IDisposable, IAsyncDisposable
                 {
                     Timers = _settingsViewModel.SelectedProfileViewModel?.Timers!;
                     Time = _timeProvider.Time;
+
 
                     foreach (var timer in Timers)
                     {

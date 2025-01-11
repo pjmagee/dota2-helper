@@ -1,20 +1,10 @@
-using System;
 using System.Threading;
-using System.Threading.Tasks;
-using Avalonia.Metadata;
 using CommunityToolkit.Mvvm.Input;
 using Dota2Helper.Features.Gsi;
 using Dota2Helper.Features.Http;
 
 namespace Dota2Helper.ViewModels;
 
-public class SplashScreenDesignViewModel : SplashScreenViewModel
-{
-    public SplashScreenDesignViewModel() : base(null!, null!)
-    {
-        StatusText = "GSI installed successfully";
-    }
-}
 
 public class SplashScreenViewModel : ViewModelBase
 {

@@ -1,27 +1,19 @@
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Dota2Helper.Features.Settings;
+using Microsoft.Extensions.Hosting;
 using NAudio.Wave;
 
 namespace Dota2Helper.Features.Audio;
 
-public class AudioService : BackgroundWorker, IAudioService, IDisposable
+public class AudioService(SettingsService settingsService) : BackgroundService, IAudioService
 {
-    readonly SettingsService _settingsService;
-    readonly WaveOutEvent _mediaPlayer;
-
-    ConcurrentQueue<string> AudioQueue { get; } = new();
-
-    public AudioService(SettingsService settingsService)
-    {
-        _settingsService = settingsService;
-        _mediaPlayer = new WaveOutEvent();
-        RunWorkerAsync();
-    }
+    private readonly WaveOutEvent _mediaPlayer = new();
+    private ConcurrentQueue<string> AudioQueue { get; } = new();
 
     public void Play(string audioFile)
     {
@@ -31,28 +23,45 @@ public class AudioService : BackgroundWorker, IAudioService, IDisposable
         }
     }
 
-    protected override async void OnDoWork(DoWorkEventArgs e)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (!CancellationPending)
+        while (!stoppingToken.IsCancellationRequested)
         {
             while (AudioQueue.TryDequeue(out var audioFile))
             {
                 try
                 {
-                    using (var audioFileReader = new AudioFileReader(audioFile))
+                    var audioFileReader = new AudioFileReader(audioFile);
+
+                    try
                     {
                         _mediaPlayer.Init(audioFileReader);
-                        _mediaPlayer.Volume = (float)(_settingsService.Settings.Volume / 100.0);
+                        _mediaPlayer.Volume = (float)(settingsService.Settings.Volume / 100.0);
                         _mediaPlayer.Play();
+
+                        while (_mediaPlayer.PlaybackState == PlaybackState.Playing)
+                        {
+                            await Task.Delay(100, stoppingToken);
+                        }
+                    }
+                    finally
+                    {
+                        await audioFileReader.DisposeAsync();
                     }
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-
+                   Debug.WriteLine(e.Message);
                 }
             }
 
-            await Task.Delay(1000);
+            await Task.Delay(1000, stoppingToken);
         }
+    }
+
+    public override void Dispose()
+    {
+        _mediaPlayer?.Dispose();
+        base.Dispose();
     }
 }

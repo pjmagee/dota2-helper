@@ -1,22 +1,19 @@
 using Dota2Helper.Features.Settings;
 using Dota2Helper.Features.TimeProvider;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Dota2Helper.Features.Audio;
 
-public class TimerAudioService(
-    ITimeProvider timeProvider,
-    SettingsService settingsService,
-    AudioService audioService) : IAudioService
+public class TimerAudioService(ITimeProvider timeProvider, SettingsService settingsService, [FromKeyedServices(nameof(AudioService))] IAudioService audioService) : IAudioService
 {
     public void Play(string audioFile)
     {
-        if (timeProvider.ProviderType == ProviderType.Real)
+        switch (timeProvider.ProviderType)
         {
-            audioService.Play(audioFile);
-        }
-        else if (timeProvider.ProviderType == ProviderType.Demo && !settingsService.Settings.DemoMuted)
-        {
-            audioService.Play(audioFile);
+            case ProviderType.Real:
+            case ProviderType.Demo when !settingsService.Settings.DemoMuted:
+                audioService.Play(audioFile);
+                break;
         }
     }
 }

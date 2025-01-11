@@ -1,8 +1,5 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json;
 using System.Text.Json.Serialization;
-using Dota2Helper.Features.Settings;
 
 namespace Dota2Helper.Features.About;
 

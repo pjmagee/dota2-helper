@@ -6,6 +6,7 @@
         xmlns:ie="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
         xmlns:animations="clr-namespace:Avalonia.Rendering.Composition.Animations;assembly=Avalonia.Base"
         xmlns:vm="clr-namespace:Dota2Helper.ViewModels"
+        xmlns:design="clr-namespace:Dota2Helper.Design"
         SystemDecorations="None"
         Topmost="True"
         x:Class="Dota2Helper.Views.SplashWindow"
@@ -14,7 +15,7 @@
         Width="800" Height="402"
         x:DataType="vm:SplashScreenViewModel">
     <Design.DataContext>
-        <vm:SplashScreenDesignViewModel />
+        <design:DesignSplashScreenViewModel />
     </Design.DataContext>
     <i:Interaction.Behaviors>
         <ie:EventTriggerBehavior EventName="Opened">

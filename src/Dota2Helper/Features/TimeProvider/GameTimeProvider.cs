@@ -16,6 +16,7 @@ public class GameTimeProvider(SettingsService settingsService, RealGameTimeProvi
 
     Process? _dota2;
     ITimeProvider? _current;
+    private readonly SemaphoreSlim _signal = new(0);
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -47,12 +48,13 @@ public class GameTimeProvider(SettingsService settingsService, RealGameTimeProvi
                         {
                             _dota2 = null;
                             _current = demoTimeProvider;
+                            _signal.Release();
                         };
                     }
                 }
             }
 
-            await Task.Delay(2000, stoppingToken);
+            await _signal.WaitAsync(2000, stoppingToken);
         }
     }
 }

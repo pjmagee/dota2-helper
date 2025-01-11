@@ -2,24 +2,20 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Reflection;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Platform;
 using Avalonia.Styling;
-using CommunityToolkit.Mvvm.ComponentModel;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
-using Dota2Helper.Features;
 using Dota2Helper.Features.About;
 using Dota2Helper.Features.Audio;
 using Dota2Helper.Features.Gsi;
 using Dota2Helper.Features.Http;
 using Dota2Helper.Features.Settings;
 using Dota2Helper.Features.Timers;
-using Dota2Helper.Views;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Dota2Helper.ViewModels;

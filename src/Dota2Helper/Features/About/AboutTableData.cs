@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json;
 
 namespace Dota2Helper.Features.About;
 
@@ -22,7 +23,7 @@ public class AboutTableData : SortedSet<PackageItem>
         {
             var dir = Directory.GetCurrentDirectory();
             var json = File.ReadAllText(Path.Combine(dir, "packages.json"));
-            return System.Text.Json.JsonSerializer.Deserialize<List<PackageItem>>(json)!;
+            return JsonSerializer.Deserialize<List<PackageItem>>(json)!;
         }
         catch(Exception e)
         {

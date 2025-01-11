@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
@@ -19,7 +18,6 @@ using Dota2Helper.Views;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using static Avalonia.Controls.Design;
 
 namespace Dota2Helper;
@@ -77,8 +75,8 @@ public partial class App : Application
                     .AddSingleton<GsiConfigWatcher>()
                     .AddSingleton<GsiConfigService>()
                     .AddSingleton<ProfileService>()
-                    .AddSingleton<AudioService>()
-                    .AddSingleton<TimerAudioService>()
+                    // .AddSingleton<AudioService>()
+                    //.AddSingleton<TimerAudioService>()
                     .AddSingleton<SettingsWindow>()
                     .AddSingleton<LocalListener>()
                     .AddSingleton<SplashScreenViewModel>()
@@ -88,6 +86,7 @@ public partial class App : Application
                 services
                     .AddHostedService(sp => sp.GetRequiredService<GameTimeProvider>())
                     .AddHostedService(sp => sp.GetRequiredService<LocalListener>())
+                    .AddHostedService(sp => (AudioService) sp.GetRequiredKeyedService<IAudioService>(nameof(AudioService)))
                     .AddHostedService(sp => sp.GetRequiredService<DemoTimeProvider>());
             }
         );
@@ -112,7 +111,7 @@ public partial class App : Application
                 DataContext = ServiceProvider.GetRequiredService<TimersViewModel>(),
             };
 
-            var task = _host.RunAsync();
+            _ = _host.RunAsync();
 
             desktop.MainWindow.Show();
             splash.Close();

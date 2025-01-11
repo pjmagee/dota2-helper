@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using Dota2Helper.Features.Audio;
 using Dota2Helper.Features.Settings;
 using Dota2Helper.ViewModels;
 

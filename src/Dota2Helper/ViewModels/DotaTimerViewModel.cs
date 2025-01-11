@@ -1,10 +1,7 @@
 using System;
-using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
 using Dota2Helper.Features.Audio;
 using Dota2Helper.Features.Settings;
-using Dota2Helper.Features.Timers;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Dota2Helper.ViewModels;
 

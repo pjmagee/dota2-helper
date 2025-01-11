@@ -1,5 +1,5 @@
 using System;
-using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Text.Json;
@@ -113,7 +113,7 @@ public class LocalListener : BackgroundService
             }
             catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine(e.Message);
+                Debug.WriteLine(e.Message);
             }
 
             await Task.Delay(100, stoppingToken);
@@ -131,7 +131,7 @@ public class LocalListener : BackgroundService
             }
             catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine(e.Message);
+                Debug.WriteLine(e.Message);
             }
         }
 
