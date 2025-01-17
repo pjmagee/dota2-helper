@@ -1,6 +1,6 @@
 namespace Dota2Helper.Features.TimeProvider;
 
-public enum ProviderType
+public enum TimeProviderType
 {
     Real,
     Demo

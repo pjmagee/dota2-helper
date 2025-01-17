@@ -8,8 +8,8 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Dota2Helper.Design;
 using Dota2Helper.Features.Audio;
+using Dota2Helper.Features.Background;
 using Dota2Helper.Features.Gsi;
-using Dota2Helper.Features.Http;
 using Dota2Helper.Features.Settings;
 using Dota2Helper.Features.TimeProvider;
 using Dota2Helper.Features.Timers;
@@ -64,30 +64,38 @@ public partial class App : Application
                         .AddSingleton<SettingsService>();
                 }
 
+                // Time providers
                 services
                     .AddSingleton<GameTimeProvider>()
+                    .AddSingleton<RealGameTimeProvider>()
+                    .AddSingleton<DemoGameTimeProvider>()
                     .AddSingleton<ITimeProvider>(sp => sp.GetRequiredService<GameTimeProvider>())
-                    .AddSingleton<DemoTimeProvider>()
+                    .AddHostedService(sp => sp.GetRequiredService<DemoGameTimeProvider>())
+                    .AddHostedService<TimeProviderStrategyService>();
+
+                // Audio
+                services
                     .AddSingleton<ViewModelFactory>()
                     .AddKeyedSingleton<IAudioService, AudioService>(nameof(AudioService))
                     .AddKeyedSingleton<IAudioService, TimerAudioService>(nameof(TimerAudioService))
-                    .AddSingleton<RealGameTimeProvider>()
+                    .AddSingleton<AudioQueue>()
+                    .AddHostedService<AudioQueueService>();
+
+                // GSI Config
+                services
                     .AddSingleton<GsiConfigWatcher>()
                     .AddSingleton<GsiConfigService>()
-                    .AddSingleton<ProfileService>()
-                    // .AddSingleton<AudioService>()
-                    //.AddSingleton<TimerAudioService>()
-                    .AddSingleton<SettingsWindow>()
                     .AddSingleton<LocalListener>()
+                    .AddHostedService(sp => sp.GetRequiredService<LocalListener>());
+
+                services
+                    .AddSingleton<ProfileService>();
+
+                services
+                    .AddSingleton<SettingsWindow>()
                     .AddSingleton<SplashScreenViewModel>()
                     .AddSingleton<TimersViewModel>()
                     .AddSingleton<SettingsViewModel>();
-
-                services
-                    .AddHostedService(sp => sp.GetRequiredService<GameTimeProvider>())
-                    .AddHostedService(sp => sp.GetRequiredService<LocalListener>())
-                    .AddHostedService(sp => (AudioService) sp.GetRequiredKeyedService<IAudioService>(nameof(AudioService)))
-                    .AddHostedService(sp => sp.GetRequiredService<DemoTimeProvider>());
             }
         );
 
@@ -111,7 +119,7 @@ public partial class App : Application
                 DataContext = ServiceProvider.GetRequiredService<TimersViewModel>(),
             };
 
-            _ = _host.RunAsync();
+            var task = _host.RunAsync();
 
             desktop.MainWindow.Show();
             splash.Close();

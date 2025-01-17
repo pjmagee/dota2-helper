@@ -1,6 +1,6 @@
 {
   "name": "Dota2Helper",
-  "engineVersion": "v0.14.0",
+  "engineVersion": "v0.15.2",
   "sdk": "go",
   "dependencies": [
     {

@@ -4,6 +4,6 @@ namespace Dota2Helper.Features.TimeProvider;
 
 public class RealGameTimeProvider : ITimeProvider
 {
-    public ProviderType ProviderType => ProviderType.Real;
+    public TimeProviderType TimeProviderType => TimeProviderType.Real;
     public TimeSpan Time { get; set; }
 }

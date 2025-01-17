@@ -7,7 +7,7 @@ namespace Dota2Helper.Design;
 
 public class DesignSettingsViewModel : SettingsViewModel
 {
-    DesignSettingsViewModel(SettingsService settingsService) : base(new DesignProfileService(), new AudioService(settingsService), new ViewModelFactory(new FakeTimerAudioService()), settingsService, new GsiConfigService())
+    DesignSettingsViewModel(SettingsService settingsService) : base(new DesignProfileService(), new AudioService(new AudioQueue()), new ViewModelFactory(new FakeTimerAudioService()), settingsService, new GsiConfigService())
     {
 
     }

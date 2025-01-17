@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Dota2Helper.Features.About;
 
+[JsonSerializable(typeof(PackageItem))]
 public class PackageItem : IComparable<PackageItem>
 {
     public int CompareTo(PackageItem? other)
@@ -10,24 +11,27 @@ public class PackageItem : IComparable<PackageItem>
         return string.Compare(PackageId, other?.PackageId, StringComparison.Ordinal);
     }
 
+
     [JsonPropertyName("PackageId")]
-    public string PackageId { get; set; }
+    public string? PackageId { get; set; }
 
     [JsonPropertyName("PackageVersion")]
-    public string PackageVersion { get; set; }
+    public string? PackageVersion { get; set; }
 
     [JsonPropertyName("PackageProjectUrl")]
-    string PackageProjectUrl { get; set; }
+    [JsonIgnore]
+    string? PackageProjectUrl { get; set; }
 
     [JsonPropertyName("Copyright")]
-    string Copyright { get; set; }
+    [JsonIgnore]
+    string? Copyright { get; set; }
 
     [JsonPropertyName("Authors")]
-    public string Authors { get; set; }
+    public string? Authors { get; set; }
 
     [JsonPropertyName("License")]
-    public string License { get; set; }
+    public string? License { get; set; }
 
     [JsonPropertyName("LicenseUrl")]
-    public string LicenseUrl { get; set; }
+    public string? LicenseUrl { get; set; }
 }

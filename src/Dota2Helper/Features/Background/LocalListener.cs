@@ -11,7 +11,7 @@ using Dota2Helper.Features.TimeProvider;
 using Dota2Helper.ViewModels;
 using Microsoft.Extensions.Hosting;
 
-namespace Dota2Helper.Features.Http;
+namespace Dota2Helper.Features.Background;
 
 public class LocalListener : BackgroundService
 {
@@ -45,17 +45,23 @@ public class LocalListener : BackgroundService
 
     void TryCreateOrRenewListener()
     {
-        if (_listener is not null && _listener.IsListening)
+        try
         {
-            _listener.Stop();
-            _listener.Close();
-            _settingsViewModel.IsListening = false;
-
-            CreateAndStartListener();
+            if (_listener is not null && _listener.IsListening)
+            {
+                _listener.Stop();
+                _listener.Close();
+                _settingsViewModel.IsListening = false;
+                CreateAndStartListener();
+            }
+            else if (_listener is null)
+            {
+                CreateAndStartListener();
+            }
         }
-        else if (_listener is null)
+        catch (Exception e)
         {
-            CreateAndStartListener();
+            Debug.WriteLine(e.Message);
         }
     }
 
@@ -116,7 +122,7 @@ public class LocalListener : BackgroundService
                 Debug.WriteLine(e.Message);
             }
 
-            await Task.Delay(100, stoppingToken);
+            await Task.Delay(500, stoppingToken);
         }
     }
 

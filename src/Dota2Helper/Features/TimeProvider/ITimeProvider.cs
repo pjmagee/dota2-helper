@@ -4,7 +4,7 @@ namespace Dota2Helper.Features.TimeProvider;
 
 public interface ITimeProvider
 {
-    ProviderType ProviderType { get; }
+    TimeProviderType TimeProviderType { get; }
 
     public TimeSpan Time { get; }
 }

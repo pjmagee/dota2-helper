@@ -40,7 +40,6 @@ type GitVersion struct {
 
 // Build the project
 func (m *Dota2Helper) Build(
-	ctx context.Context,
 // +defaultPath="."
 // +ignore=["**/bin", "**/obj", "**/.idea", "**/docs", "**/.github", "**/.gitignore"]
 	git *dagger.Directory) (string, error) {
@@ -50,7 +49,7 @@ func (m *Dota2Helper) Build(
 		WithWorkdir("/repo/src").
 		// https://github.com/dotnet/sdk/issues/40913
 		WithExec([]string{"dotnet", "build", "Dota2Helper"}).
-		Stdout(ctx)
+		Stdout(context.Background())
 }
 
 // Get a dotnet container with the required tools

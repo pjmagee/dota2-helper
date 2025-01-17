@@ -4,7 +4,7 @@ namespace Dota2Helper.Design;
 
 public class DesignSplashScreenViewModel : SplashScreenViewModel
 {
-    public DesignSplashScreenViewModel() : base(null!, null!)
+    public DesignSplashScreenViewModel() : base(null!)
     {
         StatusText = "GSI installed successfully";
     }

@@ -1,7 +1,6 @@
 using System.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Dota2Helper.Features.Gsi;
-using Dota2Helper.Features.Http;
 
 namespace Dota2Helper.ViewModels;
 
@@ -9,7 +8,6 @@ namespace Dota2Helper.ViewModels;
 public class SplashScreenViewModel : ViewModelBase
 {
     readonly GsiConfigService? _gsiConfigService;
-    readonly LocalListener? _localListener;
     public IRelayCommand ContinueCommand { get; }
     public IRelayCommand WindowOpenedCommand { get; }
 
@@ -25,10 +23,9 @@ public class SplashScreenViewModel : ViewModelBase
         StatusText = "Starting...";
     }
 
-    public SplashScreenViewModel(GsiConfigService gsiConfigService, LocalListener localListener) : this()
+    public SplashScreenViewModel(GsiConfigService gsiConfigService) : this()
     {
         _gsiConfigService = gsiConfigService;
-        _localListener = localListener;
     }
 
     string _statusText = "Starting...";

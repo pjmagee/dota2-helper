@@ -10,9 +10,12 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        fetch-tags: true
 
     - name: Build
-      uses: dagger/dagger-for-github@v6.13.0
+      uses: dagger/dagger-for-github@v7.0.4
       with:
         version: "latest"
         verb: call

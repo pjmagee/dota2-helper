@@ -32,19 +32,4 @@ public class AboutTableData : SortedSet<PackageItem>
 
         return [];
     }
-
-    bool HasMetaDataAttribute(Assembly assembly)
-    {
-        var metadataAttributes = assembly.GetCustomAttributes<AssemblyMetadataAttribute>();
-        return metadataAttributes.Any();
-    }
-
-    string GetAssemblyDescription(Assembly assembly)
-    {
-        var descriptionAttribute = assembly
-            .GetCustomAttributes<AssemblyDescriptionAttribute>()
-            .FirstOrDefault();
-
-        return descriptionAttribute?.Description ?? "No description available";
-    }
 }

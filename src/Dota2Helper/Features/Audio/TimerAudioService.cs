@@ -8,10 +8,10 @@ public class TimerAudioService(ITimeProvider timeProvider, SettingsService setti
 {
     public void Play(string audioFile)
     {
-        switch (timeProvider.ProviderType)
+        switch (timeProvider.TimeProviderType)
         {
-            case ProviderType.Real:
-            case ProviderType.Demo when !settingsService.Settings.DemoMuted:
+            case TimeProviderType.Real:
+            case TimeProviderType.Demo when !settingsService.Settings.DemoMuted:
                 audioService.Play(audioFile);
                 break;
         }
