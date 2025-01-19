@@ -1,0 +1,5 @@
+<!-- play the video from the video/preview.mp4 file -->
+<video playsinline="" autoplay="true" muted="" controls loop="" width="600px" height="100%" poster="">
+    {{ $videoResource := resources.Get "video/preview.mp4" }}
+    <source src="{{ $videoResource.RelPermalink }}" type="video/mp4">
+</video>

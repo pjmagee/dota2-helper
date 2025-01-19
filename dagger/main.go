@@ -67,8 +67,8 @@ func (m *Dota2Helper) DotnetContainer() *dagger.Container {
 
 // Scan the project for used packages and bundle licenses and metadata into a single file
 func (m *Dota2Helper) GetPackagesFile(
-// +defaultPath="."
-// +ignore=["**/bin", "**/obj", "**/.idea", "**/docs", "**/.github", "**/.gitignore"]
+    // +defaultPath="."
+    // +ignore=["**/bin", "**/obj", "**/.idea", "**/docs", "**/.github", "**/.gitignore"]
 	git *dagger.Directory) *dagger.File {
 
 	return m.DotnetContainer().

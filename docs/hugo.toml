@@ -1,0 +1,122 @@
+baseURL = "https://pjmagee.github.io/dota2-helper/"
+
+# This is a "one page"-website, so we do not need these kinds of pages...
+disableKinds = ["section", "taxonomy", "term", "RSS", "robotsTXT"]
+
+defaultContentLanguage = "en"
+
+# The name of this wonderful theme ;-).
+theme = "hugo-scroll"
+
+# The browser tab name
+title = "DOTA2 Helper - An objective timer helper"
+
+# In order to add version information in the page's footer set to true.
+# enableGitInfo = true
+
+# enable emoji processing in Markdown (valid only for pure markdown content)
+enableEmoji = true
+
+# Theme-specific variables `.Site.Params.myParamName`
+[params]
+
+    # The path to your "favicon". This should be a square (at least 32px x 32px) png-file.
+    favicon = "images/favicon.png"
+
+    # These "images" are used for the structured data templates. This will show up, when
+    # services like Twitter or Slack want to generate a preview of a link to your site.
+    # See https://gohugo.io/templates/internal#twitter-cards and https://gohugo.io/templates/internal#open-graph.
+    # NOT the actual header background image, go to _index.md instead
+    images = ["images/cover-image.jpg"]
+
+    # When set true, it creates a visual guard (partially transparent rounded box), preventing non-ideal background images from interfering with title/description headings
+    # Ideal images are homogenous around the centre and contrasting to the text.
+    # see CSS classes: .title-and-description-guard, .blog-title, .blog-description
+    # see _index.md header_headline and header_subheadline
+    title_guard = false
+
+    # Another "title" :-). This one is used as the site_name on the Hugo's internal
+    # opengraph structured data template.
+    # See https://ogp.me/ and https://gohugo.io/templates/internal#open-graph.
+    title = "DOTA 2 Helper - Objective Timer Desktop app"
+
+    # The "description" of your website. This is used in the meta data of your generated html.
+    description = "DOTA 2 Helper - Objective timer desktop app with game state integration"
+
+    # Show a menu of languages available
+    language_menu = true
+
+    # Show also a language menu item for the current language, if false only
+    # show the remaining languages
+    show_current_lang = true
+
+    # A "copyright"-line to be added at the bottom of the page.
+    # Hint: Plain HTML is supported in here as well. So you may e.g. add a link to your legal imprint-page.
+    copyright = "Copyright © Patrick Magee. <br/> Dota2 Helper is an independent tool created by Patrick Magee and is NOT affiliated with or endorsed by Valve Corporation. <br/> Dota 2 and all associated trademarks and copyrights are the property of Valve Corporation. <br/> All other trademarks are the property of their respective owners."
+
+    # This theme will, by default, inject a design-by-line at the bottom of the page.
+    # You can turn it off, but we would really appreciate if you don’t :-)
+    hidedesignbyline = false
+
+    # The sections of the home page alternate styling. Mark invert as true to swap the styling of the sections
+    invertSectionColors = false
+
+    # Options used for automatic image generation. see: https://gohugo.io/content-management/image-processing/
+    image_options = "webp q90 lanczos photo"
+
+    # Use "page_title | site_title" for <title> tags
+    # e.g. <title>Legal | Jane Doe - Nutrition Coach & Chef Consultant</title>
+    combine_page_and_site_title = false
+
+    [params.footer]
+    # Show contact icons for email/phone (if specified) in the footer of the page
+    showContactIcons = false
+
+    # Show links indicated with footer_menu and footer_menu_title in the footer of the page
+    showFooterLinks = false
+
+    [params.meta]
+        keywords = "dota2, dota2 timers, objectives, bounty runes, wisdom runes, stacking camps, pulling camps, neutral timers, jungle timers, roshan timer, dota notifications"
+
+#    [[params.contacts]]
+#        label = "phone"
+#        value = "+49 1111 555555"
+#        url = "tel:+49 1111 555555"
+#        icon = "fa fa-phone"
+
+    [[params.contacts]]
+        label = "email"
+        value = "patrick.magee@live.co.uk"
+        url = "mailto:mail@patrick.magee@live.co.uk"
+        icon = "fa fa-envelope"
+
+#    [[params.contacts]]
+#        label = "GitHub"
+#        value = "github.com/pjmagee"
+#        url = "https://github.com/pjmagee"
+#        icon = "fa-brands fa-github"
+
+    # Add additional contacts here!
+    # [[params.contacts]]
+    #     label = ""
+    #     value = ""
+    #     url = ""
+    #     icon = ""
+
+# Define additional languages
+[languages]
+  [languages.en]
+    weight = 10
+    languageName = "English"
+    contentDir = "content/en"
+
+#  [languages.de]
+#    title = "Erika Musterfrau - Ernährungshilfe & Kochberatung"
+#    weight = 20
+#    contentDir = "content/de"
+#    languageName = "Deutsch"
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
