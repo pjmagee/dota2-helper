@@ -50,6 +50,10 @@ Check that the port is not being used by another process, that the -gamestateint
 
 Open the settings and ensure Timer mode is set to 'Auto' or 'Game', not 'Demo'
 
+#### Can I use my own audio files for the timers?
+
+Yes, you can use your own audio files. mp3 and wav are supported.
+
 #### Will I get banned?
 
 Using this software does not violate the Steam Subscriber Agreement or the Dota 2 terms of service. It does not modify the game in any way. It's like having a coach sitting next to you, providing you with additional information to help you play better.
