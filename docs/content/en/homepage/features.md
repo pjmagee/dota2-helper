@@ -27,6 +27,7 @@ header_menu: false
 - Customise when timers show or hide or loop
 - Create and edit profile names and timer names
 - Create profiles based on role, hero, lane or any other criteria
+- Profiles can be changed mid game and are not limited by game state
 
 ### {{< icon name="bell" >}} Alerting
 
@@ -37,6 +38,7 @@ header_menu: false
 
 ### {{< icon name="thumbs-up" >}} Easy to Use
 
-- No dependencies required.
+- No other applications or dependencies are required.
 - Auto-installs GSI configuration for easy setup.
 - Simple download, extract, and run.
+- Easily configure your timers outside of a game using the Demo Timer mode
