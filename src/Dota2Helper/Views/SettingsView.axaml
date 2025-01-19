@@ -7,6 +7,7 @@
     xmlns:design="clr-namespace:Dota2Helper.Design"
     xmlns:audio="clr-namespace:Dota2Helper.Features.Audio"
     xmlns:controls="clr-namespace:Dota2Helper.Controls"
+    xmlns:converters="clr-namespace:Dota2Helper.Features.Converters"
     mc:Ignorable="d"
     d:DesignHeight="600" d:DesignWidth="800"
     x:Class="Dota2Helper.Views.SettingsView"
@@ -16,7 +17,7 @@
         <design:DesignSettingsViewModel />
     </Design.DataContext>
     <UserControl.Resources>
-        <audio:AudioFilePathConverter x:Key="AudioFilePathConverter" />
+        <converters:AudioFilePathConverter x:Key="AudioFilePathConverter" />
     </UserControl.Resources>
     <DockPanel Margin="5">
         <StackPanel
@@ -34,7 +35,8 @@
                             Margin="5" Width="280"
                             Spacing="10" HorizontalAlignment="Left">
                     <TextBlock Text="Volume" VerticalAlignment="Center" Margin="0" />
-                    <Slider Width="200" Minimum="0" Maximum="100" IsSnapToTickEnabled="True" TickFrequency="5" TickPlacement="BottomRight"
+                    <Slider Width="200" Minimum="0" Maximum="100" IsSnapToTickEnabled="True"
+                            TickFrequency="5" TickPlacement="BottomRight"
                             Value="{Binding Volume, Mode=TwoWay}" />
                     <TextBlock Text="{Binding Volume, Mode=OneWay}" VerticalAlignment="Center" />
                 </StackPanel>

@@ -1,0 +1,11 @@
+:root {
+    --primary-color: #a4c639; /* Radiant Green */
+    --secondary-color: #a22b2b; /* Dire Red */
+    --background-color: #1e1e1e; /* Dire Black */
+    --text-color: #ffffff; /* White */
+    --highlight-color: #ffd700; /* Radiant Gold */
+} 
+
+.blog-title, .blog-description {
+    color: var(--text-color);    
+}

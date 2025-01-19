@@ -1,0 +1,4 @@
+<video playsinline="" autoplay="true" muted="" loop="" poster="">
+    {{ $videoResource := resources.Get "cover/intro.mp4" }}
+    <source src="{{ $videoResource.RelPermalink }}" type="video/mp4"> 
+</video>

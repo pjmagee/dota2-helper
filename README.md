@@ -4,11 +4,14 @@
 
 An objective timer tracker with audio notifications for Dota2. This application is designed to help players keep track of important in-game events such as stacking, power runes, bounty runes, and more. The application is designed to be used in conjunction with the Game State Integration feature of Dota2.
 
-## Support
 
-If you find this application useful, please consider supporting me by buying me a coffee.
+## Download
 
-[![Buy Me A Coffee](https://cdn.buymeacoffee.com/buttons/default-orange.png)](https://www.buymeacoffee.com/pjmagee)
+1. Visit the [releases page](https://github.com/pjmagee/dota2-helper/releases).
+2. Download the latest version e.g. `Dota2Helper_v1.0.4_windows_amd64.zip`
+3. Extract the zip file which contains the full application.
+4. Run the `Dota2Helper.Desktop.exe`
+
 
 ## Platform
 
@@ -78,35 +81,9 @@ This application runs a small local web server waiting for Dota2 to post the gam
 
 Valve does not seem to have dedicated GSI documentation for Dota2, but the concept and configuration is similar to Valves CSGO GSI, which is documented [here](https://developer.valvesoftware.com/wiki/Counter-Strike:_Global_Offensive_Game_State_Integration).
 
-## How to?
 
-1. Visit the [releases page](https://github.com/pjmagee/dota2-helper/releases).
-2. Download the latest version e.g. `Dota2Helper_v1.0.4_windows_amd64.zip`
-3. Extract the zip file which contains the full application.
-4. Run the `Dota2Helper.Desktop.exe`
+## Support
 
+If you find this application useful, please consider supporting me by buying me a coffee.
 
-### Preview
-
-https://github.com/user-attachments/assets/505a08f3-24fe-4d41-a8b3-b867670b5910
-
-### Screenshots
-
-<details>
-<summary>Profiles</summary>
-
-![profiles](./docs/settings-profiles.png)
-</details>
-
-<details>
-
-<summary>Timers</summary>
-
-![timers](./docs/settings-timers.png)
-</details>
-
-<details>
-<summary>Overlay</summary>
-
-![overlay](./docs/timers-window.png)
-</details>
+[![Buy Me A Coffee](https://cdn.buymeacoffee.com/buttons/default-orange.png)](https://www.buymeacoffee.com/pjmagee)

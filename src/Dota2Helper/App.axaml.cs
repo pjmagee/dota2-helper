@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
@@ -9,8 +8,8 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Dota2Helper.Design;
 using Dota2Helper.Features.Audio;
+using Dota2Helper.Features.Background;
 using Dota2Helper.Features.Gsi;
-using Dota2Helper.Features.Http;
 using Dota2Helper.Features.Settings;
 using Dota2Helper.Features.TimeProvider;
 using Dota2Helper.Features.Timers;
@@ -18,16 +17,15 @@ using Dota2Helper.ViewModels;
 using Dota2Helper.Views;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Hosting;
 using static Avalonia.Controls.Design;
 
 namespace Dota2Helper;
 
 public partial class App : Application
 {
-    public static IServiceProvider ServiceProvider => _serviceProvider ?? throw new InvalidOperationException("Service provider is not initialized");
-
-    static IServiceProvider? _serviceProvider;
+    public static IServiceProvider ServiceProvider => _host?.Services ?? throw new InvalidOperationException("Service provider is not initialized");
+    static IHost? _host;
 
     public override void Initialize()
     {
@@ -36,68 +34,82 @@ public partial class App : Application
 
     public override async void OnFrameworkInitializationCompleted()
     {
-        var services = new ServiceCollection().AddOptions();
+        IHostBuilder builder = Host.CreateDefaultBuilder();
 
-        if (IsDesignMode)
-        {
-            services.AddSingleton<SettingsService>(new DesignSettingsService());
-        }
-        else
-        {
-            var configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
-                .AddJsonFile("appsettings.timers.default.json", optional: false, reloadOnChange: false)
-                .Build();
+        builder.ConfigureAppConfiguration((hostingContext, config) =>
+            {
+                if (!IsDesignMode)
+                {
+                    config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: false);
+                    config.AddJsonFile("appsettings.timers.default.json", optional: false, reloadOnChange: false);
+                }
+            }
+        );
 
-            services
-                .Configure<Settings>(configuration.Bind)
-                .Configure<List<DotaTimer>>(configuration.GetSection("DefaultTimers").Bind);
+        builder.ConfigureServices((hostingContext, services) =>
+            {
+                services.AddOptions();
 
-            services
-                .AddSingleton<SettingsService>();
-        }
+                if (IsDesignMode)
+                {
+                    services.AddSingleton<SettingsService>(new DesignSettingsService());
+                }
+                else
+                {
+                    services
+                        .Configure<Settings>(hostingContext.Configuration)
+                        .Configure<List<DotaTimer>>(hostingContext.Configuration.GetSection("DefaultTimers").Bind);
 
-        services
-            .AddSingleton<GameTimeProvider>()
-            .AddSingleton<ITimeProvider>(sp => sp.GetRequiredService<GameTimeProvider>())
-            .AddSingleton<DemoProvider>()
-            .AddSingleton<ViewModelFactory>()
-            .AddKeyedSingleton<IAudioService, AudioService>(nameof(AudioService))
-            .AddKeyedSingleton<IAudioService, TimerAudioService>(nameof(TimerAudioService))
-            .AddSingleton<RealProvider>()
-            .AddSingleton<GsiConfigWatcher>()
-            .AddSingleton<GsiConfigService>()
-            .AddSingleton<ProfileService>()
-            .AddSingleton<AudioService>()
-            .AddSingleton<TimerAudioService>()
-            .AddSingleton<SettingsWindow>()
-            .AddSingleton<LocalListener>()
-            .AddSingleton<SplashScreenViewModel>()
-            .AddSingleton<TimersViewModel>()
-            .AddSingleton<SettingsViewModel>();
+                    services
+                        .AddSingleton<SettingsService>();
+                }
 
-        _serviceProvider = services.BuildServiceProvider();
+                // Time providers
+                services
+                    .AddSingleton<GameTimeProvider>()
+                    .AddSingleton<RealGameTimeProvider>()
+                    .AddSingleton<DemoGameTimeProvider>()
+                    .AddSingleton<ITimeProvider>(sp => sp.GetRequiredService<GameTimeProvider>())
+                    .AddHostedService(sp => sp.GetRequiredService<DemoGameTimeProvider>())
+                    .AddHostedService<TimeProviderStrategyService>();
 
-        var dota2ConfigService = ServiceProvider.GetRequiredService<GsiConfigService>();
-        var localListener = ServiceProvider.GetRequiredService<LocalListener>();
-        localListener.RunWorkerAsync();
+                // Audio
+                services
+                    .AddSingleton<ViewModelFactory>()
+                    .AddKeyedSingleton<IAudioService, AudioService>(nameof(AudioService))
+                    .AddKeyedSingleton<IAudioService, TimerAudioService>(nameof(TimerAudioService))
+                    .AddSingleton<AudioQueue>()
+                    .AddHostedService<AudioQueueService>();
+
+                // GSI Config
+                services
+                    .AddSingleton<GsiConfigWatcher>()
+                    .AddSingleton<GsiConfigService>()
+                    .AddSingleton<LocalListener>()
+                    .AddHostedService(sp => sp.GetRequiredService<LocalListener>());
+
+                services
+                    .AddSingleton<ProfileService>();
+
+                services
+                    .AddSingleton<SettingsWindow>()
+                    .AddSingleton<SplashScreenViewModel>()
+                    .AddSingleton<TimersViewModel>()
+                    .AddSingleton<SettingsViewModel>();
+            }
+        );
+
+        _host = builder.Build();
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            var splash = new SplashWindow
-            {
-                DataContext = ServiceProvider.GetRequiredService<SplashScreenViewModel>(),
-            };
-
+            var splash = new SplashWindow(dataContext: ServiceProvider.GetRequiredService<SplashScreenViewModel>());
             desktop.MainWindow = splash;
             splash.Show();
 
-            dota2ConfigService.TryInstall();
-
             await Task.WhenAny(
                 Task.Delay(8000),
-                Task.Delay(Timeout.Infinite, ((SplashScreenViewModel)splash.DataContext).CancellationToken)
+                Task.Delay(Timeout.Infinite, ((SplashScreenViewModel)splash.DataContext!).CancellationToken)
             );
 
             BindingPlugins.DataValidators.RemoveAt(0);
@@ -107,21 +119,17 @@ public partial class App : Application
                 DataContext = ServiceProvider.GetRequiredService<TimersViewModel>(),
             };
 
+            var task = _host.RunAsync();
+
             desktop.MainWindow.Show();
             splash.Close();
-        }
-        else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
-        {
-            singleViewPlatform.MainView = new TimersWindow
+
+            desktop.MainWindow.Closing += (sender, args) =>
             {
-                DataContext = ServiceProvider.GetRequiredService<TimersViewModel>(),
+                _host.Dispose();
             };
         }
 
         base.OnFrameworkInitializationCompleted();
     }
-
-
-
-
 }

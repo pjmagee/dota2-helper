@@ -89,7 +89,19 @@ public partial class GsiConfigService
         var gsiCfgPath = Path.Combine(gsiPath, ConfigFile);
         if (!File.Exists(gsiCfgPath)) return null;
 
-        var rawConfig = File.ReadAllText(gsiCfgPath);
+        // read error issue
+        // var rawConfig = File.ReadAllText(gsiCfgPath);
+
+        string? rawConfig = null;
+
+        using (var stream = File.Open(gsiCfgPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+        {
+            using (var reader = new StreamReader(stream))
+            {
+                rawConfig = reader.ReadToEnd();
+            }
+        }
+
         var match = Regex.Match(rawConfig, @"""uri""\s*""http://localhost:(\d+)/""");
         if (!match.Success) return null;
 
@@ -104,7 +116,7 @@ public partial class GsiConfigService
 
     public bool TryInstall()
     {
-        if (IsIntegrationInstalled()) return true;
+        if (IsIntegrationInstalled()) return false;
 
         var dota2FolderPath = GetDota2InstallationPath();
         if (dota2FolderPath == null) return false;

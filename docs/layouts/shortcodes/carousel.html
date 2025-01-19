@@ -1,0 +1,17 @@
+<section id="carousel">
+    <div class="carousel">
+      <div class="carousel-track">
+        {{ range resources.Match "images/*" }}
+        <div class="carousel-slide">
+          <img src="{{ .RelPermalink }}" alt="Screenshot">
+        </div>
+        {{ end }}
+      </div>
+      <button class="carousel-button prev">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <button class="carousel-button next">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  </section>

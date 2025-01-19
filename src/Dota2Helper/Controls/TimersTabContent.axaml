@@ -5,13 +5,15 @@
              xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
              xmlns:viewModels="clr-namespace:Dota2Helper.ViewModels"
              xmlns:audio="clr-namespace:Dota2Helper.Features.Audio"
+             xmlns:converters="clr-namespace:Dota2Helper.Features.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Dota2Helper.Controls.TimersTabContent"
              x:DataType="viewModels:SettingsViewModel">
     <TemplatedControl.Resources>
-        <audio:AudioFilePathConverter x:Key="AudioFilePathConverter" />
+        <converters:AudioFilePathConverter x:Key="AudioFilePathConverter" />
     </TemplatedControl.Resources>
     <StackPanel Orientation="Vertical" Margin="0 10" Spacing="5">
+        <TextBlock Text="OpenAI was used for the default audio that comes with the application." />
         <StackPanel Orientation="Horizontal" Spacing="5">
             <DataGrid x:Name="DataGrid"
                       ItemsSource="{Binding Timers}"
@@ -169,6 +171,5 @@
                 </Button.Content>
             </Button>
         </StackPanel>
-        <TextBlock Text="AI was used for the default audio that comes with the application." />
     </StackPanel>
 </UserControl>

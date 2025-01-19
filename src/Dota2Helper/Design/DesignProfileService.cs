@@ -1,5 +1,4 @@
 using Dota2Helper.Features.Audio;
-using Dota2Helper.Features.Settings;
 using Dota2Helper.Features.Timers;
 
 namespace Dota2Helper.Design;

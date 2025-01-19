@@ -8,4 +8,9 @@ public partial class SplashWindow : Window
     {
         InitializeComponent();
     }
+
+    public SplashWindow(object? dataContext) : this()
+    {
+        DataContext = dataContext;
+    }
 }

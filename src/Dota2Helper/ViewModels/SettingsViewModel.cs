@@ -2,22 +2,18 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Platform;
 using Avalonia.Styling;
 using CommunityToolkit.Mvvm.Input;
-using Dota2Helper.Features;
 using Dota2Helper.Features.About;
 using Dota2Helper.Features.Audio;
+using Dota2Helper.Features.Background;
 using Dota2Helper.Features.Gsi;
 using Dota2Helper.Features.Settings;
 using Dota2Helper.Features.Timers;
-using Dota2Helper.Views;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Dota2Helper.ViewModels;
@@ -34,6 +30,9 @@ public class SettingsViewModel : ViewModelBase
     public ObservableCollection<TimerStrategy> TimerModes { get; set; }
     public IRelayCommand<DotaTimerViewModel> DeleteTimerCommand { get; }
     public IRelayCommand<ProfileViewModel> DeleteProfileCommand { get; }
+
+    public IRelayCommand InstallUninstallCommand { get; }
+    public IRelayCommand StartStopListeningCommand { get; }
 
     public IRelayCommand SelectFileCommand { get; }
     public IRelayCommand InstallCommand { get; }
@@ -151,6 +150,8 @@ public class SettingsViewModel : ViewModelBase
     }
 
     int _selectedProfileIndex;
+    bool _isInstalled;
+
     public int SelectedProfileIndex
     {
         get => _selectedProfileIndex;
@@ -201,6 +202,8 @@ public class SettingsViewModel : ViewModelBase
         SetModeCommand = new RelayCommand<TimerStrategy>(SetMode);
         PlayAudioCommand = new RelayCommand(PlayAudio);
         TimerModes = new ObservableCollection<TimerStrategy>(TimerStrategy.Modes);
+        StartStopListeningCommand = new RelayCommand(StartStopListening);
+        InstallUninstallCommand = new RelayCommand(InstallUninstall);
 
         SelectedProfileViewModel = _profileService.Profiles[_settingsService.Settings.SelectedProfileIdx];
         Timers = SelectedProfileViewModel.Timers;
@@ -208,7 +211,40 @@ public class SettingsViewModel : ViewModelBase
         SelectedTimerMode = TimerModes.FirstOrDefault(tm => _settingsService.Settings.Mode == tm.Mode) ?? TimerModes[^1];
         Volume = _settingsService.Settings.Volume;
         DemoMuted = _settingsService.Settings.DemoMuted;
+        IsInstalled = _gsiConfigService.IsIntegrationInstalled();
+    }
 
+
+    public bool IsInstalled
+    {
+        get => _isInstalled;
+        set => SetProperty(ref _isInstalled, value);
+    }
+
+    void InstallUninstall()
+    {
+        if (_gsiConfigService.IsIntegrationInstalled())
+        {
+            _gsiConfigService.Uninstall();
+        }
+        else
+        {
+            _gsiConfigService.Install();
+        }
+
+        IsInstalled = _gsiConfigService.IsIntegrationInstalled();
+    }
+
+    void StartStopListening()
+    {
+        if (IsListening)
+        {
+            App.ServiceProvider.GetRequiredService<LocalListener>().ManualStop();
+        }
+        else
+        {
+            App.ServiceProvider.GetRequiredService<LocalListener>().ManualStart();
+        }
     }
 
     void LoadSavedTheme(string settingsTheme)
