@@ -106,8 +106,8 @@ type GitVersion struct {
 
 // Build the project
 func (m *Dota2Helper) Build(
-// +defaultPath="."
-// +ignore=["**/bin", "**/obj", "**/.idea", "**/docs", "**/.github", "**/.gitignore"]
+	// +defaultPath="."
+	// +ignore=["**/bin", "**/obj", "**/.idea", "**/docs", "**/.github", "**/.gitignore"]
 	git *dagger.Directory,
 ) (string, error) {
 
@@ -134,8 +134,8 @@ func (m *Dota2Helper) DotnetContainer() *dagger.Container {
 
 // Scan the project for used packages and bundle licenses and metadata into a single file
 func (m *Dota2Helper) GetPackagesFile(
-// +defaultPath="."
-// +ignore=["**/bin", "**/obj", "**/.idea", "**/docs", "**/.github", "**/.gitignore"]
+	// +defaultPath="."
+	// +ignore=["**/bin", "**/obj", "**/.idea", "**/docs", "**/.github", "**/.gitignore"]
 	git *dagger.Directory,
 ) *dagger.File {
 
@@ -149,8 +149,8 @@ func (m *Dota2Helper) GetPackagesFile(
 
 // Get the semver details of the current git repository
 func (m *Dota2Helper) GetGitVersion(
-// +defaultPath="."
-// +ignore=["**/bin", "**/obj", "**/.idea", "**/docs", "**/.github", "**/.gitignore"]
+	// +defaultPath="."
+	// +ignore=["**/bin", "**/obj", "**/.idea", "**/docs", "**/.github", "**/.gitignore"]
 	git *dagger.Directory,
 ) (GitVersion, error) {
 
@@ -176,12 +176,12 @@ func (m *Dota2Helper) GetGitVersion(
 
 // Publish the project in release mode
 func (m *Dota2Helper) DotnetPublish(
-// +defaultPath="."
-// +ignore=["**/bin", "**/obj", "**/.idea", "**/docs", "**/.github", "**/.gitignore"]
+	// +defaultPath="."
+	// +ignore=["**/bin", "**/obj", "**/.idea", "**/docs", "**/.github", "**/.gitignore"]
 	git *dagger.Directory,
-// win-x64, win-arm64, osx-x64, osx-arm64, linux-x64, linux-arm64
+	// win-x64, win-arm64, osx-x64, osx-arm64, linux-x64, linux-arm64
 	rid Rid,
-// The version to publish e.g 1.0.0
+	// The version to publish e.g 1.0.0
 	version string,
 ) *dagger.Container {
 
@@ -209,8 +209,8 @@ func (m *Dota2Helper) DotnetPublish(
 
 // Publish the project in release mode and create a zip file
 func (m *Dota2Helper) PublishAsZip(
-// +defaultPath="."
-// +ignore=["**/bin", "**/obj", "**/.idea", "**/docs", "**/.github", "**/.gitignore"]
+	// +defaultPath="."
+	// +ignore=["**/bin", "**/obj", "**/.idea", "**/docs", "**/.github", "**/.gitignore"]
 	git *dagger.Directory,
 	rid Rid,
 ) *dagger.File {
@@ -236,9 +236,9 @@ func (m *Dota2Helper) PublishAsZip(
 
 // Create a release on github
 func (m *Dota2Helper) Release(
-// +defaultPath="/"
+	// +defaultPath="/"
 	git *dagger.Directory,
-// PAT with access
+	// PAT with access
 	token *dagger.Secret) error {
 
 	zipFiles := []*dagger.File{
@@ -275,7 +275,7 @@ func (m *Dota2Helper) Release(
 
 // Create audio assets using OpenAI TTS
 func (m *Dota2Helper) CreateAudioAssets(
-// The OpenAI API key
+	// The OpenAI API key
 	secret *dagger.Secret,
 ) (*dagger.Directory, error) {
 

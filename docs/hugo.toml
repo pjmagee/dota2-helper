@@ -14,6 +14,10 @@ title = "DOTA2 Helper - An objective timer helper"
 # In order to add version information in the page's footer set to true.
 # enableGitInfo = true
 
+[services]
+    [services.googleAnalytics]
+    id = 'G-04BLCBEKDE'
+
 # enable emoji processing in Markdown (valid only for pure markdown content)
 enableEmoji = true
 

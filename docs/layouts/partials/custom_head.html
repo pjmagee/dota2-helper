@@ -47,3 +47,5 @@
 {{ with resources.Get "images/favicon.svg" }}<link rel="icon" type="image/svg+xml" href="{{ .RelPermalink }}" />{{ end }}
 {{ range seq 9 4 }}{{ $size := pow 2 . }}{{ $file := replace "images/favicon-##x##.png" "##" $size }}{{ with resources.Get $file }}
 <link rel="icon" type="{{ .MediaType.Type }}" sizes="{{- $size -}}x{{- $size -}}" href="{{ .RelPermalink }}" />{{ end }}{{ end }}
+
+{{ template "_internal/google_analytics.html" . }}
