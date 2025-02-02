@@ -4,6 +4,9 @@
 
 An objective timer tracker with audio notifications for Dota2. This application is designed to help players keep track of important in-game events such as stacking, power runes, bounty runes, and more. The application is designed to be used in conjunction with the Game State Integration feature of Dota2.
 
+## Features
+
+Check the [Dota 2 Helper website](https://pjmagee.github.io/dota2-helper/) for features, screenshots, and more information.
 
 ## Download
 
@@ -12,75 +15,9 @@ An objective timer tracker with audio notifications for Dota2. This application 
 3. Extract the zip file which contains the full application.
 4. Run the `Dota2Helper.Desktop.exe`
 
-
 ## Platform
 
-I do not own a Mac or Linux machine to test the application, so only Windows is supported at this time.  
-
-## Features
-
-- Profiles for customisation, e.g. heroes, position, or role
-- Optimised timers overlay to place on top of Dota 2
-- Customisable behaviour for each timer such as name, interval, audio, show/hide
-- Playing audio notifications for each timer
-- Manual reset for dynamic objectives (e.g. Tormentors, Roshan)
-- Dark & light mode themes (dire and radiant style)
-- Fake timers are used when the game is not running for easy configuration
-- When the game is running, the timers will automatically start based on the game time
-- Automatic installation of the game state integration configuration into your Dota 2 folder
-
-## Why use this application?
-
-### Learn about objectives
- 
-- The application can help you learn about the importance of objectives in Dota 2
-- Objectives can be the difference between winning and losing a game
-- Stacking and Pulling camps can be overwhelming for new players, but this application can help you learn the timings
-- Early players can learn the importance of power runes and bounty runes which add up over the course of the game.
-
-### Free alternative
-
-There are a few alternatives to this application, but they have their own costs and limitations:
-
-- Valve's Dota+ Subscription offers similar 'camp' timer features, but this application is free and has more customisation options.
-- There are a couple of extenions with some Dota support on the Overwolf app store, but you have to install Overwolf and the extensions, and they may not be free.
-- Overwolf can be seen as bloatware by some users, and it may impact your game performance.
-
-## (GSI) Game State Integration
-
-The application uses the Game State Integration feature of Dota 2 to get the game time and other information.
-
-When you launch the application, it will automatically install the game state integration configuration into your Dota 2 folder. If you navigate to the 'Integration' tab in the settings window, it has options to uninstall/install and open the folder.
-
-You can go to `..\steamapps\common\dota 2 beta\game\dota\cfg\gamestate_integration`:
-
-You should be able to see a file created called `gamestate_integration_dota2_helper.cfg` with the following content:
-
-```plaintext
-"Dota 2 Integration Configuration"
-{
-    "uri"           "http://localhost:4001/"
-    "timeout"       "5.0"
-    "buffer"        "0.1"
-    "throttle"      "0.1"
-    "heartbeat"     "1.0"
-    "data"
-    {
-        "provider"      "0"
-        "map"           "1"
-        "player"        "0"
-        "hero"          "0"
-        "abilities"     "0"
-        "items"         "0"
-    }
-}
-```
-Dota2 will send the game state information to the application when the game is running on the provided URI.
-
-This application runs a small local web server waiting for Dota2 to post the game state information to the helper app, which it uses to calculate the timers.
-
-Valve does not seem to have dedicated GSI documentation for Dota2, but the concept and configuration is similar to Valves CSGO GSI, which is documented [here](https://developer.valvesoftware.com/wiki/Counter-Strike:_Global_Offensive_Game_State_Integration).
-
+Only Windows is supported at this time.  
 
 ## Support
 

@@ -7,7 +7,73 @@ import (
 	"fmt"
 )
 
+// Module with a set of functions to help with the build and release of the Dota 2 Helper project
 type Dota2Helper struct {
+	PublishSettings []PublishSetting
+}
+
+// Runtime Identifier for the target platform
+// This cannot be an enum because of the Rid value containing a hyphen
+// https://learn.microsoft.com/en-us/dotnet/core/rid-catalog#using-rids
+type Rid = string
+
+// Runtime Identifiers
+const (
+	WinX64     Rid = "win-x64"
+	WinArm64   Rid = "win-arm64"
+	OsxX64     Rid = "osx-x64"
+	OsxArm64   Rid = "osx-arm64"
+	LinuxX64   Rid = "linux-x64"
+	LinuxArm64 Rid = "linux-arm64"
+)
+
+type Publish struct {
+	Rid    Rid
+	Suffix string
+}
+
+type PublishSetting struct {
+	Platform string
+	Outputs  []Publish
+}
+
+func New() *Dota2Helper {
+	return &Dota2Helper{
+		PublishSettings: []PublishSetting{
+			{
+				Platform: "windows",
+				Outputs: []Publish{
+					{Rid: WinX64, Suffix: "windows_amd64"},
+					{Rid: WinArm64, Suffix: "windows_arm64"},
+				},
+			},
+			{
+				Platform: "osx",
+				Outputs: []Publish{
+					{Rid: OsxX64, Suffix: "osx_amd64"},
+					{Rid: OsxArm64, Suffix: "osx_arm64"},
+				},
+			},
+			{
+				Platform: "linux",
+				Outputs: []Publish{
+					{Rid: LinuxX64, Suffix: "linux_amd64"},
+					{Rid: LinuxArm64, Suffix: "linux_arm64"},
+				},
+			},
+		},
+	}
+}
+
+func (m *Dota2Helper) GetSuffix(rid Rid) string {
+	for _, setting := range m.PublishSettings {
+		for _, output := range setting.Outputs {
+			if output.Rid == rid {
+				return output.Suffix
+			}
+		}
+	}
+	return ""
 }
 
 type GitVersion struct {
@@ -42,7 +108,8 @@ type GitVersion struct {
 func (m *Dota2Helper) Build(
 // +defaultPath="."
 // +ignore=["**/bin", "**/obj", "**/.idea", "**/docs", "**/.github", "**/.gitignore"]
-	git *dagger.Directory) (string, error) {
+	git *dagger.Directory,
+) (string, error) {
 
 	return m.DotnetContainer().
 		WithDirectory("/repo", git).
@@ -67,9 +134,10 @@ func (m *Dota2Helper) DotnetContainer() *dagger.Container {
 
 // Scan the project for used packages and bundle licenses and metadata into a single file
 func (m *Dota2Helper) GetPackagesFile(
-    // +defaultPath="."
-    // +ignore=["**/bin", "**/obj", "**/.idea", "**/docs", "**/.github", "**/.gitignore"]
-	git *dagger.Directory) *dagger.File {
+// +defaultPath="."
+// +ignore=["**/bin", "**/obj", "**/.idea", "**/docs", "**/.github", "**/.gitignore"]
+	git *dagger.Directory,
+) *dagger.File {
 
 	return m.DotnetContainer().
 		WithDirectory("/repo", git).
@@ -80,10 +148,11 @@ func (m *Dota2Helper) GetPackagesFile(
 }
 
 // Get the semver details of the current git repository
-func (m *Dota2Helper) GitVersion(
+func (m *Dota2Helper) GetGitVersion(
 // +defaultPath="."
 // +ignore=["**/bin", "**/obj", "**/.idea", "**/docs", "**/.github", "**/.gitignore"]
-	git *dagger.Directory) (GitVersion, error) {
+	git *dagger.Directory,
+) (GitVersion, error) {
 
 	version, err := m.DotnetContainer().
 		WithDirectory("/repo", git).
@@ -110,7 +179,11 @@ func (m *Dota2Helper) DotnetPublish(
 // +defaultPath="."
 // +ignore=["**/bin", "**/obj", "**/.idea", "**/docs", "**/.github", "**/.gitignore"]
 	git *dagger.Directory,
-	version string) *dagger.Container {
+// win-x64, win-arm64, osx-x64, osx-arm64, linux-x64, linux-arm64
+	rid Rid,
+// The version to publish e.g 1.0.0
+	version string,
+) *dagger.Container {
 
 	return m.DotnetContainer().
 		WithDirectory("/repo", git).
@@ -123,7 +196,7 @@ func (m *Dota2Helper) DotnetPublish(
 			"-c",
 			"Release",
 			"-r",
-			"win-x64",
+			fmt.Sprintf("%s", rid),
 			"--self-contained",
 			"true",
 			fmt.Sprintf("/p:Version=%s", version),
@@ -138,34 +211,46 @@ func (m *Dota2Helper) DotnetPublish(
 func (m *Dota2Helper) PublishAsZip(
 // +defaultPath="."
 // +ignore=["**/bin", "**/obj", "**/.idea", "**/docs", "**/.github", "**/.gitignore"]
-	git *dagger.Directory) (*dagger.File, error) {
+	git *dagger.Directory,
+	rid Rid,
+) *dagger.File {
 
-	gitVersion, err := m.GitVersion(git)
+	gitVersion, err := m.GetGitVersion(git)
 
 	if err != nil {
-		return nil, err
+		return nil
 	}
 
 	version := gitVersion.MajorMinorPatch
-	published := m.DotnetPublish(git, version)
+	published := m.DotnetPublish(git, rid, version)
 	assets := published.Directory("/publish")
+	suffix := m.GetSuffix(rid)
 
 	zip := dag.
 		Arc().
-		ArchiveDirectory(fmt.Sprintf("Dota2Helper_v%s_windows_amd64", version), assets).
+		ArchiveDirectory(fmt.Sprintf("Dota2Helper_v%s_%s.zip", version, suffix), assets).
 		Zip()
 
-	return zip, nil
+	return zip
 }
 
 // Create a release on github
 func (m *Dota2Helper) Release(
 // +defaultPath="/"
 	git *dagger.Directory,
+// PAT with access
 	token *dagger.Secret) error {
 
-	var zip, _ = m.PublishAsZip(git)
-	var gitVersion, _ = m.GitVersion(git)
+	zipFiles := []*dagger.File{
+		m.PublishAsZip(git, WinX64),
+		// m.PublishAsZip(git, WinArm64),
+		//m.PublishAsZip(git, OsxX64),
+		//m.PublishAsZip(git, OsxArm64),
+		//m.PublishAsZip(git, LinuxX64),
+		//m.PublishAsZip(git, LinuxArm64),
+	}
+
+	var gitVersion, _ = m.GetGitVersion(git)
 
 	ghOpts := dagger.GhOpts{
 		Token: token,
@@ -174,9 +259,10 @@ func (m *Dota2Helper) Release(
 
 	tag := fmt.Sprintf("v%s", gitVersion.MajorMinorPatch)
 	title := fmt.Sprintf("Dota 2 Helper %s", gitVersion.MajorMinorPatch)
+
 	releaseOptions := dagger.GhReleaseCreateOpts{
 		Target:        "main",
-		Files:         []*dagger.File{zip},
+		Files:         zipFiles,
 		Latest:        dagger.GhLatestLatestAuto,
 		VerifyTag:     true,
 		Draft:         true,
@@ -189,9 +275,9 @@ func (m *Dota2Helper) Release(
 
 // Create audio assets using OpenAI TTS
 func (m *Dota2Helper) CreateAudioAssets(
-	ctx context.Context,
 // The OpenAI API key
-	secret *dagger.Secret) (*dagger.Directory, error) {
+	secret *dagger.Secret,
+) (*dagger.Directory, error) {
 
 	assets := []string{
 		"Pull",
@@ -231,7 +317,7 @@ func (m *Dota2Helper) CreateAudioAssets(
 		build = build.WithExec([]string{"sh", "-c", cmd})
 	}
 
-	ctr, err := build.Sync(ctx)
+	ctr, err := build.Sync(context.Background())
 
 	if err != nil {
 		return nil, err

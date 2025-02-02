@@ -56,6 +56,4 @@ Yes, you can use your own audio files. mp3 and wav are supported.
 
 #### Will I get banned?
 
-Using this software does not violate the Steam Subscriber Agreement or the Dota 2 terms of service. It does not modify the game in any way. It's like having a coach sitting next to you, providing you with additional information to help you play better.
-
-No, this software does not modify the game in any way. It simply utilises the game engines built in features to provide additional information to the user, using the `-gamestateintegration` feature. Many existing popular tools use this feature, such as Overwolf, SteelSeries GameSense, and others.
+No. This software doesn't modify Dota 2—it uses the game's built-in -gamestateintegration feature to provide extra information, much like popular tools such as Overwolf and SteelSeries GameSense. You're simply getting helpful insights, not breaking any rules.
