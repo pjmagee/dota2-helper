@@ -65,6 +65,13 @@ func New() *Dota2Helper {
 	}
 }
 
+func (m *Dota2Helper) HldToSvg() *dagger.File {
+	return dag.D2(dagger.D2Opts{
+		Format: "svg",
+		File:   dag.CurrentModule().Source().File("HLD.d2"),
+	}).Render().File("HLD.d2.svg")
+}
+
 func (m *Dota2Helper) GetSuffix(rid Rid) string {
 	for _, setting := range m.PublishSettings {
 		for _, output := range setting.Outputs {

@@ -1,0 +1,30 @@
+dota2helper: "DOTA 2 Helper" {
+    httpListener: "HTTP Listener"
+    timers: "Timers" {
+      explanation: |md
+        Users configured timers
+      |
+    }
+    audio: "Audio" {
+      mp3
+      wav
+    }
+    overlay: "Overlay UI"
+  }
+  
+  dota2: "DOTA 2" {
+    game: "Game Session"
+    gsi: "Game State Integration" {
+      explanation: |md
+        - gamestate_integration_d2helper.cfg
+        - other_integration.cfg
+      |
+    }
+  }
+  
+  dota2.game -> dota2.gsi: "Load dota2Helper config file"
+  dota2 -> dota2Helper.httpListener: "Send 1s interval updates to DOTA 2 Helper"
+  dota2helper.httpListener -> dota2helper.timers: "Game updates used to calculate timers"
+  dota2helper.overlay -> dota2helper.timers: "Render timer updates in overlay"
+  dota2helper.timers -> dota2helper.audio: "Queue audio on timer trigger"
+  

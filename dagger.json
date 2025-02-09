@@ -9,6 +9,11 @@
       "pin": "b45dbd7448bb967aca4a538af9ce7f042abf0316"
     },
     {
+      "name": "d2",
+      "source": "github.com/pjmagee/daggerverse/d2",
+      "pin": "686b0f41e55f3e32b2e43546f1adac33ac271eb1"
+    },
+    {
       "name": "gh",
       "source": "github.com/sagikazarmark/daggerverse/gh@7fc77a4f8dd54d4d4c56e40517f7109e8585bcdd",
       "pin": "7fc77a4f8dd54d4d4c56e40517f7109e8585bcdd"

@@ -1,7 +1,7 @@
 <section id="carousel">
     <div class="carousel">
       <div class="carousel-track">
-        {{ range resources.Match "images/*" }}
+        {{ range resources.Match "images/*.png" }}
         <div class="carousel-slide">
           <img src="{{ .RelPermalink }}" alt="Screenshot">
         </div>
