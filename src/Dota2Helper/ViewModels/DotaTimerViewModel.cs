@@ -17,22 +17,19 @@ public class DotaTimerViewModel : ViewModelBase
     public DotaTimerViewModel(DotaTimer timer, IAudioService audioService)
     {
         _audioService = audioService;
-        Name = timer.Name;
 
         Name = timer.Name;
-        Time = timer.Time;
-
+        Interval = timer.Interval;
         IsManualReset = timer.IsManualReset;
         IsInterval = timer.IsInterval;
         IsEnabled = timer.IsEnabled;
-        RemindAt = timer.RemindAt;
-        StopsAfter = timer.StopAfter;
-        StartsAfter = timer.StartAfter;
+        RemindAt = timer.RemindBefore;
+        HideAfter = timer.Visibility.HideAfter;
+        ShowAfter = timer.Visibility.ShowAfter;
         AudioFile = timer.AudioFile;
-
+        Offset = timer.Offset;
         ManualResetTime = null;
         ResetCommand = new RelayCommand(ResetTimer);
-
         IsStarted = false;
         IsStopped = false;
         IsVisible = false;
@@ -49,11 +46,11 @@ public class DotaTimerViewModel : ViewModelBase
         set => SetProperty(ref _name, value);
     }
 
-    TimeSpan _time;
-    public TimeSpan Time
+    TimeSpan _interval;
+    public TimeSpan Interval
     {
-        get => _time;
-        set => SetProperty(ref _time, value);
+        get => _interval;
+        set => SetProperty(ref _interval, value);
     }
 
     bool _isStopped;
@@ -85,11 +82,11 @@ public class DotaTimerViewModel : ViewModelBase
         set => SetProperty(ref _remindAt, value == TimeSpan.Zero ? null : value);
     }
 
-    TimeSpan? _stopsAfter;
-    public TimeSpan? StopsAfter
+    TimeSpan? _hideAfter;
+    public TimeSpan? HideAfter
     {
-        get => _stopsAfter;
-        set => SetProperty(ref _stopsAfter, value == TimeSpan.Zero ? null : value);
+        get => _hideAfter;
+        set => SetProperty(ref _hideAfter, value == TimeSpan.Zero ? null : value);
     }
 
     bool _isAlertable;
@@ -128,11 +125,18 @@ public class DotaTimerViewModel : ViewModelBase
         set => SetProperty(ref _timeRemaining, value);
     }
 
-    TimeSpan? _startsAfter;
-    public TimeSpan? StartsAfter
+    TimeSpan? _offset;
+    public TimeSpan? Offset
     {
-        get => _startsAfter;
-        set => SetProperty(ref _startsAfter, value == TimeSpan.Zero ? null : value);
+        get => _offset;
+        set => SetProperty(ref _offset, value);
+    }
+
+    TimeSpan? _showAfter;
+    public TimeSpan? ShowAfter
+    {
+        get => _showAfter;
+        set => SetProperty(ref _showAfter, value == TimeSpan.Zero ? null : value);
     }
 
     bool _isManualReset;
@@ -248,9 +252,9 @@ public class DotaTimerViewModel : ViewModelBase
 
     bool CalculateIsStopped(TimeSpan gameTime)
     {
-        if (StopsAfter.HasValue)
+        if (HideAfter.HasValue)
         {
-            return StopsAfter <= gameTime;
+            return HideAfter <= gameTime;
         }
 
         return false;
@@ -258,9 +262,9 @@ public class DotaTimerViewModel : ViewModelBase
 
     bool CalculateIsStarted(TimeSpan gameTime)
     {
-        if (StartsAfter.HasValue)
+        if (ShowAfter.HasValue)
         {
-            return StartsAfter <= gameTime;
+            return ShowAfter <= gameTime;
         }
 
         return true;
@@ -273,38 +277,31 @@ public class DotaTimerViewModel : ViewModelBase
 
     TimeSpan CalculateTimeUntilNextOccurrence(TimeSpan gameTime)
     {
-        // Skip calculation if the game time is negative
         if (gameTime.TotalSeconds < 0)
         {
-            return Time;
+            return Interval;
         }
-
-        // If the timer needs to be reset by the user, reset `_manualResetTime` to null and return the original timer value
+    
         if (IsResetRequired)
         {
-            return Time; // Return the original timer value
+            return Interval;
         }
-
-        // Initialize `_manualResetTime` to `gameTime` if it's not already set
+    
         if (ManualResetTime == default(TimeSpan))
         {
             ManualResetTime = gameTime;
         }
-
-        // Calculate elapsed time since `_manualResetTime`
-        double targetSeconds = Time.TotalSeconds; // The timer interval in seconds (e.g., 20 seconds)
-        double elapsedSeconds = gameTime.TotalSeconds - ManualResetTime.GetValueOrDefault().TotalSeconds;
-
-        // Calculate the next occurrence based on the elapsed time
+    
+        double targetSeconds = Interval.TotalSeconds;
+        double elapsedSeconds = gameTime.TotalSeconds - ManualResetTime.GetValueOrDefault().TotalSeconds - Offset.GetValueOrDefault().TotalSeconds;
+    
         double nextOccurrence = Math.Floor(elapsedSeconds / targetSeconds) * targetSeconds + targetSeconds;
-
-        // If elapsedSeconds has already reached or passed the next occurrence, adjust forward
+    
         if (elapsedSeconds >= nextOccurrence)
             nextOccurrence += targetSeconds;
-
-        // Calculate the remaining time until the next occurrence
+    
         double remainingSeconds = nextOccurrence - elapsedSeconds;
-
+    
         return TimeSpan.FromSeconds(remainingSeconds);
     }
 
@@ -314,12 +311,12 @@ public class DotaTimerViewModel : ViewModelBase
         {
             if (gameTime < TimeSpan.Zero)
             {
-                return Time + gameTime.Negate();
+                return Interval + gameTime.Negate();
             }
 
             if (gameTime > TimeSpan.Zero)
             {
-                return Time;
+                return Interval;
             }
         }
 
@@ -334,7 +331,7 @@ public class DotaTimerViewModel : ViewModelBase
 
             if (IsManualReset)
             {
-                if (IsResetRequired) return Time;
+                if (IsResetRequired) return Interval;
                 if (IsManualTimerReset) ManualResetTime = gameTime;
                 return objectiveTime - TimeSpan.FromTicks((gameTime - ManualResetTime.GetValueOrDefault()).Ticks % objectiveTime.Ticks);
             }

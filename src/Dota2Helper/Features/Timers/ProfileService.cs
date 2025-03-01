@@ -98,12 +98,12 @@ public class ProfileService
 
     void SaveConfiguration(object? sender, PropertyChangedEventArgs e)
     {
-        if (sender is DotaTimerViewModel timer && !string.IsNullOrWhiteSpace(e.PropertyName))
+        if (sender is DotaTimerViewModel && !string.IsNullOrWhiteSpace(e.PropertyName))
         {
             if (_ignoredProperties.Contains(e.PropertyName)) return;
             SaveConfiguration();
         }
-        else if (sender is ProfileViewModel profile && !string.IsNullOrWhiteSpace(e.PropertyName))
+        else if (sender is ProfileViewModel && !string.IsNullOrWhiteSpace(e.PropertyName))
         {
             SaveConfiguration();
         }
@@ -122,10 +122,14 @@ public class ProfileService
                         IsInterval = y.IsInterval,
                         IsEnabled = y.IsEnabled,
                         AudioFile = y.AudioFile,
-                        Time = y.Time,
-                        RemindAt = y.RemindAt,
-                        StopAfter = y.StopsAfter,
-                        StartAfter = y.StartsAfter
+                        Interval = y.Interval,
+                        RemindBefore = y.RemindAt,
+                        Offset = y.Offset,
+                        Visibility = new Visibility()
+                        {
+                            HideAfter = y.HideAfter,
+                            ShowAfter = y.ShowAfter
+                        }
                     }
                 ).ToList()
             }

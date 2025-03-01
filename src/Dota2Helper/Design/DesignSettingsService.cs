@@ -21,14 +21,18 @@ public class DesignSettingsService : SettingsService
         o.Add(new DotaTimer
             {
                 Name = "Roshan",
-                Time = TimeSpan.FromMinutes(8),
+                Interval = TimeSpan.FromMinutes(8),
                 IsInterval = false,
                 IsManualReset = true,
                 IsEnabled = true,
                 IsMuted = false,
-                RemindAt = TimeSpan.FromMinutes(1),
-                StopAfter = TimeSpan.FromMinutes(1),
-                StartAfter = TimeSpan.FromMinutes(1),
+                RemindBefore = TimeSpan.FromMinutes(1),
+                Visibility = new Visibility()
+                {
+                    HideAfter = TimeSpan.FromMinutes(1),
+                    ShowAfter = TimeSpan.FromMinutes(1)
+                },
+                Offset = TimeSpan.FromMinutes(0),
                 AudioFile = null,
             }
         );
@@ -51,14 +55,20 @@ public class DesignSettingsService : SettingsService
                     new DotaTimer
                     {
                         Name = "Roshan",
-                        Time = TimeSpan.FromMinutes(8),
+                        Interval = TimeSpan.FromMinutes(8),
                         IsInterval = false,
                         IsManualReset = true,
                         IsEnabled = true,
                         IsMuted = false,
-                        RemindAt = TimeSpan.FromMinutes(1),
-                        StopAfter = TimeSpan.FromMinutes(1),
-                        StartAfter = TimeSpan.FromMinutes(1),
+                        RemindBefore = TimeSpan.FromMinutes(1),
+                        // StopAfter = TimeSpan.FromMinutes(1),
+                        // StartAfter = TimeSpan.FromMinutes(1),
+                        Offset = TimeSpan.FromMinutes(0),
+                        Visibility = new Visibility()
+                        {
+                            HideAfter = TimeSpan.FromMinutes(1),
+                            ShowAfter = TimeSpan.FromMinutes(1)
+                        },
                         AudioFile = null,
                     }
                 }

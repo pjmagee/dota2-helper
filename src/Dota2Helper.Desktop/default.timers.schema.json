@@ -16,5 +16,6 @@
     }
   },
   "additionalProperties": false,
-  "additionalItems": false
+  "additionalItems": false,
+  "required": ["DefaultTimers"]
 }

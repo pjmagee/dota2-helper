@@ -14,7 +14,7 @@ public class DotaTimerViewModelTests
         var timer = new DotaTimerViewModel(new DotaTimer
         {
             IsManualReset = true,
-            Time = TimeSpan.FromSeconds(10),
+            Interval = TimeSpan.FromSeconds(10),
             IsEnabled = true,
             IsInterval = true,
             Name = "Test Timer Manual Reset",
@@ -24,7 +24,7 @@ public class DotaTimerViewModelTests
 
         // Act
         TimeSpan time = TimeSpan.FromSeconds(0);
-        TimeSpan maxTime = timer.Time;
+        TimeSpan maxTime = timer.Interval;
 
         Assert.IsTrue(timer.IsFirstManualTimer);
 
@@ -39,7 +39,7 @@ public class DotaTimerViewModelTests
         Assert.IsFalse(timer.IsFirstManualTimer);
 
         time = TimeSpan.FromSeconds(10);
-        maxTime = maxTime.Add(timer.Time);
+        maxTime = maxTime.Add(timer.Interval);
 
         while (time < maxTime)
         {

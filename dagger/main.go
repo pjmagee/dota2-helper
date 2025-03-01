@@ -283,29 +283,26 @@ func (m *Dota2Helper) Release(
 // Create audio assets using OpenAI TTS
 func (m *Dota2Helper) CreateAudioAssets(
 	// The OpenAI API key
-	secret *dagger.Secret,
+	apiKey *dagger.Secret,
 ) (*dagger.Directory, error) {
 
 	assets := []string{
 		"Pull",
 		"Stack",
-		"Bounty",
+		"Bounty rune",
 		"Power rune",
 		"Lotus Pool",
-		"Wisdom rune",
+		"Shrine of Wisdom",
 		"Radiant Tormentor",
 		"Dire Tormentor",
 		"Roshan",
-		"Tier 1s",
-		"Tier 2s",
-		"Tier 3s",
-		"Tier 4s",
-		"Tier 5s",
+		"Madstone Cap increased",
+		"Madstone Cap removed",
 	}
 
 	build := dag.Container().
 		From("curlimages/curl:latest").
-		WithSecretVariable("OPEN_AI_API_KEY", secret).
+		WithSecretVariable("OPENAI_API_KEY", apiKey).
 		WithoutEntrypoint().
 		WithWorkdir("/audio")
 
@@ -317,7 +314,7 @@ func (m *Dota2Helper) CreateAudioAssets(
 
 	for _, text := range assets {
 		cmd := fmt.Sprintf(`curl -v https://api.openai.com/v1/audio/speech \
-            			-H "Authorization: Bearer $OPEN_AI_API_KEY" \
+            			-H "Authorization: Bearer $OPENAI_API_KEY" \
             			-H "Content-Type: application/json" \
             			-d '%s' \
             			--output "%s"`, fmt.Sprintf(template, text), fmt.Sprintf("%s.mp3", text))

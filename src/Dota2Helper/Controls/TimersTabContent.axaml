@@ -27,10 +27,10 @@
                       HorizontalScrollBarVisibility="Auto">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
-                    <DataGridTemplateColumn Header="Time">
+                    <DataGridTemplateColumn Header="Interval">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TimePicker UseSeconds="True" SelectedTime="{Binding Time}">
+                                <TimePicker UseSeconds="True" SelectedTime="{Binding Interval}">
                                     <TimePicker.Resources>
                                         <x:Double x:Key="TimePickerThemeMinWidth">120</x:Double>
                                     </TimePicker.Resources>
@@ -71,25 +71,34 @@
                     </ToolTip.Tip>
                     <TextBlock Text="Time" VerticalAlignment="Center" />
                     <TimePicker UseSeconds="True"
-                                SelectedTime="{Binding SelectedTimerViewModel.Time, Mode=TwoWay}" />
+                                SelectedTime="{Binding SelectedTimerViewModel.Interval, Mode=TwoWay}" />
                 </StackPanel>
                 <StackPanel Orientation="Vertical" Margin="5">
                     <ToolTip.Tip>
-                        When the timer will become active and begin to trigger based on the game time
+                         e.g If a timer is every 10 minutes, but the first one is at 15 minutes.
+                         The offset should be set to 15 minutes.
+                    </ToolTip.Tip>
+                    <TextBlock Text="Offset" VerticalAlignment="Center" />
+                    <TimePicker UseSeconds="True"
+                                SelectedTime="{Binding SelectedTimerViewModel.Offset, Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel Orientation="Vertical" Margin="5">
+                    <ToolTip.Tip>
+                        When the timer will become visible and begin to trigger based on the interval
                     </ToolTip.Tip>
                     <TextBlock Text="Starts at" VerticalAlignment="Center" />
                     <TimePicker UseSeconds="True"
-                                SelectedTime="{Binding SelectedTimerViewModel.StartsAfter, Mode=TwoWay}" />
+                                SelectedTime="{Binding SelectedTimerViewModel.ShowAfter, Mode=TwoWay}" />
                 </StackPanel>
                 <StackPanel Orientation="Vertical" Margin="5">
                     <ToolTip.Tip>
-                        When the timer will disable itself, and no longer trigger based on the game.
-                        For example, pulling or stacking camps becomes less meaningful after a certain time.
+                         When the timer will stop being visible and stop triggering.
+                         e.g some timers are only relevant for a certain period of time.
                     </ToolTip.Tip>
                     <TextBlock Text="Expires after" VerticalAlignment="Center" />
                     <TimePicker
                         UseSeconds="True"
-                        SelectedTime="{Binding SelectedTimerViewModel.StopsAfter, Mode=TwoWay}" />
+                        SelectedTime="{Binding SelectedTimerViewModel.HideAfter, Mode=TwoWay}" />
                 </StackPanel>
                 <StackPanel Orientation="Vertical" Margin="5">
                     <ToolTip.Tip>

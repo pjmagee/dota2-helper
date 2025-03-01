@@ -333,11 +333,18 @@ public class SettingsViewModel : ViewModelBase
         var dotaTimer = new DotaTimer
         {
             Name = $"Timer {SelectedProfileViewModel.Timers.Count + 1}",
-            Time = TimeSpan.FromMinutes(1),
+            Interval = TimeSpan.FromMinutes(1),
             IsEnabled = false,
             IsMuted = false,
             IsManualReset = false,
-            IsInterval = true
+            IsInterval = true,
+            Offset = TimeSpan.Zero,
+            RemindBefore = TimeSpan.FromSeconds(5),
+            Visibility = new Visibility
+            {
+                ShowAfter = null,
+                HideAfter = null
+            }
         };
 
         SelectedProfileViewModel.Timers.Add(_viewModelFactory.Create(dotaTimer));

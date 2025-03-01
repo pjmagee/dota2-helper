@@ -28,12 +28,17 @@
       "pattern": "^(?:file:\\/\\/[^\\s]+|\\.\\/[^\\s]+|\\/[^\\s]+|[a-zA-Z]:[\\\\\\/][^\\s]+)(?:[^\\s\\/\\:*?\"<>|]+\\s?)*[^\\s\\/\\:*?\"<>|]+\\.(?:mp3|wav)$",
       "description": "The audio file to play."
     },
-    "Time": {
+    "Offset": {
+      "type": ["string", "null"],
+      "pattern": "^\\d{2}:\\d{2}:\\d{2}$",
+      "description": "The offset in HH:MM:SS format."
+    },
+    "Interval": {
       "type": "string",
       "pattern": "^\\d{2}:\\d{2}:\\d{2}$",
       "description": "The time duration in HH:MM:SS format."
     },
-    "RemindAt": {
+    "RemindBefore": {
       "oneOf": [
         {
           "type": "string",
@@ -45,7 +50,7 @@
       ],
       "description": "The time before the event to remind in HH:MM:SS format or null."
     },
-    "StopAfter": {
+    "HideAfter": {
       "oneOf": [
         {
           "type": "string",
@@ -57,7 +62,7 @@
       ],
       "description": "The duration after which the event stops in HH:MM:SS format or null."
     },
-    "StartAfter": {
+    "ShowAfter": {
       "oneOf": [
         {
           "type": "string",
@@ -77,7 +82,7 @@
     "IsMuted",
     "IsInterval",
     "AudioFile",
-    "Time"
+    "Interval"
   ],
   "additionalProperties": false,
   "additionalItems": false

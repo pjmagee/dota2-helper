@@ -22,16 +22,37 @@ public class DotaTimer
 
     [JsonPropertyName(nameof(AudioFile))]
     public string? AudioFile { get; set; }
+    
+    /// <summary>
+    ///  e.g The first spawn at 15 minutes but then every 10 minutes thereafter (using Interval)
+    /// </summary>
+    [JsonPropertyName(nameof(Offset))]
+    public TimeSpan? Offset { get; set; }
 
-    [JsonPropertyName(nameof(Time))]
-    public required TimeSpan Time { get; set; }
+    /// <summary>
+    ///  The interval between each event
+    /// </summary>
+    [JsonPropertyName(nameof(Interval))]
+    public required TimeSpan Interval { get; set; }
 
-    [JsonPropertyName(nameof(RemindAt))]
-    public TimeSpan? RemindAt { get; set; }
+    /// <summary>
+    /// e.g Reminder 1 minute before each event
+    /// </summary>
+    [JsonPropertyName(nameof(RemindBefore))]
+    public TimeSpan? RemindBefore { get; set; }
 
-    [JsonPropertyName(nameof(StopAfter))]
-    public TimeSpan? StopAfter { get; set; }
+    /// <summary>
+    /// e.g Stop showing after 35 minutes, when it's less relevant
+    /// </summary>
+    [JsonPropertyName(nameof(Visibility))]
+    public Visibility Visibility { get; set; } = new();
+}
 
-    [JsonPropertyName(nameof(StartAfter))]
-    public TimeSpan? StartAfter { get; set; }
+public class Visibility
+{
+    [JsonPropertyName(nameof(ShowAfter))]
+    public TimeSpan? ShowAfter { get; set; }
+
+    [JsonPropertyName(nameof(HideAfter))]
+    public TimeSpan? HideAfter { get; set; }
 }
