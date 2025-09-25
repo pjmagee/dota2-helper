@@ -1,4 +1,4 @@
-baseURL = "https://pjmagee.github.io/dota2-helper/"
+baseURL = "https://dota2-helper.ghp.magaoidh.pro/"
 
 # This is a "one page"-website, so we do not need these kinds of pages...
 disableKinds = ["section", "taxonomy", "term", "RSS", "robotsTXT"]
